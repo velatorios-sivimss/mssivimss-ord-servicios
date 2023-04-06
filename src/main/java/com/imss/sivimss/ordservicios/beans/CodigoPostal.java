@@ -28,17 +28,14 @@ public class CodigoPostal {
 		DatosRequest request= new DatosRequest();
 		Map<String, Object> parametro = new HashMap<>();
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
-		/*selectQuery.select("SC.ID_CODIGO_POSTAL AS id","SC.CVE_CODIGO_POSTAL AS cp",
+		selectQuery.select("SC.ID_CODIGO_POSTAL AS id","SC.CVE_CODIGO_POSTAL AS cp",
 				"SC.DES_COLONIA AS colonia","SC.DES_MNPIO AS municipio","SC.DES_ESTADO AS estado")
 		.from("SVC_CP SC")
-		.where("SC.CVE_CODIGO_POSTAL = :codigoPostal LIMIT 1;")
-		.setParameter("codigoPostal", codigo);*/
+		.where("SC.CVE_CODIGO_POSTAL = :codigoPostal")
+		.setParameter("codigoPostal", codigo)
+		.limit(1);
 		
-		String query= "SELECT SC.ID_CODIGO_POSTAL AS id, SC.CVE_CODIGO_POSTAL AS cp ,SC.DES_COLONIA AS colonia, SC.DES_MNPIO AS municipio, SC.DES_ESTADO AS estado "
-				+ "FROM SVC_CP SC "
-				+ "WHERE SC.CVE_CODIGO_POSTAL = "+codigo+ " GROUP BY SC.DES_COLONIA "
-				+ "ORDER BY SC.DES_COLONIA ASC LIMIT 1; ";
-		//String query=selectQuery.build();
+		String query=selectQuery.build();
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		parametro.put(AppConstantes.QUERY, encoded);
 		request.setDatos(parametro);

@@ -15,6 +15,7 @@ public class SelectQueryUtil {
     private static final String FROM = "FROM";
     private static final String WHERE = "WHERE";
     private static final String LEFT_JOIN = "LEFT JOIN";
+    private static final String INNER_JOIN = "INNER_JOIN";
     private static final String JOIN = "JOIN";
     private static final String ON = "ON";
     private static final String OR = "OR";
@@ -23,6 +24,7 @@ public class SelectQueryUtil {
     private static final String COLON = ":";
     private static final String ORDER_BY = "ORDER BY";
     private static final String GROUP_BY = "GROUP BY";
+    private static final String LIMIT = "LIMIT";
     // campos
     private final List<String> tablas = new ArrayList<>();
     private List<String> columnas = new ArrayList<>();
@@ -36,6 +38,7 @@ public class SelectQueryUtil {
     private boolean isFromCalled;
     private boolean isSelectCalled;
     private boolean isJoinCalled;
+    private Integer limit;
 
     /**
      * La funci&oacute;n <b>{@code select()}</b>, se tiene que invocar 2 veces, la primera es para crear una instancia de
@@ -153,15 +156,16 @@ public class SelectQueryUtil {
 
     /**
      * Valida si la la funci&oacute;n <b>{@code or(...)}</b> o la funci&oacute;n <b>{@code and(...)}</b>
+     *
      * @param condicion
      * @param or
      * @return
      */
     private SelectQueryUtil validarCondicionesOrAnd(String condicion, String or) {
         if (Objects.equals(lastMethodCalled, WHERE)) {
-            if (condiciones.isEmpty()) {
-                throw new IllegalStateException("Se tiene que agregar por lo menos una condicion en el where");
-            }
+//            if (condiciones.isEmpty()) {
+//                throw new IllegalStateException("Se tiene que agregar por lo menos una condicion en el where");
+//            }
             this.condiciones.add(crearCondicion(condicion, or));
         }
         if (lastMethodCalled.equals(JOIN)) {
@@ -233,8 +237,8 @@ public class SelectQueryUtil {
      * @param on
      * @return
      */
-    public SelectQueryUtil innerJoin(String tabla, String on) {
-        helperJoin = new Join(LEFT_JOIN, tabla, on);
+    public SelectQueryUtil innerJoin(String tabla, String... on) {
+        helperJoin = new Join(INNER_JOIN, tabla, on);
         joins.add(helperJoin);
         isJoinCalled = true;
         lastMethodCalled = JOIN;
@@ -248,8 +252,8 @@ public class SelectQueryUtil {
      * @param on
      * @return
      */
-    public SelectQueryUtil join(String tabla, String on) {
-        helperJoin = new Join(LEFT_JOIN, tabla, on);
+    public SelectQueryUtil join(String tabla, String... on) {
+        helperJoin = new Join(JOIN, tabla, on);
         joins.add(helperJoin);
         isJoinCalled = true;
         lastMethodCalled = JOIN;
@@ -276,6 +280,17 @@ public class SelectQueryUtil {
     }
 
     /**
+     * Agrega la sentencia limit al query que se est&aacute; armando.
+     *
+     * @param limit
+     * @return
+     */
+    public SelectQueryUtil limit(Integer limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    /**
      * Regresa el query que se construy&oacute;.
      * <p>
      *
@@ -288,10 +303,20 @@ public class SelectQueryUtil {
         agregarFrom(stringBuilder);
         agregarJoins(stringBuilder);
         agregarWhere(stringBuilder);
+        agregarLimit(stringBuilder);
         addOrderBy(stringBuilder);
         addGroupBy(stringBuilder);
 
         return stringBuilder.toString();
+    }
+
+    private void agregarLimit(StringBuilder stringBuilder) {
+        if (limit != null) {
+            stringBuilder.append(SPACE)
+                    .append(LIMIT)
+                    .append(SPACE)
+                    .append(limit.toString());
+        }
     }
 
     /**
