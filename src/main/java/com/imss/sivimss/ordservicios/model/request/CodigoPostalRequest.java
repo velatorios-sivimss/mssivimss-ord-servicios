@@ -9,5 +9,17 @@ import lombok.Setter;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CodigoPostalRequest {
+	
+	private Integer idCodigoPostal;
+
 	private Integer codigoPostal;
+
+	private String desColonia;
+
+	private String desMunicipio;
+
+	private String desEstado;
+	
+	private String desCiudad;
+
 }
