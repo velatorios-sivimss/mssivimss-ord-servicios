@@ -8,12 +8,18 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReporteDto {
+public class CodigoPostalRequest {
+	
+	private Integer idCodigoPostal;
 
-	private String ooad;
-	private Integer idOoad;
-	private Integer mes;
-	private Integer anio;
-	private String nombreMes;
-	private String tipoReporte;
+	private Integer codigoPostal;
+
+	private String desColonia;
+
+	private String desMunicipio;
+
+	private String desEstado;
+	
+	private String desCiudad;
+
 }

@@ -1,6 +1,4 @@
-package com.imss.sivimss.ordservicios.model.request;
-
-import java.time.LocalDateTime;
+package com.imss.sivimss.ordservicios.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
@@ -9,20 +7,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Setter
 @Getter
-@ToString
 @JsonIgnoreType(value = true)
-public class OoadRequest {
+public class CodigoPostalResponse {
+	
+	
+	private Integer id;
 
-	private String nomOoad;
+	private Integer cp;
 	
-	private String fechaAlta;
+	private String colonia;
+
+	private String estado;
 	
-	private Integer activo;
+	private String municipio;
+	
+	
 }

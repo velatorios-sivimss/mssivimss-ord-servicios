@@ -30,12 +30,48 @@ logos:
   msit_logo_sistema: /sintrans_data/LOGOS/logoSistema.png
 
 endpoints:
-   consulta-ooads: http://localhost:8090/dominio/
-   paginado-unidad: http://localhost:8090/dominio/ooad/paginacion
-   dominio-consulta: http://localhost:8094/mssivimss-mod-catalogos
+   dominio-consulta: http://localhost:8090/mssivimss-mod-catalogos/generico/consulta
+   dominio-consulta-paginado: http://localhost:8090/mssivimss-mod-catalogos/generico/paginado
+   dominio-crear: http://localhost:8094/mssivimss-mod-catalogos/generico/crear
+   dominio-crear-multiple: http://localhost:8090/mssivimss-mod-catalogos/generico/crearMultiple
+   dominio-actualizar: http://localhost:8090/mssivimss-mod-catalogos/generico/actualizar
    ms-reportes: http://localhost:8088/mssivimss-reportes-jpr
 
 jwt:
   secretkey-flujo: funcionamuybien
   secretkey-dominios: funcionamuybiendominio
   expiration-milliseconds: 360
+  
+management:
+      endpoints:
+          web:
+            exposure:
+                include:
+                    health,info,metrics
+
+resilience4j.circuitbreaker:
+    circuitBreakerAspectOrder: 1
+    instances:
+      msflujo:
+        automaticTransitionFromOpenToHalfOpenEnabled: 'true'
+        failureRateThreshold: '50'
+        slidingWindowType: COUNT_BASED
+        event-consumer-buffer-size: '10'
+        registerHealthIndicator: 'true'
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: '3'
+        slidingWindowSize: '5'
+resilience4j.retry:
+    retryAspectOrder: 2
+    instances:
+        msflujo:
+           maxAttempts: 3
+           waitDuration: 5s
+resilience4j.timelimiter:
+    timeLimiterAspectOrder: 3
+    instances:
+      msflujo:
+        timeout-duration: 3s
+        
+        
+formato_fecha: '%d/%m/%Y'
