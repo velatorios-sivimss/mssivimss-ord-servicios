@@ -6,7 +6,9 @@ import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 
+import com.imss.sivimss.ordservicios.exception.BadRequestException;
 import com.imss.sivimss.ordservicios.model.request.CodigoPostalRequest;
 import com.imss.sivimss.ordservicios.model.request.PanteonRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
@@ -69,8 +71,7 @@ public class Panteon {
 		q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
 		String query;
 		if (panteonRequest.getCp().getIdCodigoPostal()==null) {
-			q.agregarParametroValues("ID_CP", "idTabla");
-			query=	insertarCp(panteonRequest.getCp())+" $$ "+q.obtenerQueryInsertar();
+			throw new BadRequestException(HttpStatus.BAD_REQUEST, "El codigo postal es obligatorio");
 		} else {
 			q.agregarParametroValues("ID_CP", ""+panteonRequest.getCp().getIdCodigoPostal()+"");
 			q.agregarParametroValues("DES_COLONIA", "'"+panteonRequest.getCp().getDesColonia()+"'");
@@ -79,20 +80,8 @@ public class Panteon {
 		
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
         parametro.put(AppConstantes.QUERY, encoded);
-        parametro.put("separador","$$");
-        parametro.put("replace","idTabla");
         request.setDatos(parametro);
 		return request;
-	}
-	
-	private String insertarCp(CodigoPostalRequest codigoPostalRequest) {
-		final QueryHelper q= new QueryHelper("INSERT INTO SVC_CP");
-		q.agregarParametroValues("CVE_CODIGO_POSTAL", "" + codigoPostalRequest.getCodigoPostal() + "");
-		q.agregarParametroValues("DES_COLONIA", "'"+codigoPostalRequest.getDesColonia()+"'");
-		q.agregarParametroValues("DES_MNPIO", "'"+codigoPostalRequest.getDesMunicipio()+"'");
-		q.agregarParametroValues("DES_ESTADO", "'"+codigoPostalRequest.getDesEstado()+"'");
-		q.agregarParametroValues("DES_CIUDAD", "'"+codigoPostalRequest.getDesCiudad()+"'");
-		return q.obtenerQueryInsertar();
 	}
 	
 	

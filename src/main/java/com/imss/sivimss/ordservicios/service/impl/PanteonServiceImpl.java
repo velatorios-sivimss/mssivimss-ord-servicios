@@ -69,7 +69,7 @@ public class PanteonServiceImpl implements PanteonService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		PanteonRequest panteonRequest= gson.fromJson(datosJson, PanteonRequest.class);
 		
-		return providerServiceRestTemplate.consumirServicio(panteon.insertar(panteonRequest ,usuarioDto).getDatos(), urlCrearMultiple,
+		return providerServiceRestTemplate.consumirServicio(panteon.insertar(panteonRequest ,usuarioDto).getDatos(), urlCrear,
 				authentication);
 	}
 
