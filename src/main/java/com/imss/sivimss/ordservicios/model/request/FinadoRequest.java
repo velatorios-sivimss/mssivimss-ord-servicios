@@ -1,5 +1,6 @@
 package com.imss.sivimss.ordservicios.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.Persona;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FinadoRequest extends Persona{
 
 	private String idFinado;

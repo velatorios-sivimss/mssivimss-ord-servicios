@@ -1,7 +1,6 @@
 package com.imss.sivimss.ordservicios.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.imss.sivimss.ordservicios.beans.ordeservicio.Persona;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,12 +12,20 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContratanteRequest extends Persona{
-
-	private Integer idContratante;
+public class InformacionServicioVelacionRequest {
 	
-	private String matricula;
-
+	private Integer idInformacionServicioVelacion;
+	
+	private String fechaInstalacion;
+	
+	private String horaInstalacion;
+	
+	private String fechaVelacion;
+	
+	private String horaVelacion;
+	
+	private Integer idCapilla;
+	
 	private String desCalle;
 
 	private String numExterior;
@@ -27,4 +34,5 @@ public class ContratanteRequest extends Persona{
 
 	private CodigoPostalRequest cp;
 	
+	private String desColonia;
 }

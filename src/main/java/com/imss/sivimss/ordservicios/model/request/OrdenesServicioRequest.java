@@ -10,7 +10,19 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrdenesServicioRequest {
 
+	private Integer idOrdenServicio;
+	
+	private String folio;
+
+	private Integer idParentesco;
+
+	private Integer estatus;
+
 	private ContratanteRequest contratante;
 	
 	private FinadoRequest finado;
+	
+	private CaracteristicasPresupuestoRequest caracteristicasPresupuesto;
+	
+	private InformacionServicioRequest informacionServicio;
 }
