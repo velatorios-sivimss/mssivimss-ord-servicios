@@ -1,4 +1,4 @@
-package com.imss.sivimss.ordservicios.repository;
+package com.imss.sivimss.ordservicios.beans.ordeservicio;
 
 public class OrdenConsultar {
 
