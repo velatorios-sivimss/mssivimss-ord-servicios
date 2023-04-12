@@ -19,6 +19,7 @@ import com.imss.sivimss.ordservicios.service.PanteonService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
+import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
@@ -42,6 +43,8 @@ public class PanteonServiceImpl implements PanteonService{
 	private Panteon panteon= new Panteon();
 	
 	private final ModelMapper modelMapper;
+	
+	private static final String AGREGADO_CORRECTAMENTE = "99";
 	
 	public PanteonServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper) {
 		this.providerServiceRestTemplate = providerServiceRestTemplate;
@@ -69,8 +72,8 @@ public class PanteonServiceImpl implements PanteonService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		PanteonRequest panteonRequest= gson.fromJson(datosJson, PanteonRequest.class);
 		
-		return providerServiceRestTemplate.consumirServicio(panteon.insertar(panteonRequest ,usuarioDto).getDatos(), urlCrear,
-				authentication);
+		return MensajeResponseUtil.mensajeResponse( providerServiceRestTemplate.consumirServicio(panteon.insertar(panteonRequest ,usuarioDto).getDatos(), urlCrear,
+				authentication),AGREGADO_CORRECTAMENTE);
 	}
 
 }
