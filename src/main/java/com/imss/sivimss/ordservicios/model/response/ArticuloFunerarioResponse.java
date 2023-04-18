@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreType(value = true)
-public class ArticuloComplementarioResponse {
+public class ArticuloFunerarioResponse {
 
 	private Integer idArticulo;
 	
