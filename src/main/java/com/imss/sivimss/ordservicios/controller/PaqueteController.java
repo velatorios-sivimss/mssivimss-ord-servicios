@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping
+@RequestMapping("/paquete")
 public class PaqueteController {
 	
 	private final ProviderServiceRestTemplate providerRestTemplate;

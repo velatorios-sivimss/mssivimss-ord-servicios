@@ -10,10 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.ordservicios.beans.ArticuloComplementario;
 import com.imss.sivimss.ordservicios.beans.Ataud;
 import com.imss.sivimss.ordservicios.beans.Empaque;
 import com.imss.sivimss.ordservicios.beans.Urna;
-import com.imss.sivimss.ordservicios.model.request.ArticuloFunerarioRequest;
+import com.imss.sivimss.ordservicios.model.request.ArticuloComplementarioRequest;
+import com.imss.sivimss.ordservicios.model.response.ArticuloComplementarioResponse;
 import com.imss.sivimss.ordservicios.model.response.ArticuloFunerarioResponse;
 import com.imss.sivimss.ordservicios.service.ArticuloService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
@@ -37,6 +39,8 @@ public class ArticuloServiceImpl implements ArticuloService{
 
 	private final Empaque empaque=Empaque.obtenerInstancia();
 	
+	private final ArticuloComplementario articuloComplementario= ArticuloComplementario.getInstancia();
+	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;
 	
 	private final ModelMapper modelMapper;
@@ -50,11 +54,9 @@ public class ArticuloServiceImpl implements ArticuloService{
 
 	@Override
 	public Response<?> consultarAtaud(DatosRequest request, Authentication authentication) throws IOException {
-		Gson gson= new Gson();
-		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-		ArticuloFunerarioRequest articuloFunerarioRequest=gson.fromJson(datosJson, ArticuloFunerarioRequest.class);
+		
 		List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudes(articuloFunerarioRequest.getIdCategoria()).getDatos(), urlConsultar, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudes().getDatos(), urlConsultar, authentication);
 		
 		if (response.getCodigo()==200) {
 			if(!response.getDatos().toString().contains("[]")) {
@@ -70,11 +72,10 @@ public class ArticuloServiceImpl implements ArticuloService{
 
 	@Override
 	public Response<?> consultarUrna(DatosRequest request, Authentication authentication) throws IOException {
-		Gson gson= new Gson();
-		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-		ArticuloFunerarioRequest articuloFunerarioRequest=gson.fromJson(datosJson, ArticuloFunerarioRequest.class);
+		
+		
 		List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(urna.obtenerUrna(articuloFunerarioRequest.getIdCategoria()).getDatos(), urlConsultar, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(urna.obtenerUrna().getDatos(), urlConsultar, authentication);
 		if (response.getCodigo()==200) {
 			if (!response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
@@ -88,11 +89,9 @@ public class ArticuloServiceImpl implements ArticuloService{
 
 	@Override
 	public Response<?> consultarEmpaque(DatosRequest request, Authentication authentication) throws IOException {
-		Gson gson= new Gson();
-		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-		ArticuloFunerarioRequest articuloFunerarioRequest=gson.fromJson(datosJson, ArticuloFunerarioRequest.class);
+		
 		List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(empaque.obtenerUrna(articuloFunerarioRequest.getIdCategoria()).getDatos(), urlConsultar, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(empaque.obtenerEmpaque().getDatos(), urlConsultar, authentication);
 		if (response.getCodigo()==200) {
 			if (!response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
@@ -107,8 +106,32 @@ public class ArticuloServiceImpl implements ArticuloService{
 	@Override
 	public Response<?> consultarArticuloComplementario(DatosRequest request, Authentication authentication)
 			throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		List<ArticuloComplementarioResponse>articuloFunerarioResponses;
+		Response<?>response=providerServiceRestTemplate
+				.consumirServicio(articuloComplementario.obtenerArticulosComplementarios().getDatos(), urlConsultar, authentication);
+		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
+				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
+				response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
+			}
+		
+		return response;
+	}
+
+	@Override
+	public Response<?> consultarArticuloComplementarioPorId(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Gson gson= new Gson();
+		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+		ArticuloComplementarioRequest articuloComplementarioRequest=gson.fromJson(datosJson, ArticuloComplementarioRequest.class);
+		List<ArticuloComplementarioResponse>articuloFunerarioResponses;
+		Response<?>response=providerServiceRestTemplate
+				.consumirServicio(articuloComplementario.obtenerArticulosComplementariosPorId(articuloComplementarioRequest.getIdArticulo()).getDatos(), urlConsultar, authentication);
+		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
+				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
+				response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
+			}
+		
+		return response;
 	}
 
 }

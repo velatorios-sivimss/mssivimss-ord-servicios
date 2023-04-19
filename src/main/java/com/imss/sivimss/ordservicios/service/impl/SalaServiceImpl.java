@@ -28,6 +28,7 @@ public class SalaServiceImpl implements SalaService{
 
 	@Value("${endpoints.dominio-consulta}")
 	private String urlConsultar;
+	
 	private Sala sala=Sala.getInstancia();
 	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;

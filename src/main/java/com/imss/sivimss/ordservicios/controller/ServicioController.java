@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.imss.sivimss.ordservicios.service.ArticuloService;
+import com.imss.sivimss.ordservicios.service.ServicioService;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
@@ -21,70 +21,36 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/")
-public class ArticuloController {
-
-	private final ArticuloService articuloService;
+@RequestMapping("/servicio")
+public class ServicioController {
+	
+	private final ServicioService servicioService;
 	
 	private final ProviderServiceRestTemplate providerRestTemplate;
 	
-	@PostMapping("articulos-funerarios/ataud/consultar")
+	
+	@PostMapping("/consultar")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerAtaudes(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
-		Response<?>response=articuloService.consultarAtaud(request, authentication);
+	public CompletableFuture<?>obtenerServicios(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+		Response<?>response=servicioService.consultarServicios(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
-	@PostMapping("articulos-funerarios/urna/consultar")
+	@PostMapping("/consultar/proveedor")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerUrnas(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
-		Response<?>response=articuloService.consultarUrna(request, authentication);
+	public CompletableFuture<?>obtenerProveedorServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+		Response<?>response=servicioService.consultarProvedorServicios(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	
-	@PostMapping("articulos-funerarios/empaque/consultar")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerEmpaques(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
-		Response<?>response=articuloService.consultarEmpaque(request, authentication);
-		return CompletableFuture
-				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-	}
-	
-	@PostMapping("articulos-complementarios/consultar")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerArticulosComplementarios(@RequestBody DatosRequest request,Authentication authentication) throws IOException{
-		Response<?>response=articuloService.consultarArticuloComplementario(request, authentication);
-		return CompletableFuture
-				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-		
-	}
-	
-	@PostMapping("articulos-complementarios/consultar/detalle")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerArticulosComplementariosDetalle(@RequestBody DatosRequest request,Authentication authentication) throws IOException{
-		Response<?>response=articuloService.consultarArticuloComplementarioPorId(request, authentication);
-		return CompletableFuture
-				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-		
-	}
-	
 	
 	/**
 	 * fallbacks generico

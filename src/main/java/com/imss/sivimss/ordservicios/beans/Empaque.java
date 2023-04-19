@@ -23,7 +23,7 @@ public class Empaque {
 		return instancia;
 	}
 	
-	public DatosRequest obtenerUrna(Integer idCategoria) {
+	public DatosRequest obtenerEmpaque() {
 		DatosRequest request = new DatosRequest();
 		Map<String, Object>paramtero= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
@@ -32,11 +32,10 @@ public class Empaque {
 		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = STA .ID_CATEGORIA_ARTICULO")
 		//.innerJoin("SVT_INVENTARIO STI", "STA.ID_ARTICULO = STI .ID_ARTICULO")
 		.innerJoin("SVC_TIPO_ARTICULO STA2", "STA .ID_TIPO_ARTICULO = STA2.ID_TIPO_ARTICULO ")
-		.where("STA.ID_CATEGORIA_ARTICULO = :idCategoria")
+		.where("STA.ID_CATEGORIA_ARTICULO = 4")
 		//.and("STI.CAN_STOCK > 0")
 		.and("STA.CVE_ESTATUS =1")
-		.and("STA.ID_TIPO_ARTICULO =1")
-		.setParameter("idCategoria", idCategoria);
+		.and("STA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes());
 		paramtero.put(AppConstantes.QUERY, encoded);

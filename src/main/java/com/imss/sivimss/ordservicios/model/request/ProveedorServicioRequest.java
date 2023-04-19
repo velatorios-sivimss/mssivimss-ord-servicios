@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ArticuloFunerarioRequest {
+public class ProveedorServicioRequest {
 	
-	private Integer idCategoria;
+	private Integer idServicio;
 	
 }

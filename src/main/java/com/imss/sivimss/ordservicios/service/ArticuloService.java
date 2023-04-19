@@ -13,4 +13,5 @@ public interface ArticuloService {
 	Response<?>consultarUrna(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?>consultarEmpaque(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?>consultarArticuloComplementario(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?>consultarArticuloComplementarioPorId(DatosRequest request, Authentication authentication) throws IOException;
 }
