@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PaqueteServicioRequest {
+public class PaquetesServiciosRequest {
 
 	private Integer idPaquete;
 }

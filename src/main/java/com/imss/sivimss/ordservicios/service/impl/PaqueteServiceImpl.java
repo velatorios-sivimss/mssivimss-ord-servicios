@@ -12,7 +12,7 @@ import org.springframework.ui.ModelMap;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Paquete;
-import com.imss.sivimss.ordservicios.model.request.PaqueteServicioRequest;
+import com.imss.sivimss.ordservicios.model.request.PaquetesServiciosRequest;
 import com.imss.sivimss.ordservicios.model.response.PaqueteResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
 import com.imss.sivimss.ordservicios.service.PaqueteService;
@@ -58,7 +58,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 			throws IOException {
 		Gson gson= new Gson();
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-		PaqueteServicioRequest serviciosRequest= gson.fromJson(datosJson, PaqueteServicioRequest.class);
+		PaquetesServiciosRequest serviciosRequest= gson.fromJson(datosJson, PaquetesServiciosRequest.class);
 		List<ServicioResponse>servicioResponses;
 		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerServiciosPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlConsulta, authentication);
 		if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {

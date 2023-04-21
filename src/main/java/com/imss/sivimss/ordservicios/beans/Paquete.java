@@ -49,6 +49,7 @@ public class Paquete {
 		.where("SS.CVE_ESTATUS = 1","SP.ID_PAQUETE = :idVelatorio")
 		.setParameter("idVelatorio", idPaquete)
 		.orderBy("SS.NOM_SERVICIO ASC");
+		
 		String query=queryUtil.build();
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());
 		parametro.put(AppConstantes.QUERY, encoded);
