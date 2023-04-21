@@ -10,4 +10,5 @@ import com.imss.sivimss.ordservicios.util.Response;
 public interface PaqueteService {
 
 	Response<?>consultarPaquete(DatosRequest request, Authentication authentication)throws IOException;
+	Response<?>consultarServiciosPaquete(DatosRequest request, Authentication authentication)throws IOException;
 }
