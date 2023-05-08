@@ -34,7 +34,7 @@ public class Urna {
 		.innerJoin("SVC_TIPO_ARTICULO STA2", "STA .ID_TIPO_ARTICULO = STA2.ID_TIPO_ARTICULO ")
 		.where("STA.ID_CATEGORIA_ARTICULO = 2")
 		//.and("STI.CAN_STOCK > 0")
-		.and("STA.CVE_ESTATUS =1")
+		.and("STA.IND_ACTIVO =1")
 		.and("STA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes());

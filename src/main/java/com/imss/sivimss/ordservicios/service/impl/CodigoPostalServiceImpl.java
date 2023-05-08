@@ -22,7 +22,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Service
 public class CodigoPostalServiceImpl implements CodigoPostalService{
 	

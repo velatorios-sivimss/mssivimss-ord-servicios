@@ -11,4 +11,5 @@ public interface PaqueteService {
 
 	Response<?>consultarPaquete(DatosRequest request, Authentication authentication)throws IOException;
 	Response<?>consultarServiciosPaquete(DatosRequest request, Authentication authentication)throws IOException;
+	Response<?>consultarCaracteristicasPaquete(DatosRequest request, Authentication authentication)throws IOException;
 }

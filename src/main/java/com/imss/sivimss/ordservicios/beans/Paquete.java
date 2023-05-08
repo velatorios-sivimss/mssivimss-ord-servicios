@@ -47,13 +47,24 @@ public class Paquete {
 		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SS.ID_SERVICIO =SPS.ID_SERVICIO")
 		.innerJoin("SVT_PAQUETE SP", "SPS.ID_PAQUETE = SP.ID_PAQUETE")
 		.where("SS.CVE_ESTATUS = 1","SP.ID_PAQUETE = :idVelatorio")
-		.setParameter("idVelatorio", idPaquete)
+		.setParameter("idPaquete", idPaquete)
 		.orderBy("SS.NOM_SERVICIO ASC");
 		
 		String query=queryUtil.build();
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
+		return datosRequest;
+	}
+	
+	public DatosRequest obtenerCaracteristicasPaquete(Integer idPaquete) {
+		DatosRequest datosRequest= new DatosRequest();
+		Map<String, Object>parametros= new HashMap<>();
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		selectQueryUtil.select("");
+		String query="";
+		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());;
+		parametros.put(AppConstantes.QUERY, encoded);
 		return datosRequest;
 	}
 }

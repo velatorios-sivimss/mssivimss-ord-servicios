@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,9 +16,8 @@ import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.security.jwt.JwtTokenProvider;
 
 
-
 @Service
-public class ProviderServiceRestTemplate {
+public class ProviderServiceRestTemplate_1 {
 
 	@Autowired
 	private RestTemplateUtil restTemplateUtil;
@@ -26,12 +25,12 @@ public class ProviderServiceRestTemplate {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
-	private static Logger log = LogManager.getLogger(ProviderServiceRestTemplate.class);
+	private static final Logger log = LoggerFactory.getLogger(ProviderServiceRestTemplate.class);
 
 	public Response<?> consumirServicio(Map<String, Object> dato, String url, Authentication authentication)
 			throws IOException {
 		try {
-			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayToken(url,
+			Response<?> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayToken(url,
 					new EnviarDatosRequest(dato), jwtTokenProvider.createToken((String) authentication.getPrincipal()),
 					Response.class);
 			return validarResponse(respuestaGenerado);
@@ -41,10 +40,10 @@ public class ProviderServiceRestTemplate {
 		}
 	}
 
-	public Response<?> consumirServicioReportes(Map<String, Object> dato,
-												String url, Authentication authentication) throws IOException {
+	public Response<?> consumirServicioReportes(Map<String, Object> dato, String nombreReporte, String tipoReporte,
+			String url, Authentication authentication) throws IOException {
 		try {
-			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
+			Response<?> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
 					new DatosReporteDTO(dato),
 					jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
 			return validarResponse(respuestaGenerado);
@@ -54,9 +53,9 @@ public class ProviderServiceRestTemplate {
 		}
 	}
 
-	public Response<?> validarResponse(Response respuestaGenerado) {
+	public Response<?> validarResponse(Response<?> respuestaGenerado) {
 		String codigo = respuestaGenerado.getMensaje().substring(0, 3);
-		if ((respuestaGenerado.getCodigo() >=500 && respuestaGenerado.getCodigo()<=509) || codigo.equals("404") || codigo.equals("400") || codigo.equals("403")) {
+		if (codigo.equals("500") || codigo.equals("404") || codigo.equals("400") || codigo.equals("403")) {
 			Gson gson = new Gson();
 			String mensaje = respuestaGenerado.getMensaje().substring(7, respuestaGenerado.getMensaje().length() - 1);
 
@@ -108,16 +107,13 @@ public class ProviderServiceRestTemplate {
 
 			}
 		}
-		Response response;
+		Response<?> response;
 		try {
 			response = isExceptionResponseMs == 1 ? gson.fromJson(error.substring(2, error.length() - 1), Response.class)
-					: new Response<>(true, codigoError, error.toString().trim(), Collections.emptyList());
-			log.info("respuestaProvider error: {}",e);
+				: new Response<>(true, codigoError, error.toString().trim(), Collections.emptyList());
 		} catch (Exception e2) {
-			log.info("respuestaProvider error: {}",e);
 			return new Response<>(true, HttpStatus.REQUEST_TIMEOUT.value(), AppConstantes.CIRCUITBREAKER, Collections.emptyList());
 		}
-		return MensajeResponseUtil.mensajeResponse(response, "");
+		 return MensajeResponseUtil.mensajeResponse(response, "");
 	}
-
 }

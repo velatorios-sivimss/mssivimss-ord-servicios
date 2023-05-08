@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Setter
 @Getter
-@Slf4j
 public class Panteon {
 	@Value("${formato_fecha}")
 	private String formatoFecha;

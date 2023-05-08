@@ -20,8 +20,8 @@ import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j@
-AllArgsConstructor
+
+@AllArgsConstructor
 @RestController
 @RequestMapping("/ordenes-servicio")
 public class OrdenServicioController {

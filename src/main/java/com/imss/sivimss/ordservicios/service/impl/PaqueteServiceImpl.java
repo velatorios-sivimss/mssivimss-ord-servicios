@@ -12,7 +12,8 @@ import org.springframework.ui.ModelMap;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Paquete;
-import com.imss.sivimss.ordservicios.model.request.PaquetesServiciosRequest;
+import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
+import com.imss.sivimss.ordservicios.model.response.PaqueteCaracteristicas;
 import com.imss.sivimss.ordservicios.model.response.PaqueteResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
 import com.imss.sivimss.ordservicios.service.PaqueteService;
@@ -24,7 +25,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Service
 public class PaqueteServiceImpl implements PaqueteService{
 
@@ -58,12 +59,27 @@ public class PaqueteServiceImpl implements PaqueteService{
 			throws IOException {
 		Gson gson= new Gson();
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-		PaquetesServiciosRequest serviciosRequest= gson.fromJson(datosJson, PaquetesServiciosRequest.class);
+		PaqueteRequest serviciosRequest= gson.fromJson(datosJson, PaqueteRequest.class);
 		List<ServicioResponse>servicioResponses;
 		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerServiciosPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlConsulta, authentication);
 		if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
 			servicioResponses=Arrays.asList(mapper.map(response.getDatos(), ServicioResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(servicioResponses));
+		}
+		return response;
+	}
+
+	@Override
+	public Response<?> consultarCaracteristicasPaquete(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Gson gson= new Gson();
+		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+		PaqueteRequest serviciosRequest= gson.fromJson(datosJson, PaqueteRequest.class);
+		List<PaqueteCaracteristicas>paqueteCaracteristicas;
+		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerCaracteristicasPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlConsulta, authentication);
+		if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
+			paqueteCaracteristicas=Arrays.asList(mapper.map(response.getDatos(), PaqueteCaracteristicas[].class));
+			response.setDatos(ConvertirGenerico.convertInstanceOfObject(paqueteCaracteristicas));
 		}
 		return response;
 	}
