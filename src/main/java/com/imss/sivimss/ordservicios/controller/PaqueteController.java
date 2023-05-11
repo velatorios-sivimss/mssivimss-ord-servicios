@@ -36,7 +36,7 @@ public class PaqueteController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<?>obtenerPaquetes(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
-		Response<?>response=paqueteService.consultarPaquete(request, authentication);
+		Response<?>response=paqueteService.consultarPaquetes(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}

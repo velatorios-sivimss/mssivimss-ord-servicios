@@ -9,7 +9,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 
 public interface ServicioService {
 
-	Response<?>consultarServicios(DatosRequest request,Authentication authentication)throws IOException;
+	Response<?>consultarServiciosVigentes(DatosRequest request,Authentication authentication)throws IOException;
 	Response<?>consultarProvedorServicios(DatosRequest request,Authentication authentication)throws IOException;
 	
 }

@@ -29,7 +29,7 @@ public class Promotor {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("SPR.ID_PROMOTOR AS idPromotor","concat(SPR.NOM_PROMOTOR,' ', SPR.NOM_PAPELLIDO,' ',SPR.NOM_SAPELLIDO) as nombrePromotor")
 		.from("SVT_PROMOTOR SPR")
-		.where("SPR.IND_ESTATUS = 1")
+		.where("SPR.IND_ACTIVO = 1")
 		.orderBy("nombrePromotor ASC");
 		String query= selectQueryUtil.build();
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());

@@ -22,13 +22,13 @@ public class Paquete {
 		return instancia;
 	}
 	
-	public DatosRequest obtenerPaquete() {
+	public DatosRequest obtenerPaquetes() {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
 		queryUtil.select("SP.ID_PAQUETE AS idPaquete","SP.NOM_PAQUETE AS nombrePaquete")
 		.from("SVT_PAQUETE SP")
-		.where("SP.CVE_ESTATUS =1")
+		.where("SP.IND_ACTIVO =1")
 		.orderBy("SP.NOM_PAQUETE ASC");
 		
 		String query=queryUtil.build();
@@ -44,11 +44,11 @@ public class Paquete {
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
 		queryUtil.select("SS.ID_SERVICIO AS idServicio","SS.NOM_SERVICIO AS nombreServicio")
 		.from("SVT_SERVICIO SS")
-		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SS.ID_SERVICIO =SPS.ID_SERVICIO")
-		.innerJoin("SVT_PAQUETE SP", "SPS.ID_PAQUETE = SP.ID_PAQUETE")
-		.where("SS.CVE_ESTATUS = 1","SP.ID_PAQUETE = :idVelatorio")
+		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SS.ID_SERVICIO = SPS.ID_SERVICIO")
+		.innerJoin("SVT_PAQUETE SPA", "SPS.ID_PAQUETE = SPA.ID_PAQUETE")
+		.where("SPA.ID_PAQUETE = :idPaquete")
 		.setParameter("idPaquete", idPaquete)
-		.orderBy("SS.NOM_SERVICIO ASC");
+		.orderBy("nombreServicio ASC");
 		
 		String query=queryUtil.build();
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());

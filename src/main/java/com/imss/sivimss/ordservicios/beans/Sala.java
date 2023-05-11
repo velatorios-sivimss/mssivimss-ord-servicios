@@ -29,7 +29,7 @@ public class Sala {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("SS.ID_SALA AS idSala","SS.NOM_SALA AS nombreSala")
 		.from("SVC_SALA SS")
-		.where("SS.IND_ESTATUS = 1","SS.ID_VELATORIO = :idVelatorio")
+		.where("SS.IND_ACTIVO = 1","SS.ID_VELATORIO = :idVelatorio")
 		.setParameter("idVelatorio", idVelatorio)
 		.orderBy("SS.NOM_SALA ASC");
 		

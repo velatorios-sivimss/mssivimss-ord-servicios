@@ -31,13 +31,12 @@ public class ServicioController {
 	
 	private final ProviderServiceRestTemplate providerRestTemplate;
 	
-	
-	@PostMapping("/consultar")
+	@PostMapping("/vigentes/consultar")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerServicios(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
-		Response<?>response=servicioService.consultarServicios(request, authentication);
+	public CompletableFuture<?>obtenerServiciosVigentes(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+		Response<?>response=servicioService.consultarServiciosVigentes(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}

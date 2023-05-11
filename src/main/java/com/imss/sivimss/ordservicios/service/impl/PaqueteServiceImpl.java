@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Paquete;
@@ -22,8 +21,6 @@ import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
-
-import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -44,9 +41,9 @@ public class PaqueteServiceImpl implements PaqueteService{
 	}
 
 	@Override
-	public Response<?> consultarPaquete(DatosRequest request, Authentication authentication) throws IOException {
+	public Response<?> consultarPaquetes(DatosRequest request, Authentication authentication) throws IOException {
 		List<PaqueteResponse>paquetes;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquete().getDatos(), urlConsulta, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes().getDatos(), urlConsulta, authentication);
 		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 			paquetes=Arrays.asList(mapper.map(response.getDatos(), PaqueteResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(paquetes));

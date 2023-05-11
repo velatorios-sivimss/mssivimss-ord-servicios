@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Servicio;
+import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
 import com.imss.sivimss.ordservicios.model.request.ProveedorServicioRequest;
 import com.imss.sivimss.ordservicios.model.response.ProveedorServicioResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
@@ -41,17 +42,7 @@ public class ServicioServiceImpl implements ServicioService{
 		this.modelMapper = modelMapper;
 	}
 
-	@Override
-	public Response<?> consultarServicios(DatosRequest request, Authentication authentication) throws IOException {
-		List<ServicioResponse>servicioResponses;
-		Response<?>response= providerServiceRestTemplate.consumirServicio(servicio.obtenerServicio().getDatos(), urlConsultar, authentication);
-		if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
-			servicioResponses=Arrays.asList(modelMapper.map(response.getDatos(),ServicioResponse[].class));
-			response.setDatos(ConvertirGenerico.convertInstanceOfObject(servicioResponses));
-		}
-		return response;
-	}
-
+	
 	@Override
 	public Response<?> consultarProvedorServicios(DatosRequest request, Authentication authentication)
 			throws IOException {
@@ -65,6 +56,18 @@ public class ServicioServiceImpl implements ServicioService{
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(proveedorResponses));
 		}
 		
+		return response;
+	}
+
+	@Override
+	public Response<?> consultarServiciosVigentes(DatosRequest request, Authentication authentication)
+			throws IOException {
+		List<ServicioResponse>servicioResponses;
+		Response<?>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(), urlConsultar, authentication) ;
+		if (response.getCodigo()==200 && response.getDatos().toString().contains("[]")) {
+			servicioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ServicioResponse[].class));
+			response.setDatos(ConvertirGenerico.convertInstanceOfObject(servicioResponses));
+		}
 		return response;
 	}
 
