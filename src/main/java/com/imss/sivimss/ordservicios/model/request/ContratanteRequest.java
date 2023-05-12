@@ -25,6 +25,6 @@ public class ContratanteRequest extends Persona{
 
 	private String numInterior;
 
-	private CodigoPostalRequest cp;
+	private DomicilioRequest cp;
 	
 }

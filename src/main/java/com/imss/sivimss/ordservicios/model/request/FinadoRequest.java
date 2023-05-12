@@ -24,7 +24,7 @@ public class FinadoRequest extends Persona{
 	private String descalle;
 	private String desnumexterior;
 	private String numInterior;
-	private CodigoPostalRequest cp;
+	private DomicilioRequest cp;
 	private String fechaDeceso;
 	private String causaDeceso;
 	private String lugarDeceso;

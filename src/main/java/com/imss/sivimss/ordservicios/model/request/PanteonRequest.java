@@ -16,17 +16,11 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PanteonRequest {
 
-	private String desPanteon;
+	private String nombrePanteon;
 
-	private String desCalle;
-
-	private String numExterior;
-
-	private String numInterior;
-
-	private CodigoPostalRequest cp;
+	private DomicilioRequest domicilio;
 	
-	private String desContacto;
+	private String nombreContacto;
 
 	private String numTelefono;
 

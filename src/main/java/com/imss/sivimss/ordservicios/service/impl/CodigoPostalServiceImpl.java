@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.CodigoPostal;
-import com.imss.sivimss.ordservicios.model.request.CodigoPostalRequest;
+import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.response.CodigoPostalResponse;
 import com.imss.sivimss.ordservicios.service.CodigoPostalService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
@@ -48,7 +48,7 @@ public class CodigoPostalServiceImpl implements CodigoPostalService{
 		Gson gson= new Gson();
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		List<CodigoPostalResponse> codigoPostalesResponse;
-		CodigoPostalRequest codigoPostalDto=gson.fromJson(datosJson, CodigoPostalRequest.class);
+		DomicilioRequest codigoPostalDto=gson.fromJson(datosJson, DomicilioRequest.class);
 		Response<?> response= providerServiceRestTemplate.consumirServicio(codigoPostal.buscar(codigoPostalDto.getCodigoPostal()).getDatos(), urlConsulta, authentication);
 		if (response.getCodigo() == 200) {
 			codigoPostalesResponse=Arrays.asList(modelMapper.map(response.getDatos(), CodigoPostalResponse[].class));

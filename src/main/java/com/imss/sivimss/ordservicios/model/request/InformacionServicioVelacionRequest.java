@@ -32,7 +32,7 @@ public class InformacionServicioVelacionRequest {
 
 	private String numInterior;
 
-	private CodigoPostalRequest cp;
+	private DomicilioRequest cp;
 	
 	private String desColonia;
 }

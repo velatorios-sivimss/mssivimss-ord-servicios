@@ -8,10 +8,14 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CodigoPostalRequest {
+public class DomicilioRequest {
 	
-	private Integer idCodigoPostal;
+	private String desCalle;
 
+	private String numExterior;
+
+	private String numInterior;
+	
 	private Integer codigoPostal;
 
 	private String desColonia;
