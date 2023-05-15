@@ -60,6 +60,6 @@ public class OrdenesDAO {
 	}
 	
 	public Response<?> buscarCurp(DatosRequest datosRequest, Authentication authentication) throws IOException {
-		return ordenConsultar.buscarCurp(datosRequest);
+		return ordenConsultar.buscarCurp(datosRequest,authentication);
 	}
 }

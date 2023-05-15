@@ -18,9 +18,12 @@ public class ReglasNegocioRepository {
 		return consulta;
 	}
 
-	public String obtenerDatosContratanteCurp(String dato) {
+	public String obtenerDatosContratanteCurp(String curp) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("*").from("FROM SVC_PERSONA SPE").where("SPE.CVE_CURP=" + dato);
+		selectQueryUtil.select("*")
+		.from("SVC_PERSONA SPE")
+		.where("SPE.CVE_CURP = :curp")
+		.setParameter("curp", curp);
 		return selectQueryUtil.build();
 	}
 

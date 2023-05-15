@@ -17,6 +17,7 @@ import com.imss.sivimss.ordservicios.security.jwt.JwtTokenProvider;
 
 
 
+
 @Service
 public class ProviderServiceRestTemplate {
 
@@ -67,6 +68,16 @@ public class ProviderServiceRestTemplate {
 
 		}
 		return respuestaGenerado;
+	}
+	
+	public Response<Object> consumirServicioExternoGet(String url)
+			throws IOException {
+		try {
+			return restTemplateUtil.sendGetRequest(url);
+		} catch (IOException exception) {
+			log.error("Ha ocurrido un error al recuperar la informacion");
+			throw exception;
+		}
 	}
 
 	public Response<?> respuestaProvider(String e) {

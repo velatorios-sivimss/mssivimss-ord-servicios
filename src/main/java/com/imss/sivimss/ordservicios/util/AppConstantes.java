@@ -17,6 +17,7 @@ public class AppConstantes {
 	
 	public static final String DATOS= "datos";
 	public static final String QUERY= "query";
+	public static final String EXITO = "Exito";
 	public static final String CATALOGO_CONSULTAR= "/generico/consulta";
 	public static final String CATALOGO_CONSULTA_PAGINADO= "/generico/paginado";
 	public static final String CATALOGO_CREAR_MULTIPLE= "/generico/crearMultiple";

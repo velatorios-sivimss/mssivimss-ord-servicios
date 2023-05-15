@@ -29,4 +29,16 @@ public class MensajeResponseUtil {
 		}
 		return respuestaGenerado;
 	}
+	
+	public static Response<?> mensajeResponseExterno(Response<?> respuestaGenerado, String numeroMensaje,
+			String numeroMensajeError) {
+		Integer codigo = respuestaGenerado.getCodigo();
+		if (codigo == 400) {
+			respuestaGenerado.setCodigo(200);
+			respuestaGenerado.setMensaje(numeroMensaje);
+		} else if (codigo == 404 || codigo == 500) {
+			respuestaGenerado.setMensaje(numeroMensajeError);
+		}
+		return respuestaGenerado;
+	}
 }
