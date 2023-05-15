@@ -20,14 +20,12 @@ import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
-import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 public class SalaServiceImpl implements SalaService{
 
 	@Value("${endpoints.dominio-consulta}")
-	private String urlConsultar;
+	private String urlDominio;
 	
 	private Sala sala=Sala.getInstancia();
 	
@@ -45,7 +43,7 @@ public class SalaServiceImpl implements SalaService{
 		Gson gson= new Gson();
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		SalaRequest salaRequest=gson.fromJson(datosJson, SalaRequest.class);
-		Response<?> response= providerServiceRestTemplate.consumirServicio(sala.obtenerSala(salaRequest.getIdVelatorio()).getDatos(), urlConsultar, authentication);
+		Response<?> response= providerServiceRestTemplate.consumirServicio(sala.obtenerSala(salaRequest.getIdVelatorio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 			List<SalaResponse> salaResponse= Arrays.asList(modelMapper.map(response.getDatos(), SalaResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(salaResponse));

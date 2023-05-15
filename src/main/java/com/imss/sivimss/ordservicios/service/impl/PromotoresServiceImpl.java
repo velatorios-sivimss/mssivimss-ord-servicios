@@ -12,19 +12,18 @@ import org.springframework.stereotype.Service;
 import com.imss.sivimss.ordservicios.beans.Promotor;
 import com.imss.sivimss.ordservicios.model.response.PromotorResponse;
 import com.imss.sivimss.ordservicios.service.PromotorService;
+import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
-
-import lombok.extern.slf4j.Slf4j;
 
 
 @Service
 public class PromotoresServiceImpl implements PromotorService{
 
 	@Value("${endpoints.dominio-consulta}")
-	private String urlConsultar;
+	private String urlDominio;
 	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;
 	
@@ -40,7 +39,7 @@ public class PromotoresServiceImpl implements PromotorService{
 
 	@Override
 	public Response<?> consultarPromotores(DatosRequest request, Authentication authentication) throws IOException {
-		Response<?>response=providerServiceRestTemplate.consumirServicio(promotor.consultarPromotores().getDatos(), urlConsultar, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(promotor.consultarPromotores().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		List<PromotorResponse>promotorResponses;
 		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 			promotorResponses=Arrays.asList(modelMapper.map(response.getDatos(), PromotorResponse[].class));

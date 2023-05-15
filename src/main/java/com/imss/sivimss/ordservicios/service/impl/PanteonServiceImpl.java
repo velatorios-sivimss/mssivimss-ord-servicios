@@ -1,7 +1,6 @@
 package com.imss.sivimss.ordservicios.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,20 +22,12 @@ import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
-import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 public class PanteonServiceImpl implements PanteonService{
 	
-	@Value("${endpoints.dominio-crear-multiple}")
-	private String urlCrearMultiple;
-
-	@Value("${endpoints.dominio-crear}")
-	private String urlCrear;
-	
 	@Value("${endpoints.dominio-consulta}")
-	private String urlConsulta;
+	private String urlDominio;
 	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;
 
@@ -57,7 +48,7 @@ public class PanteonServiceImpl implements PanteonService{
         String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		List<PanteonResponse>nombrePanteones;
 		PanteonRequest panteonRequest=gson.fromJson(datosJson, PanteonRequest.class);
-		Response<?>response=providerServiceRestTemplate.consumirServicio(panteon.buscar(panteonRequest).getDatos(), urlConsulta, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(panteon.buscar(panteonRequest).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo()==200) {
 			nombrePanteones=Arrays.asList(modelMapper.map(response.getDatos(), PanteonResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(nombrePanteones));
@@ -72,7 +63,7 @@ public class PanteonServiceImpl implements PanteonService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		PanteonRequest panteonRequest= gson.fromJson(datosJson, PanteonRequest.class);
 		
-		return MensajeResponseUtil.mensajeResponse( providerServiceRestTemplate.consumirServicio(panteon.insertar(panteonRequest ,usuarioDto).getDatos(), urlCrearMultiple,
+		return MensajeResponseUtil.mensajeResponse( providerServiceRestTemplate.consumirServicio(panteon.insertar(panteonRequest ,usuarioDto).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CREAR_MULTIPLE),
 				authentication),AGREGADO_CORRECTAMENTE);
 	}
 

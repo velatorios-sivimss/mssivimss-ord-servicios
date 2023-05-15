@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Servicio;
-import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
 import com.imss.sivimss.ordservicios.model.request.ProveedorServicioRequest;
 import com.imss.sivimss.ordservicios.model.response.ProveedorServicioResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
@@ -22,14 +21,12 @@ import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
-import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 public class ServicioServiceImpl implements ServicioService{
 
 	@Value("${endpoints.dominio-consulta}")
-	private String urlConsultar;
+	private String urlDominio;
 	
 	private Servicio servicio=Servicio.getInstancia();
 	
@@ -50,7 +47,7 @@ public class ServicioServiceImpl implements ServicioService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		ProveedorServicioRequest proveedorServicioRequest=gson.fromJson(datosJson, ProveedorServicioRequest.class);
 		List<ProveedorServicioResponse>proveedorResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio()).getDatos(), urlConsultar, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo()== 200 && !response.getDatos().toString().contains("[]")) {
 			proveedorResponses=Arrays.asList(modelMapper.map(response.getDatos(), ProveedorServicioResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(proveedorResponses));
@@ -63,7 +60,7 @@ public class ServicioServiceImpl implements ServicioService{
 	public Response<?> consultarServiciosVigentes(DatosRequest request, Authentication authentication)
 			throws IOException {
 		List<ServicioResponse>servicioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(), urlConsultar, authentication) ;
+		Response<?>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication) ;
 		if (response.getCodigo()==200 && response.getDatos().toString().contains("[]")) {
 			servicioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ServicioResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(servicioResponses));

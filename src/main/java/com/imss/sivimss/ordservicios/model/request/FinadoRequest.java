@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,9 +20,6 @@ public class FinadoRequest extends Persona{
 	private String esobito;
 	private String matricula;
 	private String idContratoPrevision;
-	private String descalle;
-	private String desnumexterior;
-	private String numInterior;
 	private DomicilioRequest cp;
 	private String fechaDeceso;
 	private String causaDeceso;

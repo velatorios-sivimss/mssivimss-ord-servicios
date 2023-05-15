@@ -30,6 +30,20 @@ public class OrdenServicioController {
 	
 	private final ProviderServiceRestTemplate providerRestTemplate;
 	
+	@PostMapping("/consultar/rfc")
+	public CompletableFuture<?>consultarRfc(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "buscarRfc");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
+	@PostMapping("/consultar/curp")
+	public CompletableFuture<?>consultarCurp(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "buscarCurp");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
 	@PostMapping("/guardar")
 	public CompletableFuture<?>agregar(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "guardar");

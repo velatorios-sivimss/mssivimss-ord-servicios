@@ -2,6 +2,7 @@ package com.imss.sivimss.ordservicios.beans.ordeservicio;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
@@ -26,8 +27,9 @@ public class OrdenGuardar {
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
 	
-	public Response<?> agregarOrden(DatosRequest datosRequest, UsuarioDto usuario) {
+	public Response<?> agregarOrden(DatosRequest datosRequest, Authentication authentication) {
 		Gson gson= new Gson();
+        UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		String datosJson=datosRequest.getDatos().get(AppConstantes.DATOS).toString();
 		OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
 		return new Response<>(false, 200, AppConstantes.DATOS+usuario.getNombre());

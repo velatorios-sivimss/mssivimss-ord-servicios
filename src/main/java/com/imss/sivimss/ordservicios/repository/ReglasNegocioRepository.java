@@ -1,8 +1,27 @@
 package com.imss.sivimss.ordservicios.repository;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository
+import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
+
+@Service
 public class ReglasNegocioRepository {
+
+	public String obtenerDatosContratanteRfc(String rfc) {
+		String consulta="";
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("*")
+		.from("SVC_PERSONA SPE")
+		.where("SPE.CVE_RFC = :rfc")
+		.setParameter("rfc", rfc);
+		consulta=selectQueryUtil.build();
+		return consulta;
+	}
+
+	public String obtenerDatosContratanteCurp(String dato) {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("*").from("FROM SVC_PERSONA SPE").where("SPE.CVE_CURP=" + dato);
+		return selectQueryUtil.build();
+	}
 
 }

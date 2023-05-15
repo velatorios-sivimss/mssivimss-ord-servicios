@@ -27,7 +27,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 public class PaqueteServiceImpl implements PaqueteService{
 
 	@Value("${endpoints.dominio-consulta}")
-	private String urlConsulta;
+	private String urlDominio;
 	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;
 	
@@ -43,7 +43,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 	@Override
 	public Response<?> consultarPaquetes(DatosRequest request, Authentication authentication) throws IOException {
 		List<PaqueteResponse>paquetes;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes().getDatos(), urlConsulta, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 			paquetes=Arrays.asList(mapper.map(response.getDatos(), PaqueteResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(paquetes));
@@ -58,7 +58,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		PaqueteRequest serviciosRequest= gson.fromJson(datosJson, PaqueteRequest.class);
 		List<ServicioResponse>servicioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerServiciosPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlConsulta, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerServiciosPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
 			servicioResponses=Arrays.asList(mapper.map(response.getDatos(), ServicioResponse[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(servicioResponses));
@@ -73,7 +73,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		PaqueteRequest serviciosRequest= gson.fromJson(datosJson, PaqueteRequest.class);
 		List<PaqueteCaracteristicas>paqueteCaracteristicas;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerCaracteristicasPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlConsulta, authentication);
+		Response<?>response=providerServiceRestTemplate.consumirServicio(paquete.obtenerCaracteristicasPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
 			paqueteCaracteristicas=Arrays.asList(mapper.map(response.getDatos(), PaqueteCaracteristicas[].class));
 			response.setDatos(ConvertirGenerico.convertInstanceOfObject(paqueteCaracteristicas));

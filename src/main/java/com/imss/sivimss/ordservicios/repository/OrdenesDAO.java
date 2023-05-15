@@ -1,32 +1,65 @@
 package com.imss.sivimss.ordservicios.repository;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenConsultar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenGuardar;
-import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.Response;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class OrdenesDAO {
 
-	public Response<?> agregarOrden(DatosRequest datosRequest, UsuarioDto usuario) {
+	@Autowired
+	private OrdenConsultar ordenConsultar;
+	
+	public Response<?> agregarOrden(DatosRequest datosRequest, Authentication authentication) {
 		OrdenGuardar guardar= new OrdenGuardar();
-		return guardar.agregarOrden(datosRequest, usuario);
+		return guardar.agregarOrden(datosRequest, authentication);
 	}
 	
-	public Response<?> actualizarOrden(DatosRequest datosRequest, UsuarioDto usuario) {
+	public Response<?> actualizarOrden(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> consultar(DatosRequest datosRequest, UsuarioDto usuario) {
+	public Response<?> buscarOrden(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> descargarDocumentoOrden(DatosRequest datosRequest, UsuarioDto usuario) {
+	public Response<?> detalleOrden(DatosRequest datosRequest, Authentication authentication) {
 		return null;
+	}
+	
+	public Response<?> consultarOrdenesServicio(DatosRequest datosRequest, Authentication authentication) {
+		return null;
+	}
+	
+	public Response<?> descargarDocumentoOrdenServicio(DatosRequest datosRequest, Authentication authentication) {
+		return null;
+	}
+	
+	public Response<?> descargarDocumentoAceptacionDonacion(DatosRequest datosRequest, Authentication authentication) {
+		return null;
+	}
+	
+	public Response<?> descargarDocumentoContratoServiciosInmediatos(DatosRequest datosRequest, Authentication authentication) {
+		return null;
+	}
+	
+	public Response<?> descargarDocumentoControlSalidaDonacion(DatosRequest datosRequest, Authentication authentication) {
+		return null;
+	}
+	
+	public Response<?> buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException {
+		return ordenConsultar.buscarRfc(datosRequest,authentication);
+	}
+	
+	public Response<?> buscarCurp(DatosRequest datosRequest, Authentication authentication) throws IOException {
+		return ordenConsultar.buscarCurp(datosRequest);
 	}
 }
