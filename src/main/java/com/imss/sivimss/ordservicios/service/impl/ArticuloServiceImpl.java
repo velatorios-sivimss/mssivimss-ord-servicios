@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ArticuloServiceImpl implements ArticuloService{
 	
-	@Value("${endpoints.dominio-consulta}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlConsultar;
 
 	private final Ataud ataud=Ataud.obtenerInstancia();

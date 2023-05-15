@@ -30,7 +30,7 @@ logos:
   msit_logo_sistema: /sintrans_data/LOGOS/logoSistema.png
 
 endpoints:
-   dominio-consulta: "http://localhost:8090/mssivimss-mod-catalogos/v1"
+   mod-catalogos: "http://localhost:8090/mssivimss-mod-catalogos/v1"
    ms-reportes: "http://localhost:8088/mssivimss-reportes-jpr"
    renapo: "http://serviciosdigitalesinterno-stage.imss.gob.mx/serviciosDigitales-rest/v1/externos/renapo/curp"
 

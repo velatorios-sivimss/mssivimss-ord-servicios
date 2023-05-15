@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CodigoPostalServiceImpl implements CodigoPostalService{
 	
-	@Value("${endpoints.dominio-consulta}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlConsulta;
 	
 	private CodigoPostal codigoPostal=CodigoPostal.getInstancia();

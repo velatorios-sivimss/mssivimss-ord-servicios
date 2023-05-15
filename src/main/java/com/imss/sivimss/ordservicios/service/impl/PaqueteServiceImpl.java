@@ -26,7 +26,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 @Service
 public class PaqueteServiceImpl implements PaqueteService{
 
-	@Value("${endpoints.dominio-consulta}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlDominio;
 	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;

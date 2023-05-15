@@ -22,7 +22,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 @Service
 public class OrdenConsultar {
 
-	@Value("${endpoints.dominio-consulta}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlDominio;
 	
 	@Value("${endpoints.renapo}")

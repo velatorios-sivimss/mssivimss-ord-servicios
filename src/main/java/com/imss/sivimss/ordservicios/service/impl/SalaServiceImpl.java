@@ -24,7 +24,7 @@ import com.imss.sivimss.ordservicios.util.Response;
 @Service
 public class SalaServiceImpl implements SalaService{
 
-	@Value("${endpoints.dominio-consulta}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlDominio;
 	
 	private Sala sala=Sala.getInstancia();

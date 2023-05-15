@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrdenGuardar {
 
-	@Value("${endpoints.dominio-crear}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlCrear;
 	
 	@Autowired

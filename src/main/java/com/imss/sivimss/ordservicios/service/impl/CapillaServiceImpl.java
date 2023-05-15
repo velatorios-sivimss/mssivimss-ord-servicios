@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CapillaServiceImpl implements CapillaService{
 
-	@Value("${endpoints.dominio-consulta}")
+	@Value("${endpoints.mod-catalogos}")
 	private String urlDominio;
 	
 	private final ProviderServiceRestTemplate providerServiceRestTemplate;
