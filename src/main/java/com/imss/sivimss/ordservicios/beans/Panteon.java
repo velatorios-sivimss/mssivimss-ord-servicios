@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class Panteon {
 	
-	public DatosRequest buscar(PanteonRequest panteonRequest) {
+	public DatosRequest consultarPanteones(PanteonRequest panteonRequest) {
 		DatosRequest request= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
@@ -42,6 +42,29 @@ public class Panteon {
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
 		.where("SP.NOM_PANTEON LIKE '%"+panteonRequest.getNombrePanteon()+"%'")
+		.and("SP.IND_ACTIVO = 1")
+		.orderBy("nombrePanteon ASC");
+	
+		String query=selectQuery.build();
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		parametro.put(AppConstantes.QUERY, encoded);
+		request.setDatos(parametro);
+		return request;
+	}
+	
+	public DatosRequest buscarPanteon(PanteonRequest panteonRequest) {
+		DatosRequest request= new DatosRequest();
+		Map<String, Object>parametro= new HashMap<>();
+		SelectQueryUtil selectQuery= new SelectQueryUtil();
+
+		selectQuery.select("SP.ID_PANTEON AS idPanteon",
+				"SP.NOM_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
+				"STD.DES_COLONIA desColonia","STD.DES_CP AS codigoPostal",
+				"STD.DES_MUNICIPIO AS desMunicipio","STD.DES_ESTADO AS desEstado")
+		.from("SVT_PANTEON SP")
+		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
+		.where("SP.NOM_PANTEON = '"+panteonRequest.getNombrePanteon()+"'")
 		.and("SP.IND_ACTIVO = 1")
 		.orderBy("nombrePanteon ASC");
 	

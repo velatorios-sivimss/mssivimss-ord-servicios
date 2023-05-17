@@ -33,6 +33,15 @@ public class AppConstantes {
 	public static final String FORBIDDENEXCEPTION_MENSAJE  = "No tiene autorización para realizar la solicitud.";
 	public static final String CIRCUITBREAKER = "El servicio no responde, no permite más llamadas.";
 
+	public static final String ALTA = "alta";
+	public static final String BAJA = "baja";
+	public static final String MODIFICACION = "modificacion";
+	public static final String CONSULTA = "consulta";
+	public static final String ERROR_QUERY = "Error al ejecutar el query ";
+	public static final String ERROR_LOG_QUERY = "Fallo al ejecutar el query:  ";
+	public static final String ERROR_CONSULTAR = "52";//Error al consultar la información.
+	public static final String ERROR_GUARDAR = "5";//Error al guardar la información. Intenta nuevamente.
+
 	private AppConstantes() {
 	    throw new IllegalStateException("AppConstantes class");
 	  }

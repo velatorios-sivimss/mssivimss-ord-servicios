@@ -2,7 +2,9 @@ package com.imss.sivimss.ordservicios.controller;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imss.sivimss.ordservicios.service.SalaService;
+import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
+import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
@@ -22,20 +26,25 @@ import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+
 @RestController
 @RequestMapping("/sala")
 public class SalaController {
 	
-	private final SalaService salaService;
+	@Autowired
+	private SalaService salaService;
 	
-	private final ProviderServiceRestTemplate providerRestTemplate;
+	@Autowired
+	private ProviderServiceRestTemplate providerRestTemplate;
+	
+	@Autowired
+	private LogUtil logUtil;
 	
 	@PostMapping("/consultar")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<?>obtenerSalas(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+	public CompletableFuture<Object>obtenerSalas(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
 		Response response=salaService.consultarSalas(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
@@ -45,24 +54,28 @@ public class SalaController {
 	 * fallbacks generico
 	 * 
 	 * @return respuestas
+	 * @throws IOException 
 	 */
-	private CompletableFuture<?> fallbackGenerico(@RequestBody DatosRequest request, Authentication authentication,
-			CallNotPermittedException e) {
+	private CompletableFuture<Object> fallbackGenerico(@RequestBody DatosRequest request, Authentication authentication,
+			CallNotPermittedException e) throws IOException {
 		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
+	    logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Resiliencia", AppConstantes.CONSULTA, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
-	private CompletableFuture<?> fallbackGenerico(@RequestBody DatosRequest request, Authentication authentication,
-			RuntimeException e) {
+	private CompletableFuture<Object> fallbackGenerico(@RequestBody DatosRequest request, Authentication authentication,
+			RuntimeException e) throws IOException {
 		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
+	    logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Resiliencia", AppConstantes.CONSULTA, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
-	private CompletableFuture<?> fallbackGenerico(@RequestBody DatosRequest request, Authentication authentication,
-			NumberFormatException e) {
+	private CompletableFuture<Object> fallbackGenerico(@RequestBody DatosRequest request, Authentication authentication,
+			NumberFormatException e) throws IOException {
 		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
+	    logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Resiliencia", AppConstantes.CONSULTA, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
