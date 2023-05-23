@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -25,14 +24,7 @@ public class InformacionServicioVelacionRequest {
 	private String horaVelacion;
 	
 	private Integer idCapilla;
-	
-	private String desCalle;
 
-	private String numExterior;
+	private DomicilioRequest domicilio;
 
-	private String numInterior;
-
-	private DomicilioRequest cp;
-	
-	private String desColonia;
 }

@@ -135,4 +135,18 @@ public class PaqueteServiceImpl implements PaqueteService{
 		
 	}
 
+	@Override
+	public Response<?> consultarAtaudTipoAsignacionPaquete(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Response<Object>response;
+		try {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
+	
+	
+
 }

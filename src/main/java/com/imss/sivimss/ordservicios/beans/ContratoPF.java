@@ -10,15 +10,27 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class Convenio {
+public class ContratoPF {
 
 	private ProviderServiceRestTemplate providerServiceRestTemplate;
+	
+	private static ContratoPF instancia;
+	
+	private ContratoPF() {}
+	
+	public static ContratoPF getInstancia() {
+		if (instancia==null) {
+			instancia= new ContratoPF();
+		}
+		
+		return instancia;
+	}
 
-	public Convenio(ProviderServiceRestTemplate providerServiceRestTemplate) {
+	public ContratoPF(ProviderServiceRestTemplate providerServiceRestTemplate) {
 		this.providerServiceRestTemplate = providerServiceRestTemplate;
 	}
 	
-	public Response<?> peticionOrden(DatosRequest request,UsuarioDto usuario){
+	public Response<?> consultarContrato(DatosRequest request,UsuarioDto usuario){
 		return null;
 	}
 }

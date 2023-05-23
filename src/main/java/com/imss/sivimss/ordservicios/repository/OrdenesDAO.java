@@ -18,9 +18,11 @@ public class OrdenesDAO {
 	@Autowired
 	private OrdenConsultar ordenConsultar;
 	
-	public Response<?> agregarOrden(DatosRequest datosRequest, Authentication authentication) {
-		OrdenGuardar guardar= new OrdenGuardar();
-		return guardar.agregarOrden(datosRequest, authentication);
+	@Autowired
+	private OrdenGuardar ordenGuardar;
+	
+	public Response<?> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException{
+		return ordenGuardar.agregarOrden(datosRequest, authentication);
 	}
 	
 	public Response<?> actualizarOrden(DatosRequest datosRequest, Authentication authentication) {

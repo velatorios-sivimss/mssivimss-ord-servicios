@@ -16,7 +16,11 @@ public class OrdenesServicioRequest {
 
 	private Integer idParentesco;
 
-	private Integer estatus;
+	private Integer idVelatorio;
+
+	private Integer idOperador;
+
+	private Integer idEstatus;
 
 	private ContratanteRequest contratante;
 	

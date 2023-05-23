@@ -43,4 +43,47 @@ public class Ataud {
 		return request;
 	}
 	
+	public DatosRequest obtenerAtaudesTipoAsignacion(Integer idTipoAsignacion) {
+		DatosRequest datosRequest= new DatosRequest();
+		Map<String, Object>parametros= new HashMap<>();
+		String query;
+		switch (idTipoAsignacion) {
+		case 1:
+			query=obtenerAtaudConsignado(idTipoAsignacion);
+			break;
+			
+		case 3:
+			query=obtenerAtaudDonado(idTipoAsignacion);
+			break;
+		case 5:
+			query=obtenerAtaudEconomico(idTipoAsignacion);
+			break;
+		
+
+		default:
+			query="";
+			break;
+		}
+		String encoded= DatatypeConverter.printBase64Binary(query.getBytes());
+		parametros.put(AppConstantes.QUERY, encoded);
+		datosRequest.setDatos(parametros);
+		return datosRequest;
+		
+	}
+	
+	public String obtenerAtaudConsignado(Integer idTipoAsignacion) {
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		
+		return selectQueryUtil.build();
+	}
+	
+	public String obtenerAtaudDonado(Integer idTipoAsignacion) {
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		return selectQueryUtil.build();
+	}
+	
+	public String obtenerAtaudEconomico(Integer idTipoAsignacion) {
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		return selectQueryUtil.build();
+	}
 }

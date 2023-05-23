@@ -21,6 +21,7 @@ import com.imss.sivimss.ordservicios.service.ArticuloService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
+import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
@@ -47,9 +48,12 @@ public class ArticuloServiceImpl implements ArticuloService{
 	
 	private static final String SIN_EXISTENCIA = "15";
 	
-	public ArticuloServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper) {
+	private final LogUtil logUtil;
+	
+	public ArticuloServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper, LogUtil logUtil) {
 		this.providerServiceRestTemplate = providerServiceRestTemplate;
 		this.modelMapper = modelMapper;
+		this.logUtil=logUtil;
 	}
 
 	@Override

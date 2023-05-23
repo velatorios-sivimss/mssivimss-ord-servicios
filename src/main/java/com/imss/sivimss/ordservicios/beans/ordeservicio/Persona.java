@@ -25,7 +25,7 @@ public class Persona {
 	private Integer idEstado;
 	private String telefono;
 	private String correo;
-	private String tipoPersona;
+
 
 	
 }
