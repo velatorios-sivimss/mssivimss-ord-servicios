@@ -23,7 +23,7 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 	}
 
 	@Override
-	public Response<?> peticionOrden(DatosRequest request, Authentication authentication, String accion)
+	public Response<Object> peticionOrden(DatosRequest request, Authentication authentication, String accion)
 			throws IOException {
 		switch (accion) {
 		case "guardar":

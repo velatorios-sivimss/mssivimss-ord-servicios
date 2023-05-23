@@ -88,25 +88,25 @@ public class OrdenGuardar {
 		} catch (Exception e) {
 			log.error(AppConstantes.ERROR_QUERY.concat(query));
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA, authentication);
-		    throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
 		}
 		
 	}
 	
 	private String servicioInmediato(OrdenesServicioRequest ordenesServicioRequest){
-		return null;
+		return "";
 	}
 	
 	private String contratoPF(OrdenesServicioRequest ordenesServicioRequest){
-		return null;
+		return "";
 	}
 	
 	private String articulosComplementarios(OrdenesServicioRequest ordenesServicioRequest){
-		return null;
+		return "";
 	}
 	
 	private String convenioPF(OrdenesServicioRequest ordenesServicioRequest){
-		return null;
+		return "";
 	}
 	
 }

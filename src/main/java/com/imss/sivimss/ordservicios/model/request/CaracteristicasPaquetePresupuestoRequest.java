@@ -16,5 +16,5 @@ public class CaracteristicasPaquetePresupuestoRequest {
 	private Double totalPresupuesto;
 	private String observaciones;
 	private String notasServicio;
-	private List<CaracteristicasPaqueteDetallePresupuestoRequest> detallesPaquetePresupuesto;
+	private List<CaracteristicasPaqueteDetallePresupuestoRequest> detallePresupuesto;
 }

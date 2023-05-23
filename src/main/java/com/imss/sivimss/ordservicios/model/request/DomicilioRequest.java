@@ -16,7 +16,7 @@ public class DomicilioRequest {
 
 	private String numInterior;
 	
-	private Integer codigoPostal;
+	private String codigoPostal;
 
 	private String desColonia;
 

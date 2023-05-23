@@ -14,5 +14,5 @@ public class CaracteristicasPaqueteRequest {
 	private Integer idCaracteristicasPaquete;
 	private Integer idPaquete;
 	private String otorgamiento;
-	private List<CaracteristicasPaqueteDetalleRequest> detallesPaquete;
+	private List<CaracteristicasPaqueteDetalleRequest> detallePaquete;
 }

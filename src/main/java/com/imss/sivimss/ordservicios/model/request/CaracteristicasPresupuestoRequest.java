@@ -11,7 +11,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaracteristicasPresupuestoRequest {
 
-	CaracteristicasPaqueteRequest caracteristicasPaqueteRequest;
+	CaracteristicasPaqueteRequest caracteristicasPaquete;
 	
-	CaracteristicasPaquetePresupuestoRequest paquetePresupuestoRequest;
+	//CaracteristicasPaquetePresupuestoRequest caracteristicasDelPresupuesto;
 }

@@ -12,7 +12,6 @@ public class CaracteristicasPaqueteDetallePresupuestoRequest {
 	private Integer idPaqueteDetallePresupuesto;
 	private Integer idArticulo;
 	private Integer idServicio;
-	private String desmotivo;
 	private Integer cantidad;
 	private Integer idProveedor;
 	private Double importeMonto;

@@ -22,6 +22,6 @@ public class InformacionServicioRequest {
 	private Integer idSala;
 	private String fechaCremacion;
 	private String horaCremacion;
-	private Integer idPromotores;
+	private Integer idPromotor;
 	private InformacionServicioVelacionRequest informacionServicioVelacion;
 }

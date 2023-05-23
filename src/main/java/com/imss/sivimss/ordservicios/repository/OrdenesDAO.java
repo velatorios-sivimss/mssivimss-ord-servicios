@@ -21,47 +21,47 @@ public class OrdenesDAO {
 	@Autowired
 	private OrdenGuardar ordenGuardar;
 	
-	public Response<?> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException{
+	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		return ordenGuardar.agregarOrden(datosRequest, authentication);
 	}
 	
-	public Response<?> actualizarOrden(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> actualizarOrden(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> buscarOrden(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> buscarOrden(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> detalleOrden(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> detalleOrden(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> consultarOrdenesServicio(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> consultarOrdenesServicio(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> descargarDocumentoOrdenServicio(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> descargarDocumentoOrdenServicio(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> descargarDocumentoAceptacionDonacion(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> descargarDocumentoAceptacionDonacion(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> descargarDocumentoContratoServiciosInmediatos(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> descargarDocumentoContratoServiciosInmediatos(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> descargarDocumentoControlSalidaDonacion(DatosRequest datosRequest, Authentication authentication) {
+	public Response<Object> descargarDocumentoControlSalidaDonacion(DatosRequest datosRequest, Authentication authentication) {
 		return null;
 	}
 	
-	public Response<?> buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException {
+	public Response<Object> buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException {
 		return ordenConsultar.buscarRfc(datosRequest,authentication);
 	}
 	
-	public Response<?> buscarCurp(DatosRequest datosRequest, Authentication authentication) throws IOException {
+	public Response<Object> buscarCurp(DatosRequest datosRequest, Authentication authentication) throws IOException {
 		return ordenConsultar.buscarCurp(datosRequest,authentication);
 	}
 }

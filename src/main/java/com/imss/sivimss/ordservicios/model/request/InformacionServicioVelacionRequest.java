@@ -25,6 +25,6 @@ public class InformacionServicioVelacionRequest {
 	
 	private Integer idCapilla;
 
-	private DomicilioRequest domicilio;
+	private DomicilioRequest cp;
 
 }
