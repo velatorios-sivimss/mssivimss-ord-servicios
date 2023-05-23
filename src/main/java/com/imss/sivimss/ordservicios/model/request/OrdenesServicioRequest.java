@@ -23,7 +23,7 @@ public class OrdenesServicioRequest {
 	private Integer idEstatus;
 
 	private ContratanteRequest contratante;
-	
+
 	private FinadoRequest finado;
 	
 	private CaracteristicasPresupuestoRequest caracteristicasPresupuesto;

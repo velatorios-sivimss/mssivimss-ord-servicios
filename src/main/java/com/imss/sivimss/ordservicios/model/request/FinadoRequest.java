@@ -28,5 +28,5 @@ public class FinadoRequest extends Persona{
 	private String idClinicaAdscripcion;
 	private String idUnidadProcedencia;
 	private String procedenciaFinado;
-	private String idTipoPension;
+	private Integer idTipoPension;
 }

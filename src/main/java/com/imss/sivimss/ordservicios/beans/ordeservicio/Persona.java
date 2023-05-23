@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 public class Persona {
 
-	private String idPersona;
+	private Integer idPersona;
 	private String rfc;
 	private String curp;
 	private Integer nss;
@@ -21,8 +21,8 @@ public class Persona {
 	private String sexo;
 	private String otroSexo;
 	private String fechaNac;
-	private Integer idPais;
-	private Integer idEstado;
+	private String idPais;
+	private String idEstado;
 	private String telefono;
 	private String correo;
 
