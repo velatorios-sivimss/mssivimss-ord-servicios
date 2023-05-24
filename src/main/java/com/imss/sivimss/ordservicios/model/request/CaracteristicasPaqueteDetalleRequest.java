@@ -12,6 +12,7 @@ public class CaracteristicasPaqueteDetalleRequest {
 	private Integer idPaqueteDetalle;
 	private Integer idArticulo;
 	private Integer idServicio;
+	private CaracteristicasPaqueteDetalleTrasladoRequest servicioDetalleTraslado;
 	private String desmotivo;
 	private Integer cantidad;
 	private Integer idProveedor;

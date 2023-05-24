@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CaracteristicasPresupuestoRequest {
-
-	CaracteristicasPaqueteRequest caracteristicasPaquete;
+public class CaracteristicasPaqueteDetalleTrasladoRequest {
 	
-	CaracteristicasPaquetePresupuestoRequest caracteristicasDelPresupuesto;
+	private Integer idCaracteristicasPaqueteDetalleTraslado;
+	private String origen;
+	private String destino;
+	private String totalKilometros;
+
 }

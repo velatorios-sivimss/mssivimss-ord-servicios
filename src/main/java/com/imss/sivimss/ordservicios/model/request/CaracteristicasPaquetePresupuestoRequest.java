@@ -13,7 +13,7 @@ import lombok.Setter;
 public class CaracteristicasPaquetePresupuestoRequest {
 
 	private Integer idCaracteristicasPaquetePresupuesto;
-	private Double totalPresupuesto;
+	private String totalPresupuesto;
 	private String observaciones;
 	private String notasServicio;
 	private List<CaracteristicasPaqueteDetallePresupuestoRequest> detallePresupuesto;
