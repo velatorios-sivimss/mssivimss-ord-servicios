@@ -15,6 +15,7 @@ public class CaracteristicasPaqueteDetalleRequest {
 	private CaracteristicasPaqueteDetalleTrasladoRequest servicioDetalleTraslado;
 	private String desmotivo;
 	private Integer cantidad;
+	private Integer esDonado;
 	private Integer idProveedor;
 	private Double importeMonto;
 	private Double totalPaquete;
