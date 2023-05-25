@@ -1,5 +1,7 @@
 package com.imss.sivimss.ordservicios.beans;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class Panteon {
 		.orderBy("nombrePanteon ASC");
 	
 		String query=selectQuery.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		request.setDatos(parametro);
 		return request;
@@ -69,7 +71,7 @@ public class Panteon {
 		.orderBy("nombrePanteon ASC");
 	
 		String query=selectQuery.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		request.setDatos(parametro);
 		return request;
@@ -90,7 +92,7 @@ public class Panteon {
 		String query;
 		query=generarInsert(panteonRequest, dto)+" $$ "+ q.obtenerQueryInsertar();
 		
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         parametro.put("separador", "$$");
         parametro.put("replace", "idTabla");
