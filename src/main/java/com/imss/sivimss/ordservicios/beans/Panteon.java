@@ -35,13 +35,13 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.NOM_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.DES_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
 				"STD.DES_COLONIA desColonia","STD.DES_CP AS codigoPostal",
 				"STD.DES_MUNICIPIO AS desMunicipio","STD.DES_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
-		.where("SP.NOM_PANTEON LIKE '%"+panteonRequest.getNombrePanteon()+"%'")
+		.where("SP.DES_PANTEON LIKE '%"+panteonRequest.getNombrePanteon()+"%'")
 		.and("SP.IND_ACTIVO = 1")
 		.orderBy("nombrePanteon ASC");
 	
@@ -58,13 +58,13 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.NOM_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.DES_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
 				"STD.DES_COLONIA desColonia","STD.DES_CP AS codigoPostal",
 				"STD.DES_MUNICIPIO AS desMunicipio","STD.DES_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
-		.where("SP.NOM_PANTEON = '"+panteonRequest.getNombrePanteon()+"'")
+		.where("SP.DES_PANTEON = '"+panteonRequest.getNombrePanteon()+"'")
 		.and("SP.IND_ACTIVO = 1")
 		.orderBy("nombrePanteon ASC");
 	
@@ -80,7 +80,7 @@ public class Panteon {
 		Map<String, Object>parametro= new HashMap<>();
 		
 		final QueryHelper q= new QueryHelper("INSERT INTO SVT_PANTEON");
-		q.agregarParametroValues("NOM_PANTEON", "'"+panteonRequest.getNombrePanteon()+"'");
+		q.agregarParametroValues("DES_PANTEON", "'"+panteonRequest.getNombrePanteon()+"'");
 		q.agregarParametroValues("ID_DOMICILIO", "idTabla");
 		q.agregarParametroValues("NOM_CONTACTO", "'"+panteonRequest.getNombreContacto()+"'");
 		q.agregarParametroValues("NUM_TELEFONO", ""+panteonRequest.getNumTelefono()+"");

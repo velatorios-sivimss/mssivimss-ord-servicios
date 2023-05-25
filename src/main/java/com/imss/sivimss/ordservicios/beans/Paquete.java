@@ -26,10 +26,10 @@ public class Paquete {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
-		queryUtil.select("SP.ID_PAQUETE AS idPaquete","SP.NOM_PAQUETE AS nombrePaquete")
+		queryUtil.select("SP.ID_PAQUETE AS idPaquete","SP.DES_NOM_PAQUETE AS nombrePaquete")
 		.from("SVT_PAQUETE SP")
 		.where("SP.IND_ACTIVO =1")
-		.orderBy("SP.NOM_PAQUETE ASC");
+		.orderBy("SP.DES_NOM_PAQUETE ASC");
 		
 		String query=queryUtil.build();
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());

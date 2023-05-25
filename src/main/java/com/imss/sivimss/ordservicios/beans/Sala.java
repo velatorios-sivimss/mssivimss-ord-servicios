@@ -27,11 +27,11 @@ public class Sala {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SS.ID_SALA AS idSala","SS.NOM_SALA AS nombreSala")
+		selectQueryUtil.select("SS.ID_SALA AS idSala","SS.DES_SALA AS nombreSala")
 		.from("SVC_SALA SS")
 		.where("SS.IND_ACTIVO = 1","SS.ID_VELATORIO = :idVelatorio")
 		.setParameter("idVelatorio", idVelatorio)
-		.orderBy("SS.NOM_SALA ASC");
+		.orderBy("SS.DES_SALA ASC");
 		
 		String query=selectQueryUtil.build();
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
