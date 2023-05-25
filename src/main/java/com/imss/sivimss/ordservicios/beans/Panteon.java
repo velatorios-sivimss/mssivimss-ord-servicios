@@ -1,18 +1,11 @@
 package com.imss.sivimss.ordservicios.beans;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-
-import com.imss.sivimss.ordservicios.exception.BadRequestException;
-import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.PanteonRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
@@ -23,7 +16,6 @@ import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 
 @NoArgsConstructor
