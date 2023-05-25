@@ -1,5 +1,6 @@
 package com.imss.sivimss.ordservicios.beans;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class Paquete {
 		.orderBy("SP.DES_NOM_PAQUETE ASC");
 		
 		String query=queryUtil.build();
-		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
 		return datosRequest;
@@ -51,7 +52,7 @@ public class Paquete {
 		.orderBy("nombreServicio ASC");
 		
 		String query=queryUtil.build();
-		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
 		return datosRequest;
@@ -63,7 +64,7 @@ public class Paquete {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("");
 		String query="";
-		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());;
+		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametros.put(AppConstantes.QUERY, encoded);
 		return datosRequest;
 	}

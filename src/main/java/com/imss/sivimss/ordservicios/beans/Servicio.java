@@ -1,5 +1,6 @@
 package com.imss.sivimss.ordservicios.beans;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class Servicio {
 		.orderBy("SS.NOM_SERVICIO ASC");
 		
 		String query=selectQueryUtil.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 
 		parametros.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametros);
@@ -57,7 +58,7 @@ public class Servicio {
 		.orderBy("SP.NOM_PROVEEDOR ASC");
 		
 		String query=selectQueryUtil.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametros.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametros);
 		return datosRequest;

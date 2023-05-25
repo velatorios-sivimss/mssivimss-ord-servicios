@@ -1,5 +1,6 @@
 package com.imss.sivimss.ordservicios.beans;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class Empaque {
 		.and("STA.IND_ACTIVO =1")
 		.and("STA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
-		String encoded= DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded= DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		paramtero.put(AppConstantes.QUERY, encoded);
 		request.setDatos(paramtero);
 		return request;
