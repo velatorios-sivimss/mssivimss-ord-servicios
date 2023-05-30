@@ -1,5 +1,6 @@
 package com.imss.sivimss.ordservicios.beans;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,15 +31,11 @@ public class ArticuloComplementario {
 		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_ARTICULO AS nombreArticulo")
 		.from("SVT_ARTICULO STA")
 		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = STA .ID_CATEGORIA_ARTICULO")
-		//.innerJoin("SVT_INVENTARIO STI", "STA.ID_ARTICULO = STI .ID_ARTICULO")
-		.innerJoin("SVC_TIPO_ARTICULO STA2", "STA .ID_TIPO_ARTICULO = STA2.ID_TIPO_ARTICULO")
-		//.innerJoin("SVT_PROVEEDOR SP", "STI.ID_PROVEEDOR = SP.ID_PROVEEDOR")
-		.where("STA.CVE_ESTATUS =1")
-		//.and("STI.CAN_STOCK > 0")
+		.where("STA.IND_ACTIVO=1")
 		.and("STA.ID_TIPO_ARTICULO = 2 ")
 		.orderBy("nombreArticulo ASC");
 		String query=selectQueryUtil.build();
-		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
 		return datosRequest;
@@ -59,7 +56,7 @@ public class ArticuloComplementario {
 		.and("STA.ID_TIPO_ARTICULO = 2 ")
 		.orderBy("nombreArticulo ASC");
 		String query=selectQueryUtil.build();
-		String encoded=DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
 		return datosRequest;

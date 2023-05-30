@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,6 @@ import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
-
-import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -50,6 +50,10 @@ public class ArticuloServiceImpl implements ArticuloService{
 	
 	private final LogUtil logUtil;
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(ArticuloServiceImpl.class);
+
+	
 	public ArticuloServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper, LogUtil logUtil) {
 		this.providerServiceRestTemplate = providerServiceRestTemplate;
 		this.modelMapper = modelMapper;
@@ -57,10 +61,10 @@ public class ArticuloServiceImpl implements ArticuloService{
 	}
 
 	@Override
-	public Response<?> consultarAtaud(DatosRequest request, Authentication authentication) throws IOException {
+	public Response<Object> consultarAtaud(DatosRequest request, Authentication authentication) throws IOException {
 		
 		List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudes().getDatos(), urlConsultar, authentication);
+		Response<Object>response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudes().getDatos(), urlConsultar, authentication);
 		
 		if (response.getCodigo()==200) {
 			if(!response.getDatos().toString().contains("[]")) {
@@ -73,13 +77,13 @@ public class ArticuloServiceImpl implements ArticuloService{
 		
 		return response;
 	}
-
+	
 	@Override
-	public Response<?> consultarUrna(DatosRequest request, Authentication authentication) throws IOException {
+	public Response<Object> consultarUrna(DatosRequest request, Authentication authentication) throws IOException {
 		
 		
 		List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(urna.obtenerUrna().getDatos(), urlConsultar, authentication);
+		Response<Object>response=providerServiceRestTemplate.consumirServicio(urna.obtenerUrna().getDatos(), urlConsultar, authentication);
 		if (response.getCodigo()==200) {
 			if (!response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
@@ -92,10 +96,10 @@ public class ArticuloServiceImpl implements ArticuloService{
 	}
 
 	@Override
-	public Response<?> consultarEmpaque(DatosRequest request, Authentication authentication) throws IOException {
+	public Response<Object> consultarEmpaque(DatosRequest request, Authentication authentication) throws IOException {
 		
 		List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate.consumirServicio(empaque.obtenerEmpaque().getDatos(), urlConsultar, authentication);
+		Response<Object>response=providerServiceRestTemplate.consumirServicio(empaque.obtenerEmpaque().getDatos(), urlConsultar, authentication);
 		if (response.getCodigo()==200) {
 			if (!response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
@@ -108,11 +112,11 @@ public class ArticuloServiceImpl implements ArticuloService{
 	}
 
 	@Override
-	public Response<?> consultarArticuloComplementario(DatosRequest request, Authentication authentication)
+	public Response<Object> consultarArticuloComplementario(DatosRequest request, Authentication authentication)
 			throws IOException {
 		List<ArticuloComplementarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate
-				.consumirServicio(articuloComplementario.obtenerArticulosComplementarios().getDatos(), urlConsultar, authentication);
+		Response<Object>response=providerServiceRestTemplate
+				.consumirServicio(articuloComplementario.obtenerArticulosComplementarios().getDatos(), urlConsultar.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
 				response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
@@ -122,13 +126,13 @@ public class ArticuloServiceImpl implements ArticuloService{
 	}
 
 	@Override
-	public Response<?> consultarArticuloComplementarioPorId(DatosRequest request, Authentication authentication)
+	public Response<Object> consultarArticuloComplementarioPorId(DatosRequest request, Authentication authentication)
 			throws IOException {
 		Gson gson= new Gson();
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		ArticuloComplementarioRequest articuloComplementarioRequest=gson.fromJson(datosJson, ArticuloComplementarioRequest.class);
 		List<ArticuloComplementarioResponse>articuloFunerarioResponses;
-		Response<?>response=providerServiceRestTemplate
+		Response<Object>response=providerServiceRestTemplate
 				.consumirServicio(articuloComplementario.obtenerArticulosComplementariosPorId(articuloComplementarioRequest.getIdArticulo()).getDatos(), urlConsultar, authentication);
 		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
@@ -137,5 +141,7 @@ public class ArticuloServiceImpl implements ArticuloService{
 		
 		return response;
 	}
+
+	
 
 }

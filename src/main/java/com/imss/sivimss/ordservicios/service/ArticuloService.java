@@ -9,9 +9,9 @@ import com.imss.sivimss.ordservicios.util.Response;
 
 public interface ArticuloService {
 
-	Response<?>consultarAtaud(DatosRequest request, Authentication authentication) throws IOException;
-	Response<?>consultarUrna(DatosRequest request, Authentication authentication) throws IOException;
-	Response<?>consultarEmpaque(DatosRequest request, Authentication authentication) throws IOException;
-	Response<?>consultarArticuloComplementario(DatosRequest request, Authentication authentication) throws IOException;
-	Response<?>consultarArticuloComplementarioPorId(DatosRequest request, Authentication authentication) throws IOException;
+	Response<Object>consultarAtaud(DatosRequest request, Authentication authentication) throws IOException;
+	Response<Object>consultarUrna(DatosRequest request, Authentication authentication) throws IOException;
+	Response<Object>consultarEmpaque(DatosRequest request, Authentication authentication) throws IOException;
+	Response<Object>consultarArticuloComplementario(DatosRequest request, Authentication authentication) throws IOException;
+	Response<Object>consultarArticuloComplementarioPorId(DatosRequest request, Authentication authentication) throws IOException;
 }

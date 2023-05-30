@@ -1,11 +1,18 @@
 package com.imss.sivimss.ordservicios.beans;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.springframework.http.HttpStatus;
+
+import com.imss.sivimss.ordservicios.exception.BadRequestException;
+import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -44,48 +51,53 @@ public class Ataud {
 		return request;
 	}
 	
-	public DatosRequest obtenerAtaudesTipoAsignacion(Integer idTipoAsignacion) {
-		DatosRequest datosRequest= new DatosRequest();
-		Map<String, Object>parametros= new HashMap<>();
-		String query;
-		switch (idTipoAsignacion) {
-		case 1:
-			query=obtenerAtaudConsignado(idTipoAsignacion);
-			break;
-			
-		case 3:
-			query=obtenerAtaudDonado(idTipoAsignacion);
-			break;
-		case 5:
-			query=obtenerAtaudEconomico(idTipoAsignacion);
-			break;
-		
+	/*public DatosRequest obtenerAtaudesTipoAsignacion(List<Integer> idTipoAsignaciones) {
+		DatosRequest request = new DatosRequest();
+		ReglasNegocioRepository reglasNegocioRepository= new ReglasNegocioRepository();
+		Map<String, Object>paramtero= new HashMap<>();
+		for (Integer idTipoAsignacion : idTipoAsignaciones) {
+			switch (idTipoAsignacion) {
+			case 1:
+				paramtero.put("Consigando", reglasNegocioRepository.obtenerAtaudConsignado(idTipoAsignacion));
+				break;
+				
+			case 3:
+				paramtero.put("Donado", reglasNegocioRepository.obtenerAtaudDonado(idTipoAsignacion));
+				break;
+			case 5:
+				paramtero.put("Economico", reglasNegocioRepository.obtenerAtaudEconomico(idTipoAsignacion));
+				break;
 
-		default:
-			query="";
-			break;
+			default:
+				throw new BadRequestException(HttpStatus.BAD_REQUEST, AppConstantes.ERROR_CONSULTAR);
+			}
 		}
-		String encoded= DatatypeConverter.printBase64Binary(query.getBytes());
-		parametros.put(AppConstantes.QUERY, encoded);
-		datosRequest.setDatos(parametros);
-		return datosRequest;
+		return request;
 		
-	}
+	}*/
 	
-	public String obtenerAtaudConsignado(Integer idTipoAsignacion) {
+	
+	public String obtenerAtaudTipoAsignacion(Integer idTipoAsignacion) {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		
+		SelectQueryUtil selectQueryUtilCosto= new SelectQueryUtil()
+				.select("IFNULL(sps.TIP_PARAMETRO ,0)")
+				.from("SVC_PARAMETRO_SISTEMA sps")
+				.where("sps.DES_PARAMETRO='COSTO ATAUD'");
+		selectQueryUtil.select("svia.ID_INVE_ARTICULO as idArticulo","CONCAT(svia.FOLIO_ARTICULO,'-',sva.DES_MODELO_ARTICULO) as nombreArticulo")
+		.from("SVT_INVENTARIO_ARTICULO svia")
+		.innerJoin("SVT_ORDEN_ENTRADA sve", "svia .ID_ODE =sve.ID_ODE")
+		.innerJoin("SVT_CONTRATO sc", "sve.ID_CONTRATO = sve.ID_CONTRATO")
+		.innerJoin("SVT_CONTRATO_ARTICULOS sca", "sc.ID_CONTRATO =sca.ID_CONTRATO")
+		.innerJoin("SVT_ARTICULO sva", "svia.ID_ARTICULO = sva.ID_ARTICULO")
+		.where("sva.ID_CATEGORIA_ARTICULO =1")
+		.and("svia.ID_TIPO_ASIGNACION_ART = :idTipoAsignacion")
+		.setParameter("idTipoAsignacion", idTipoAsignacion)
+		.and("sva.CAN_UNIDAD > 0 ");
+		if (idTipoAsignacion==5) {
+			selectQueryUtil.and("sc.MON_MAX <= (".concat(selectQueryUtilCosto.build()).concat(")"));
+		}
 		return selectQueryUtil.build();
 	}
 	
-	public String obtenerAtaudDonado(Integer idTipoAsignacion) {
-		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		return selectQueryUtil.build();
-	}
 	
-	public String obtenerAtaudEconomico(Integer idTipoAsignacion) {
-		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("");
-		return selectQueryUtil.build();
-	}
 }

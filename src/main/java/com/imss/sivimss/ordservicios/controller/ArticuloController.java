@@ -50,11 +50,6 @@ public class ArticuloController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
-	@PostMapping("articulos-funerarios/ataud/asignado/consultar")
-	public CompletableFuture<Object>obtenerAtaudAsignacion(){
-		return null;
-	}
-	
 	@PostMapping("articulos-funerarios/urna/consultar")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")

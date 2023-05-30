@@ -65,5 +65,7 @@ public class ReglasNegocioRepository {
 		.setParameter("curp", curp);
 		return selectQueryUtil.build();
 	}
+	
+	
 
 }
