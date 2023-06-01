@@ -31,10 +31,8 @@ public class Urna {
 		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_MODELO_ARTICULO AS nombreArticulo")
 		.from("SVT_ARTICULO STA")
 		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = STA .ID_CATEGORIA_ARTICULO")
-		//.innerJoin("SVT_INVENTARIO STI", "STA.ID_ARTICULO = STI .ID_ARTICULO")
-		.innerJoin("SVC_TIPO_ARTICULO STA2", "STA .ID_TIPO_ARTICULO = STA2.ID_TIPO_ARTICULO ")
+		.innerJoin("SVC_TIPO_ARTICULO ST", "STA.ID_TIPO_ARTICULO = ST.ID_TIPO_ARTICULO ")
 		.where("STA.ID_CATEGORIA_ARTICULO = 2")
-		//.and("STI.CAN_STOCK > 0")
 		.and("STA.IND_ACTIVO =1")
 		.and("STA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
