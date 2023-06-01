@@ -198,7 +198,7 @@ public class PaqueteServiceImpl implements PaqueteService{
     			}
             }
             response.setDatos(ConvertirGenerico.convertInstanceOfObject(asignacionesAtaudResponse));
-			return response;
+    		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 	        log.error(AppConstantes.ERROR_QUERY.concat(query));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
