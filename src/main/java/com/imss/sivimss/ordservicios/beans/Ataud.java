@@ -36,15 +36,14 @@ public class Ataud {
 		DatosRequest request = new DatosRequest();
 		Map<String, Object>paramtero= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_MODELO_ARTICULO AS nombreArticulo")
-		.from("SVT_ARTICULO STA")
-		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = STA .ID_CATEGORIA_ARTICULO")
-		//.innerJoin("SVT_INVENTARIO STI", "STA.ID_ARTICULO = STI .ID_ARTICULO")
-		.innerJoin("SVC_TIPO_ARTICULO STA2", "STA .ID_TIPO_ARTICULO = STA2.ID_TIPO_ARTICULO ")
-		.where("STA.ID_CATEGORIA_ARTICULO = 1")
-		//.and("STI.CAN_STOCK > 0")
-		.and("STA.IND_ACTIVO =1")
-		.and("STA.ID_TIPO_ARTICULO =1");
+		selectQueryUtil.select("SA.ID_ARTICULO AS idArticulo, SA.DES_MODELO_ARTICULO AS nombreArticulo")
+		.from("SVT_ARTICULO SA")
+		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SA.ID_CATEGORIA_ARTICULO = SCA.ID_CATEGORIA_ARTICULO")
+		.innerJoin("SVC_TIPO_ARTICULO STA", "SA .ID_TIPO_ARTICULO =STA.ID_TIPO_ARTICULO")
+		.where("SA.ID_CATEGORIA_ARTICULO = 1")
+		.and("SA.CAN_UNIDAD > 0")
+		.and("SA.IND_ACTIVO = 1")
+		.and("SA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		paramtero.put(AppConstantes.QUERY, encoded);

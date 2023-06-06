@@ -67,19 +67,22 @@ public class ArticuloServiceImpl implements ArticuloService{
 	@Override
 	public Response<Object> consultarAtaud(DatosRequest request, Authentication authentication) throws IOException {
 		try {
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaud", AppConstantes.CONSULTA, authentication);
+
 			List<ArticuloFunerarioResponse>articuloFunerarioResponses;
-			Response<Object>response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudes().getDatos(), urlConsultar, authentication);
+			Response<Object>response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudes().getDatos(), urlConsultar.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			if (response.getCodigo()==200) {
 				if(!response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses= Arrays.asList(modelMapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
 				response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
+				return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 				}else {
-					response.setMensaje(SIN_EXISTENCIA);
+					return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA, AppConstantes.ERROR_CONSULTAR);
 					}
 				}
-			return response;
+			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = urna.obtenerUrna().getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = ataud.obtenerAtaudes().getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
