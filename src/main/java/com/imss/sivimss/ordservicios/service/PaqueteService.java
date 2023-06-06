@@ -13,4 +13,5 @@ public interface PaqueteService {
 	Response<?>consultarServiciosPaquete(DatosRequest request, Authentication authentication)throws IOException;
 	Response<?>consultarCaracteristicasPaquete(DatosRequest request, Authentication authentication)throws IOException;
 	Response<?>consultarAtaudTipoAsignacionPaquete(DatosRequest request, Authentication authentication)throws IOException;
+	Response<Object>consultarProveedorAtaud(DatosRequest request, Authentication authentication) throws IOException;
 }

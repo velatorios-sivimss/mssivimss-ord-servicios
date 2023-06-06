@@ -1,5 +1,6 @@
 package com.imss.sivimss.ordservicios.beans;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,6 +98,27 @@ public class Ataud {
 			selectQueryUtil.and("sc.MON_MAX <= (".concat(selectQueryUtilCosto.build()).concat(")"));
 		}
 		return selectQueryUtil.build();
+	}
+
+	public DatosRequest obtenerProveedorAtaud(Integer idAtaudInventario) throws UnsupportedEncodingException {
+		DatosRequest datosRequest= new DatosRequest();
+		Map<String, Object>parametros= new HashMap<>();
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		selectQueryUtil.select("SP.ID_PROVEEDOR as idProveedor","SP.NOM_PROVEEDOR as nombreProveedor")
+		.from("SVT_INVENTARIO_ARTICULO SVIA")
+		.innerJoin("SVT_ORDEN_ENTRADA SVE", "SVIA .ID_ODE =SVE.ID_ODE")
+		.innerJoin("SVT_CONTRATO SC", "SVE.ID_CONTRATO = SVE.ID_CONTRATO")
+		.innerJoin("SVT_PROVEEDOR SP", "SC.ID_PROVEEDOR = SP.ID_PROVEEDOR")
+		.innerJoin("SVT_CONTRATO_ARTICULOS SCA", "SC.ID_CONTRATO =SCA.ID_CONTRATO")
+		.innerJoin("SVT_ARTICULO SVA", "SVIA.ID_ARTICULO = SVA.ID_ARTICULO")
+		.where("SVIA.ID_INVE_ARTICULO  = :idAtaudInventario")
+		.setParameter("idAtaudInventario", idAtaudInventario)
+		.and("SVA.CAN_UNIDAD > 0 ")
+		.groupBy("nombreProveedor");
+		String query = selectQueryUtil.encrypt(selectQueryUtil.build());
+		parametros.put(AppConstantes.QUERY, query);
+		datosRequest.setDatos(parametros);
+		return datosRequest;
 	}
 	
 	

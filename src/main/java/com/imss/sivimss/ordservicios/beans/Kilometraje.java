@@ -14,7 +14,7 @@ public class Kilometraje {
 	
 	private Kilometraje () {}
 	
-	public static Kilometraje instancia() {
+	public static Kilometraje getInstancia() {
 		if (instancia==null) {
 			instancia= new Kilometraje();
 		}
@@ -25,6 +25,12 @@ public class Kilometraje {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		selectQueryUtil.select("SCT.NUM_KILOMETRO AS numKilometraje, '30' as costoPorKilometraje")
+		.from("SVT_PAQUETE SPA")
+		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SPA.ID_PAQUETE = SPS.ID_PAQUETE")
+		.innerJoin("SVT_CONF_TRASLADO SCT", "SCT.ID_PAQUETE = SPA.ID_PAQUETE")
+		.where("SCT.ID_PAQUETE = :idPaquete")
+		.setParameter("idPaquete", idPaquete);
 		String query= selectQueryUtil.build();
 		String encoded= selectQueryUtil.encrypt(query);
 		parametros.put(AppConstantes.QUERY, encoded);
@@ -32,11 +38,20 @@ public class Kilometraje {
 		return datosRequest;
 	}
 	
-	public DatosRequest obtenerKilometrajePorServicio(Integer idProveedor) throws UnsupportedEncodingException {
+	public DatosRequest obtenerKilometrajePorServicio(Integer idServicio, Integer idProveedor) throws UnsupportedEncodingException {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		
+		selectQueryUtil.select("SCS.MON_PRECIO AS costoPorKilometraje")
+		.from("SVT_CONTRATO SC ")
+		.innerJoin("SVT_PROVEEDOR SP", "SC.ID_PROVEEDOR = SP.ID_PROVEEDOR")
+		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SC.ID_CONTRATO = SCS.ID_CONTRATO")
+		.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
+		.where(" SC.ID_PROVEEDOR = :idProveedor")
+		.and("SCS.ID_SERVICIO = :idServicio")
+		.and("SS.ID_TIPO_SERVICIO =4")
+		.setParameter("idProveedor", idProveedor)
+		.setParameter("idServicio", idServicio);
 		String query=selectQueryUtil.build();
 		String encoded=selectQueryUtil.encrypt(query);
 		parametros.put(AppConstantes.QUERY, encoded);

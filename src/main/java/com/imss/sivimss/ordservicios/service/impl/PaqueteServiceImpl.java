@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Ataud;
 import com.imss.sivimss.ordservicios.beans.Paquete;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
+import com.imss.sivimss.ordservicios.model.request.ArticuloFunerarioRequest;
 import com.imss.sivimss.ordservicios.model.request.AsignacionesAtaudRequest;
 import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
 import com.imss.sivimss.ordservicios.model.response.ArticuloFunerarioResponse;
@@ -212,6 +213,28 @@ public class PaqueteServiceImpl implements PaqueteService{
 			articuloFunerarioResponses=Arrays.asList(mapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
 		}
 		return articuloFunerarioResponses;
+	}
+
+	@Override
+	public Response<Object> consultarProveedorAtaud(DatosRequest request, Authentication authentication)
+			throws IOException {
+			Response<Object>response;
+			ArticuloFunerarioRequest articuloFunerarioRequest= new ArticuloFunerarioRequest();
+		try {
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarProveedorAtaud", AppConstantes.CONSULTA, authentication);
+            Gson gson= new Gson();
+            String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+            articuloFunerarioRequest= gson.fromJson(datosJson, ArticuloFunerarioRequest.class);
+            response=providerServiceRestTemplate.consumirServicio(ataud.obtenerProveedorAtaud(articuloFunerarioRequest.getIdArticulo()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+            return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR); 
+		} catch (Exception e) {
+			String consulta = ataud.obtenerProveedorAtaud(articuloFunerarioRequest.getIdArticulo()).getDatos().get(AppConstantes.QUERY).toString();
+	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
+			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		}
+		
 	}
 	
 	
