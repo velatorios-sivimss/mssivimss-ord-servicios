@@ -43,7 +43,7 @@ public class Paquete {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
-		queryUtil.select("SS.ID_SERVICIO AS idServicio","SS.NOM_SERVICIO AS nombreServicio")
+		queryUtil.select("SS.ID_SERVICIO AS idServicio","SS.DES_NOM_SERVICIO AS nombreServicio")
 		.from("SVT_SERVICIO SS")
 		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SS.ID_SERVICIO = SPS.ID_SERVICIO")
 		.innerJoin("SVT_PAQUETE SPA", "SPS.ID_PAQUETE = SPA.ID_PAQUETE")
