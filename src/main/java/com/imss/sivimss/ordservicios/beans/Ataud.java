@@ -86,7 +86,7 @@ public class Ataud {
 		selectQueryUtil.select("svia.ID_INVE_ARTICULO as idArticulo","CONCAT(svia.FOLIO_ARTICULO,'-',sva.DES_MODELO_ARTICULO) as nombreArticulo")
 		.from("SVT_INVENTARIO_ARTICULO svia")
 		.innerJoin("SVT_ORDEN_ENTRADA sve", "svia .ID_ODE =sve.ID_ODE")
-		.innerJoin("SVT_CONTRATO sc", "sve.ID_CONTRATO = sve.ID_CONTRATO")
+		.innerJoin("SVT_CONTRATO sc", "sc.ID_CONTRATO = sve.ID_CONTRATO")
 		.innerJoin("SVT_CONTRATO_ARTICULOS sca", "sc.ID_CONTRATO =sca.ID_CONTRATO")
 		.innerJoin("SVT_ARTICULO sva", "svia.ID_ARTICULO = sva.ID_ARTICULO")
 		.where("sva.ID_CATEGORIA_ARTICULO =1")
