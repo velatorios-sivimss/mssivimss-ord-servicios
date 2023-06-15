@@ -34,7 +34,7 @@ public class ContratoPFController {
 	private final LogUtil logUtil;
 	
 	@PostMapping("/consultar-folio")
-	public CompletableFuture<?> consultarContratoPF(DatosRequest request, Authentication authentication) throws IOException {
+	public CompletableFuture<?> consultarContratoPF(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
 		Response<?>response=contratoPFService.obtenerContratoPF(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
