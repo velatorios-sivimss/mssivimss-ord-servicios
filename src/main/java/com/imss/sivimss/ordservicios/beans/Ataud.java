@@ -92,7 +92,8 @@ public class Ataud {
 		.where("sva.ID_CATEGORIA_ARTICULO =1")
 		.and("svia.ID_TIPO_ASIGNACION_ART = :idTipoAsignacion")
 		.setParameter("idTipoAsignacion", idTipoAsignacion)
-		.and("sva.CAN_UNIDAD > 0 ");
+		.and("sva.CAN_UNIDAD > 0 ")
+		.and("svia.IND_ESTATUS = 0");
 		if (idTipoAsignacion==5) {
 			selectQueryUtil.and("sc.MON_MAX <= (".concat(selectQueryUtilCosto.build()).concat(")"));
 		}
