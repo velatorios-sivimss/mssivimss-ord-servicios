@@ -106,7 +106,7 @@ public class OrdenConsultar {
 		
 	}
 	
-	public Response<?>buscarOrdenServicio(){
+	public Response<Object>buscarOrdenServicio(DatosRequest datosRequest,Authentication authentication) throws IOException{
 		return null;
 	}
 	

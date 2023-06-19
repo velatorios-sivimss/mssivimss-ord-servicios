@@ -31,8 +31,8 @@ public class OrdenesDAO {
 		return null;
 	}
 	
-	public Response<Object> buscarOrden(DatosRequest datosRequest, Authentication authentication) {
-		return null;
+	public Response<Object> buscarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException {
+		return ordenConsultar.buscarOrdenServicio(datosRequest, authentication);
 	}
 	
 	public Response<Object> detalleOrden(DatosRequest datosRequest, Authentication authentication) {
