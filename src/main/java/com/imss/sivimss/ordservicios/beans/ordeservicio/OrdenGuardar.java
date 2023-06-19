@@ -52,11 +52,19 @@ public class OrdenGuardar {
 	private Database database;
 	
 	@Autowired
+	private Contratante contratante;
+	
+	@Autowired
+	private Finado finado;
+	
+	@Autowired
 	private LogUtil logUtil;
 	
 	private ResultSet rs;
 	
 	private Connection connection; 
+	
+	private Statement statement;
 	
 	private static final Logger log = LoggerFactory.getLogger(OrdenGuardar.class);
 
@@ -65,6 +73,7 @@ public class OrdenGuardar {
 	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		
 		String query="El tipo orden de servicio es incorrecto.";
+		
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "agregarOrden", AppConstantes.ALTA, authentication);
 
@@ -106,6 +115,10 @@ public class OrdenGuardar {
 			log.error(AppConstantes.ERROR_QUERY.concat(query));
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
+		}finally {
+			if (connection!=null) {
+				connection.close();
+			}
 		}
 		
 	}
@@ -114,74 +127,24 @@ public class OrdenGuardar {
 		Response<Object>response;
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
-        List<PreparedStatement> stmt = new ArrayList<>();
 		//contratante
-        if (ordenesServicioRequest.getContratante().getIdContratante()==null) {
-			stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarPersona(ordenesServicioRequest.getContratante(), usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-			stmt.get(0).executeUpdate();
-			rs=stmt.get(0).getGeneratedKeys();
-			if (rs.next()) {
-				ordenesServicioRequest.getContratante().setIdPersona(rs.getInt(1));
-			} 
-			
-        }
-        stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarDomicilio(ordenesServicioRequest.getContratante().getCp(),usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-		stmt.get(1).executeUpdate();
-		rs=stmt.get(1).getGeneratedKeys();
-		if (rs.next()) {
-			ordenesServicioRequest.getContratante().setCp(new DomicilioRequest(rs.getInt(1)));
-		}
 		
-		stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarContratante(ordenesServicioRequest.getContratante(),usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-		stmt.get(2).executeUpdate();
-		rs=stmt.get(2).getGeneratedKeys();
-		if (rs.next()) {
-			ordenesServicioRequest.getContratante().setIdContratante(rs.getInt(1));
-		}
+        ordenesServicioRequest.getContratante().setIdContratante(contratante.insertarContratante(ordenesServicioRequest.getContratante(), usuario.getIdUsuario(), connection));
 		
 		// orden de servicio
-		//String folio, Integer idContratante, Integer idParentesco, Integer idVelatorio,	Integer idEstatus,Integer idUsuarioAlt
 		// generar folio
-		if (ordenesServicioRequest.getIdEstatus()!=0 || ordenesServicioRequest.getIdEstatus()!=1) {
+        if (ordenesServicioRequest.getIdEstatus()!=0 || ordenesServicioRequest.getIdEstatus()!=1) {
 			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
 		}
+        
 		
-		stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarOrdenServicio(ordenesServicioRequest.getFolio(),ordenesServicioRequest.getContratante().getIdContratante(),ordenesServicioRequest.getIdParentesco(),ordenesServicioRequest.getIdVelatorio(),ordenesServicioRequest.getIdEstatus(),usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-		stmt.get(3).executeUpdate();
-		rs=stmt.get(3).getGeneratedKeys();
-		if (rs.next()) {
-			ordenesServicioRequest.setIdOrdenServicio(rs.getInt(1));
-		}
-		
+        insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
 		//finado
-		
-		stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarDomicilio(ordenesServicioRequest.getFinado().getCp(),usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-		stmt.get(4).executeUpdate();
-		rs=stmt.get(4).getGeneratedKeys();
-		if (rs.next()) {
-				ordenesServicioRequest.getFinado().setCp(new DomicilioRequest(rs.getInt(1)));
-		}
-		
-		if (ordenesServicioRequest.getFinado().getIdPersona()==null) {
-			stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarPersona(ordenesServicioRequest.getFinado(), usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-			stmt.get(5).executeUpdate();
-			rs=stmt.get(5).getGeneratedKeys();
-			if (rs.next()) {
-				ordenesServicioRequest.getFinado().setIdPersona(rs.getInt(1));
-			} 
-		}
-		stmt.add(connection.prepareStatement(reglasNegocioRepository.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario()), Statement.RETURN_GENERATED_KEYS));
-		stmt.get(6).executeUpdate();
-		rs=stmt.get(6).getGeneratedKeys();
-		if (rs.next()) {
-			ordenesServicioRequest.getFinado().setIdFinado(rs.getInt(1));
-		}
+		finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+	
 		//caracteristicas paquete
 		//informacion servicio
 		connection.commit();
-        connection.close();
-        rs.close();
-        connection.close();
 		return new Response<>(false, 200, ordenesServicioRequest.getContratante().toString());
 	}
 	
@@ -207,16 +170,12 @@ public class OrdenGuardar {
 	}
 	
 	private String generarFolio(Integer idVelatorio, Connection con) throws SQLException {
-		Statement statement = null;
 		String folio=null;
 		try {
-				
 			statement = con.createStatement();
-			
 			rs=statement.executeQuery(reglasNegocioRepository.obtenerFolio(idVelatorio));
 			
 			if (rs.next()) {
-				//ordenesServicioRequest.setFolio(String.valueOf(rs.getString("folio")));
 				folio=rs.getString("folio");
 			}
 		} finally {
@@ -227,8 +186,27 @@ public class OrdenGuardar {
 				rs.close();
 			}
 		}
-		
 		return folio;
+	}
+	
+	private void insertarOrdenServicio(OrdenesServicioRequest ordenesServicioRequest, Integer idUsuarioAlta, Connection con) throws SQLException{
+		try {
+			statement = con.createStatement();
+			statement.executeUpdate(reglasNegocioRepository.insertarOrdenServicio(
+					ordenesServicioRequest.getFolio(),ordenesServicioRequest.getContratante().getIdContratante(),ordenesServicioRequest.getIdParentesco(),ordenesServicioRequest.getIdVelatorio(),
+					ordenesServicioRequest.getIdEstatus(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			rs=statement.getGeneratedKeys();
+			if (rs.next()) {
+				ordenesServicioRequest.setIdOrdenServicio(rs.getInt(1));
+			}
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
 	}
 	
 }
