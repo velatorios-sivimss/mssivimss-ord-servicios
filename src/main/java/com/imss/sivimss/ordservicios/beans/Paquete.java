@@ -29,10 +29,14 @@ public class Paquete {
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
 		queryUtil.select("SP.ID_PAQUETE AS idPaquete","SP.DES_NOM_PAQUETE AS nombrePaquete")
 		.from("SVT_PAQUETE SP")
-		.where("SP.IND_ACTIVO =1")
+		.innerJoin("SVT_PAQUETE_VELATORIO SPV", "SP.ID_PAQUETE=SPV.ID_PAQUETE")
+		.where("SP.IND_ACTIVO = 1")
+		.and("SPV.ID_VELATORIO = 1")
 		.orderBy("SP.DES_NOM_PAQUETE ASC");
+		SelectQueryUtil queryUnion= new SelectQueryUtil();
 		
-		String query=queryUtil.build();
+		
+		String query=queryUnion.build();
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);

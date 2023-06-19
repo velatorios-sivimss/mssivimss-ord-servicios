@@ -11,4 +11,6 @@ import lombok.Setter;
 public class ContratoPfSiniestroResponse {
 
 	private Integer siniestros;
+	
+	private Integer tipoPrevision;
 }

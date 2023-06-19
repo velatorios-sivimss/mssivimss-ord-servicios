@@ -14,7 +14,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FinadoRequest extends Persona{
 
-	private String idFinado;
+	private Integer idFinado;
 	private Integer idTipoOrden;
 	private String extremidad;
 	private String esobito;

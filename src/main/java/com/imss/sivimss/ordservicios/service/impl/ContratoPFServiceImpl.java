@@ -68,9 +68,16 @@ public class ContratoPFServiceImpl implements ContratoPFService{
             List<ContratoPfSiniestroResponse> contratoPfSiniestroResponse;
             if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
             	contratoPfSiniestroResponse= Arrays.asList(modelMapper.map(response.getDatos(), ContratoPfSiniestroResponse[].class));
-            	if (!contratoPfSiniestroResponse.isEmpty() && contratoPfSiniestroResponse.get(0).getSiniestros()>0) {
+            	if (!contratoPfSiniestroResponse.isEmpty() && contratoPfSiniestroResponse.get(0).getTipoPrevision()!=null
+            			&& contratoPfSiniestroResponse.get(0).getTipoPrevision()==1) {
             		return MensajeResponseUtil.mensajeConsultaResponseObject(response, ERROR_SINIESTRO, AppConstantes.ERROR_CONSULTAR);
-            	}	
+            	}
+            	
+            	if (contratoPfSiniestroResponse.get(0).getTipoPrevision()==null) {
+            		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR, AppConstantes.ERROR_CONSULTAR);
+     			}
+                 
+                 
 			}
             // consultar convenio
             
@@ -83,5 +90,6 @@ public class ContratoPFServiceImpl implements ContratoPFService{
 	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
 	}
+	
 
 }

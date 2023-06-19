@@ -1,6 +1,7 @@
 package com.imss.sivimss.ordservicios.service.impl;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -24,7 +25,7 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 
 	@Override
 	public Response<Object> peticionOrden(DatosRequest request, Authentication authentication, String accion)
-			throws IOException {
+			throws IOException, SQLException {
 		switch (accion) {
 		case "guardar":
 			return ordenesDAO.agregarOrden(request, authentication);

@@ -38,7 +38,7 @@ public class ContratoPF {
 		queryUtil.select("COUNT(svo.ID_ORDEN_SERVICIO) as siniestros")
 		.from("SVT_CONVENIO_PF scp")
 		.innerJoin("SVC_FINADO svi", "scp.ID_CONVENIO_PF = svi.ID_CONTRATO_PREVISION")
-		.innerJoin("SVC_ORDEN_SERVICIO svo", "svi.ID_ORDEN_SERVICIO =svo.ID_ORDEN_SERVICIO and svo.ID_ESTATUS_ORDEN_SERVICIO =2")
+		.innerJoin("SVC_ORDEN_SERVICIO svo", "svi.ID_ORDEN_SERVICIO =svo.ID_ORDEN_SERVICIO and svo.ID_ESTATUS_ORDEN_SERVICIO in (2,4,5,6)")
 		.where("scp.DES_FOLIO = :folio")
 		.and("scp.ID_ESTATUS_CONVENIO = 2")
 		.and("scp .ID_TIPO_PREVISION =1")

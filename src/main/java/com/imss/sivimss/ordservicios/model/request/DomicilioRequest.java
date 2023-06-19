@@ -10,6 +10,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DomicilioRequest {
 	
+	private Integer idDomicilio;
+	
 	private String desCalle;
 
 	private String numExterior;
@@ -25,5 +27,11 @@ public class DomicilioRequest {
 	private String desEstado;
 	
 	private String desCiudad;
+
+	public DomicilioRequest(Integer idDomicilio) {
+		this.idDomicilio = idDomicilio;
+	}
+	
+	
 
 }

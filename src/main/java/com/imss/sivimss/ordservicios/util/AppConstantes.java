@@ -12,10 +12,10 @@ public class AppConstantes {
 	public static final String DATOS= "datos";
 	public static final String QUERY= "query";
 	public static final String EXITO = "Exito";
-	public static final String CATALOGO_CONSULTAR= "/generico/consulta";
-	public static final String CATALOGO_CONSULTA_PAGINADO= "/generico/paginado";
-	public static final String CATALOGO_CREAR_MULTIPLE= "/generico/crearMultiple";
-	public static final String CATALOGO_ACTUALIZAR= "/generico/actualizar";
+	public static final String CATALOGO_CONSULTAR= "/consulta";
+	public static final String CATALOGO_CONSULTA_PAGINADO= "/paginado";
+	public static final String CATALOGO_CREAR_MULTIPLE= "/crearMultiple";
+	public static final String CATALOGO_ACTUALIZAR= "/actualizar";
 	
 	public static final String STATUSEXCEPTION = "status";
 	public static final String EXPIREDJWTEXCEPTION = "expired";

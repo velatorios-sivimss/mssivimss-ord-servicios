@@ -14,5 +14,9 @@ public class CaracteristicasPaqueteDetalleTrasladoRequest {
 	private String origen;
 	private String destino;
 	private String totalKilometros;
+	private Double latitudInicial;
+	private Double latitudFinal;
+	private Double longitudInicial;
+	private Double longitudFinal;
 
 }

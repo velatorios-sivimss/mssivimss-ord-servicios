@@ -1,6 +1,8 @@
 package com.imss.sivimss.ordservicios.repository;
 
 import java.io.IOException;
+import java.sql.SQLDataException;
+import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,7 +23,7 @@ public class OrdenesDAO {
 	@Autowired
 	private OrdenGuardar ordenGuardar;
 	
-	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException{
+	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		return ordenGuardar.agregarOrden(datosRequest, authentication);
 	}
 	
