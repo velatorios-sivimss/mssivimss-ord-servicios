@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -15,6 +18,10 @@ public class ArticuloComplementario {
 	private static ArticuloComplementario instancia;
 	
 	private ArticuloComplementario() {}
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(ArticuloComplementario.class);
+
 	
 	public static ArticuloComplementario getInstancia() {
 		if (instancia== null) {
@@ -35,6 +42,8 @@ public class ArticuloComplementario {
 		.and("STA.ID_TIPO_ARTICULO = 2 ")
 		.orderBy("nombreArticulo ASC");
 		String query=selectQueryUtil.build();
+		
+		log.info(query);
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
@@ -56,6 +65,9 @@ public class ArticuloComplementario {
 		.and("STA.ID_TIPO_ARTICULO = 2 ")
 		.orderBy("nombreArticulo ASC");
 		String query=selectQueryUtil.build();
+
+		log.info(query);
+
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);

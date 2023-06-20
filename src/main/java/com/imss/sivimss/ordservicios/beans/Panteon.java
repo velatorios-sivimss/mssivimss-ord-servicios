@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.model.request.PanteonRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
@@ -23,6 +26,9 @@ import lombok.Setter;
 @Getter
 public class Panteon {
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(Panteon.class);
+
 	public DatosRequest consultarPanteones(PanteonRequest panteonRequest) {
 		DatosRequest request= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
@@ -40,6 +46,8 @@ public class Panteon {
 		.orderBy("nombrePanteon ASC");
 	
 		String query=selectQuery.build();
+		log.info(query);
+
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		request.setDatos(parametro);
@@ -63,6 +71,8 @@ public class Panteon {
 		.orderBy("nombrePanteon ASC");
 	
 		String query=selectQuery.build();
+		log.info(query);
+
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		request.setDatos(parametro);
@@ -83,7 +93,8 @@ public class Panteon {
 		q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
 		String query;
 		query=generarInsert(panteonRequest, dto)+" $$ "+ q.obtenerQueryInsertar();
-		
+		log.info(query);
+
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         parametro.put("separador", "$$");

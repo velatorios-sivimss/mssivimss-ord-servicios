@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
@@ -22,6 +24,9 @@ public class Ataud {
 
 	private static Ataud instancia;
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(Ataud.class);
+
 	private Ataud() {}
 	
 	public static Ataud obtenerInstancia() {
@@ -45,6 +50,9 @@ public class Ataud {
 		.and("SA.IND_ACTIVO = 1")
 		.and("SA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
+		
+		log.info(query);
+
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		paramtero.put(AppConstantes.QUERY, encoded);
 		request.setDatos(paramtero);
@@ -97,7 +105,10 @@ public class Ataud {
 		if (idTipoAsignacion==5) {
 			selectQueryUtil.and("sc.MON_MAX <= (".concat(selectQueryUtilCosto.build()).concat(")"));
 		}
-		return selectQueryUtil.build();
+		String query= selectQueryUtil.build();
+		log.info(query);
+
+		return query;
 	}
 
 	public DatosRequest obtenerProveedorAtaud(Integer idAtaudInventario) throws UnsupportedEncodingException {
@@ -115,7 +126,10 @@ public class Ataud {
 		.setParameter("idAtaudInventario", idAtaudInventario)
 		.and("SVA.CAN_UNIDAD > 0 ")
 		.groupBy("nombreProveedor");
+		
 		String query = selectQueryUtil.encrypt(selectQueryUtil.build());
+		String decoded=new String(DatatypeConverter.parseBase64Binary(query));
+		log.info(decoded);
 		parametros.put(AppConstantes.QUERY, query);
 		datosRequest.setDatos(parametros);
 		return datosRequest;

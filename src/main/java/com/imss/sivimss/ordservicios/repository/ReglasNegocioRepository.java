@@ -1,5 +1,7 @@
 package com.imss.sivimss.ordservicios.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.beans.ordeservicio.Persona;
@@ -33,6 +35,11 @@ public class ReglasNegocioRepository {
 	
 	private static final String CURRENT_TIMESTAMP="CURRENT_TIMESTAMP()";
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(ReglasNegocioRepository.class);
+
+	String query;
+	
 	public String obtenerDatosContratanteRfc(String rfc) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("SVC.ID_CONTRATANTE AS idContratante",
@@ -59,8 +66,9 @@ public class ReglasNegocioRepository {
 		.innerJoin("SVT_DOMICILIO SVD", "SVC.ID_DOMICILIO = SVD.ID_DOMICILIO")
 		.where("SPE.CVE_RFC = :rfc")
 		.setParameter("rfc", rfc);
-		
-		return selectQueryUtil.build();
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
 	}
 
 	public String obtenerDatosContratanteCurp(String curp) {
@@ -89,12 +97,13 @@ public class ReglasNegocioRepository {
 		.innerJoin("SVT_DOMICILIO SVD", "SVC.ID_DOMICILIO = SVD.ID_DOMICILIO")
 		.where("SPE.CVE_CURP = :curp")
 		.setParameter("curp", curp);
-		return selectQueryUtil.build();
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
 	}
 	
 	// obtener folio
 	public String obtenerFolio(Integer idVelatorio) {
-		String query="";
 		SelectQueryUtil velatorio= new SelectQueryUtil();
 		velatorio.select("SUBSTRING(sv.DES_VELATORIO ,1,3)")
 		.from("SVC_VELATORIO sv")
@@ -110,6 +119,7 @@ public class ReglasNegocioRepository {
 		selectQueryUtil.select("CONCAT(("+velatorio.build()+")","'-'","LPAD(("+ordenServicio.build()+"),7,'0')"+") as folio")
 		.from("dual");
 		query=selectQueryUtil.build();
+		log.info(query);
 		return query;
 	}
 	// insertar persona
@@ -131,7 +141,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_CORREO", "'"+personaRequest.getCorreo()+"'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar contratante
 	public String insertarContratante(ContratanteRequest contratanteRequest, Integer idUsuarioAlta) {
@@ -141,7 +153,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues(ID_DOMICILIO, ""+contratanteRequest.getCp().getIdDomicilio()+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	
 	public String insertarDomicilio(DomicilioRequest domicilioRequest,Integer idUsuarioAlta) {
@@ -155,7 +169,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_ESTADO",  "'"+domicilioRequest.getDesEstado()+"'");
 		q.agregarParametroValues(ID_USUARIO_ALTA,  ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	
 	// insertar orden de servicio
@@ -168,7 +184,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO",  ""+idEstatus+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA,  ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	
 	// insertar finado
@@ -192,7 +210,9 @@ public class ReglasNegocioRepository {
 			q.agregarParametroValues(ID_ORDEN_SERVICIO,""+idOrdenServicio+"");
 			q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 			q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-			return q.obtenerQueryInsertar();
+			query= q.obtenerQueryInsertar();
+			log.info(query);
+			return query;
 	}
 	// insertar caracteristicas paquete SVC_CARACTERISTICAS_PAQUETE_TEMP/SVC_CARACTERISTICAS_PAQUETE
 	public String insertarCaracteristicasPaquete(String from,CaracteristicasPaqueteRequest caracteristicasPaqueteRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
@@ -203,7 +223,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("IND_OTORGAMIENTO", ""+Integer.parseInt(caracteristicasPaqueteRequest.getOtorgamiento())+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar detalle caracteristicas paquete SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP/SVC_DETALLE_CARACTERISTICAS_PAQUETE
 	public String insertarDetalleCaracteristicasPaqueteTemp(String from,CaracteristicasPaqueteDetalleRequest detalleCaracteristicasPaqueteRequest, Integer idCaracteristicasPaquete, Integer idUsuarioAlta) {
@@ -218,7 +240,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CARACTERISTICAS_PAQUETE", ""+idCaracteristicasPaquete+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar detalle caracteristicas paquete traslado SVC_CARACTERISTICA_PAQUETE_TRASLADO_TEMP/ SVC_CARACTERISTICA_PAQUETE_TRASLADO
 	public String insertarDetalleCaracteristicasPaqueteTrasladoTemp(CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPaqueteTrasladoRequest, Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
@@ -233,19 +257,23 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", ""+idDetalleCaracteristicasPaquete+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar caracteristicas presupuesto SVC_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_CARACTERISTICAS_PRESUPUESTO
 	public String insertarCaracteristicasPresupuestoTemp(String from,CaracteristicasPaquetePresupuestoRequest caracteristicasPaquetePresupuestoRequest , Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q= new QueryHelper(from);
 		q.agregarParametroValues("ID_PAQUETE", ""+caracteristicasPaquetePresupuestoRequest.getIdPaquete()+"");
-		q.agregarParametroValues("ID_ORDEN_SERVICIO", ""+idOrdenServicio+"");
+		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
 		q.agregarParametroValues(IND_ACTIVO, "1");
 		q.agregarParametroValues("DES_OBSERVACIONES", "'"+caracteristicasPaquetePresupuestoRequest.getObservaciones()+"'");
 		q.agregarParametroValues("DES_NOTAS_SERVICIO", "'"+caracteristicasPaquetePresupuestoRequest.getNotasServicio()+"'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar detalle caracteristicas presupuesto SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO
 	public String insertarDeatlleCaracteristicasPresupuestoTemp(String from,CaracteristicasPaqueteDetallePresupuestoRequest caracteristicasPaqueteRespuestoRequest , Integer idCaracteristicasPaquetePresupuesto, Integer idUsuarioAlta) {
@@ -259,7 +287,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CARACTERISTICAS_PRESUPUESTO", ""+idCaracteristicasPaquetePresupuesto+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar detalle caracteristicas presupuesto traslado SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO_TEMP/ SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO
 	public String insertarDetalleCaracteristicasPresupuestoTrasladoTemp(String from,CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPresupuestoTrasladoRequest, Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
@@ -274,7 +304,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", ""+idDetalleCaracteristicasPaquete+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar informacion servicio
 	public String insertarInformacionServicio(InformacionServicioRequest informacionServicioRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
@@ -289,7 +321,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	// insertar informacion servicio velacion
 	public String insertarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest, Integer idInformacionServicio, Integer idUsuarioAlta) {
@@ -303,7 +337,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", ""+idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
-		return q.obtenerQueryInsertar();
+		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
 	}
 	
 

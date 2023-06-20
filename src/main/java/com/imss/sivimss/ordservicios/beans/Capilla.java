@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -14,6 +17,9 @@ public class Capilla {
 
 	private static Capilla instancia;
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(Capilla.class);
+
 	private Capilla() {}
 	
 	public static Capilla getInstancia() {
@@ -33,6 +39,9 @@ public class Capilla {
 		.setParameter("idVelatorio", idVelatorio)
 		.orderBy("SC.NOM_CAPILLA ASC");
 		String query=queryUtil.build();
+
+		log.info(query);
+
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);

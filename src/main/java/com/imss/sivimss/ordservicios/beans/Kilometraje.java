@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -12,6 +15,9 @@ public class Kilometraje {
 	
 	private static Kilometraje instancia;
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(Kilometraje.class);
+
 	private Kilometraje () {}
 	
 	public static Kilometraje getInstancia() {
@@ -32,6 +38,8 @@ public class Kilometraje {
 		.where("SCT.ID_PAQUETE = :idPaquete")
 		.setParameter("idPaquete", idPaquete);
 		String query= selectQueryUtil.build();
+		log.info(query);
+
 		String encoded= selectQueryUtil.encrypt(query);
 		parametros.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametros);
@@ -53,6 +61,8 @@ public class Kilometraje {
 		.setParameter("idProveedor", idProveedor)
 		.setParameter("idServicio", idServicio);
 		String query=selectQueryUtil.build();
+		log.info(query);
+
 		String encoded=selectQueryUtil.encrypt(query);
 		parametros.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametros);

@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -14,6 +17,8 @@ public class Sala {
 
 	private static Sala instancia;
 	
+	private static final Logger log = LoggerFactory.getLogger(Sala.class);
+
 	private Sala() {}
 	
 	public static Sala getInstancia() {
@@ -35,6 +40,8 @@ public class Sala {
 		.orderBy("SS.DES_SALA ASC");
 		
 		String query=selectQueryUtil.build();
+		log.info(query);
+
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametros.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametros);

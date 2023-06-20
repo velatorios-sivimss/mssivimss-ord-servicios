@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -14,6 +17,9 @@ public class Empaque {
 
 	private static Empaque instancia;
 	
+	
+	private static final Logger log = LoggerFactory.getLogger(Empaque.class);
+
 	private Empaque() {}
 	
 	public static Empaque obtenerInstancia() {
@@ -36,6 +42,8 @@ public class Empaque {
 		.and("STA.IND_ACTIVO =1")
 		.and("STA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
+		log.info(query);
+
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		paramtero.put(AppConstantes.QUERY, encoded);
 		request.setDatos(paramtero);

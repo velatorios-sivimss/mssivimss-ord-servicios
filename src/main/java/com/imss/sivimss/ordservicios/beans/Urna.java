@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -14,6 +17,8 @@ public class Urna {
 
 	private static Urna instancia;
 	
+	private static final Logger log = LoggerFactory.getLogger(Urna.class);
+
 	private Urna() {}
 	
 	public static Urna obtenerInstancia() {
@@ -36,6 +41,8 @@ public class Urna {
 		.and("STA.IND_ACTIVO =1")
 		.and("STA.ID_TIPO_ARTICULO =1");
 		String query= selectQueryUtil.build();
+		log.info(query);
+
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		paramtero.put(AppConstantes.QUERY, encoded);
 		request.setDatos(paramtero);

@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -14,6 +17,8 @@ public class Paquete {
 
 	private static Paquete instancia;
 	
+	private static final Logger log = LoggerFactory.getLogger(Paquete.class);
+
 	private Paquete() {}
 	
 	public static Paquete getInstancia() {
@@ -37,6 +42,8 @@ public class Paquete {
 		
 		
 		String query=queryUnion.build();
+		log.info(query);
+
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
@@ -56,6 +63,8 @@ public class Paquete {
 		.orderBy("nombreServicio ASC");
 		
 		String query=queryUtil.build();
+		log.info(query);
+
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametro.put(AppConstantes.QUERY, encoded);
 		datosRequest.setDatos(parametro);
@@ -68,6 +77,8 @@ public class Paquete {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("");
 		String query="";
+		log.info(query);
+
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametros.put(AppConstantes.QUERY, encoded);
 		return datosRequest;
