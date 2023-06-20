@@ -310,7 +310,7 @@ public class ReglasNegocioRepository {
 	}
 	// insertar informacion servicio
 	public String insertarInformacionServicio(InformacionServicioRequest informacionServicioRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper("SVC_INFORMACION_SERVICIO");
+		final QueryHelper q= new QueryHelper("INSERT INTO SVC_INFORMACION_SERVICIO");
 		q.agregarParametroValues("FEC_CORTEJO", "'"+informacionServicioRequest.getFechaCortejo()+"'");
 		q.agregarParametroValues("TIM_HORA_CORTEJO", "'"+informacionServicioRequest.getHoraCortejo()+"'");
 		q.agregarParametroValues("FEC_RECOGER", "'"+informacionServicioRequest.getFechaRecoger()+"'");
@@ -327,12 +327,12 @@ public class ReglasNegocioRepository {
 	}
 	// insertar informacion servicio velacion
 	public String insertarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest, Integer idInformacionServicio, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper("SVC_INFORMACION_SERVICIO");
+		final QueryHelper q= new QueryHelper("INSERT INTO SVC_INFORMACION_SERVICIO_VELACION");
 		q.agregarParametroValues(ID_DOMICILIO, ""+informacionServicioRequest.getCp().getIdDomicilio()+"");
 		q.agregarParametroValues("FEC_INSTALACION", "'"+informacionServicioRequest.getFechaInstalacion()+"'");
 		q.agregarParametroValues("TIM_HORA_INSTALACION", "'"+informacionServicioRequest.getHoraInstalacion()+"'");
-		q.agregarParametroValues("FEC_VELACION", ""+informacionServicioRequest.getFechaVelacion()+"");
-		q.agregarParametroValues("TIM_HORA_VELACION", ""+informacionServicioRequest.getHoraVelacion()+"");
+		q.agregarParametroValues("FEC_VELACION", "'"+informacionServicioRequest.getFechaVelacion()+"'");
+		q.agregarParametroValues("TIM_HORA_VELACION", "'"+informacionServicioRequest.getHoraVelacion()+"'");
 		q.agregarParametroValues("ID_CAPILLA", ""+informacionServicioRequest.getIdCapilla()+"");
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", ""+idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");

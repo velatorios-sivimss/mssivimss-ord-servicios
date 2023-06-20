@@ -61,6 +61,9 @@ public class OrdenGuardar {
 	private CaracteristicasPresupuesto caracteristicasPresupuesto;
 	
 	@Autowired
+	private InformacionServicio informacionServicio;
+	
+	@Autowired
 	private LogUtil logUtil;
 	
 	private ResultSet rs;
@@ -156,6 +159,9 @@ public class OrdenGuardar {
         // buenas buenas
         
 		//informacion servicio
+        if (ordenesServicioRequest.getInformacionServicio()!=null) {
+			informacionServicio.insertarInformacionServicio(ordenesServicioRequest.getInformacionServicio(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+		}
         
 		connection.commit();
 		return new Response<>(false, 200, ordenesServicioRequest.getContratante().toString());
