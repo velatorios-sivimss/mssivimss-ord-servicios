@@ -3,9 +3,17 @@ package com.imss.sivimss.ordservicios.repository;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.beans.ordeservicio.Persona;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetallePresupuestoRequest;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleRequest;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleTrasladoRequest;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaquetePresupuestoRequest;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteRequest;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.ContratanteRequest;
 import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
+import com.imss.sivimss.ordservicios.model.request.InformacionServicioRequest;
+import com.imss.sivimss.ordservicios.model.request.InformacionServicioVelacionRequest;
 import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
 import com.imss.sivimss.ordservicios.util.QueryHelper;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
@@ -16,6 +24,14 @@ public class ReglasNegocioRepository {
 	private static final String ID_USUARIO_ALTA="ID_USUARIO_ALTA";
 	
 	private static final String FEC_ALTA="FEC_ALTA";
+	
+	private static final String ID_DOMICILIO="ID_DOMICILIO";
+
+	private static final String IND_ACTIVO="IND_ACTIVO";
+
+	private static final String ID_ORDEN_SERVICIO="ID_ORDEN_SERVICIO";
+	
+	private static final String CURRENT_TIMESTAMP="CURRENT_TIMESTAMP()";
 	
 	public String obtenerDatosContratanteRfc(String rfc) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
@@ -114,7 +130,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_TELEFONO", "'"+personaRequest.getTelefono()+"'");
 		q.agregarParametroValues("DES_CORREO", "'"+personaRequest.getCorreo()+"'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
-		q.agregarParametroValues(FEC_ALTA, "CURRENT_TIMESTAMP()");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		return q.obtenerQueryInsertar();
 	}
 	// insertar contratante
@@ -122,9 +138,9 @@ public class ReglasNegocioRepository {
 		final QueryHelper q= new QueryHelper("INSERT INTO SVC_CONTRATANTE");
 		q.agregarParametroValues("ID_PERSONA", ""+contratanteRequest.getIdPersona()+"");
 		q.agregarParametroValues("CVE_MATRICULA", "'"+contratanteRequest.getMatricula()+"'");
-		q.agregarParametroValues("ID_DOMICILIO", ""+contratanteRequest.getCp().getIdDomicilio()+"");
+		q.agregarParametroValues(ID_DOMICILIO, ""+contratanteRequest.getCp().getIdDomicilio()+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
-		q.agregarParametroValues(FEC_ALTA, "CURRENT_TIMESTAMP()");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		return q.obtenerQueryInsertar();
 	}
 	
@@ -138,7 +154,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_MUNICIPIO",  "'"+domicilioRequest.getDesMunicipio()+"'");
 		q.agregarParametroValues("DES_ESTADO",  "'"+domicilioRequest.getDesEstado()+"'");
 		q.agregarParametroValues(ID_USUARIO_ALTA,  ""+idUsuarioAlta+"");
-		q.agregarParametroValues(FEC_ALTA, "CURRENT_TIMESTAMP()");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		return q.obtenerQueryInsertar();
 	}
 	
@@ -151,7 +167,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_VELATORIO",  ""+idVelatorio+"");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO",  ""+idEstatus+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA,  ""+idUsuarioAlta+"");
-		q.agregarParametroValues(FEC_ALTA, "CURRENT_TIMESTAMP()");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		return q.obtenerQueryInsertar();
 	}
 	
@@ -164,7 +180,7 @@ public class ReglasNegocioRepository {
 			q.agregarParametroValues("DES_OBITO", "'"+finadoRequest.getEsobito()+"'");
 			q.agregarParametroValues("CVE_MATRICULA", "'"+finadoRequest.getMatricula()+"'");
 			q.agregarParametroValues("ID_CONTRATO_PREVISION", ""+finadoRequest.getIdContratoPrevision()+"");
-			q.agregarParametroValues("ID_DOMICILIO", ""+finadoRequest.getCp().getIdDomicilio()+"");
+			q.agregarParametroValues(ID_DOMICILIO, ""+finadoRequest.getCp().getIdDomicilio()+"");
 			q.agregarParametroValues("FEC_DECESO", "'"+finadoRequest.getFechaDeceso()+"'");
 			q.agregarParametroValues("DES_CAUSA_DECESO", "'"+finadoRequest.getCausaDeceso()+"'");
 			q.agregarParametroValues("DES_LUGAR_DECESO", "'"+finadoRequest.getLugarDeceso()+"'");
@@ -173,17 +189,122 @@ public class ReglasNegocioRepository {
 			q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", ""+finadoRequest.getIdUnidadProcedencia()+"");
 			q.agregarParametroValues("DES_PROCEDENCIA_FINADO", "'"+finadoRequest.getProcedenciaFinado()+"'");
 			q.agregarParametroValues("ID_TIPO_PENSION", ""+finadoRequest.getIdTipoPension()+"");
-			q.agregarParametroValues("ID_ORDEN_SERVICIO",""+idOrdenServicio+"");
+			q.agregarParametroValues(ID_ORDEN_SERVICIO,""+idOrdenServicio+"");
 			q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
-			q.agregarParametroValues(FEC_ALTA, "CURRENT_TIMESTAMP()");
+			q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 			return q.obtenerQueryInsertar();
 	}
-	// insertar caracteristicas paquete temp
-	// insertar detalle caracteristicas paquete temp
-	// insertar caracteristicas paquete traslado temp
+	// insertar caracteristicas paquete SVC_CARACTERISTICAS_PAQUETE_TEMP/SVC_CARACTERISTICAS_PAQUETE
+	public String insertarCaracteristicasPaquete(String from,CaracteristicasPaqueteRequest caracteristicasPaqueteRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper(from);
+		q.agregarParametroValues("ID_PAQUETE", ""+caracteristicasPaqueteRequest.getIdPaquete()+"");
+		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
+		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues("IND_OTORGAMIENTO", ""+Integer.parseInt(caracteristicasPaqueteRequest.getOtorgamiento())+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
+	// insertar detalle caracteristicas paquete SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP/SVC_DETALLE_CARACTERISTICAS_PAQUETE
+	public String insertarDetalleCaracteristicasPaqueteTemp(String from,CaracteristicasPaqueteDetalleRequest detalleCaracteristicasPaqueteRequest, Integer idCaracteristicasPaquete, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper(from);
+		q.agregarParametroValues("ID_ARTICULO", ""+detalleCaracteristicasPaqueteRequest.getIdArticulo()+"");
+		q.agregarParametroValues("ID_SERVICIO", ""+detalleCaracteristicasPaqueteRequest.getIdServicio()+"");
+		q.agregarParametroValues("DES_MOTIVO", "'"+detalleCaracteristicasPaqueteRequest.getIdServicio()+"'");
+		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues("CAN_CANTIDAD", ""+detalleCaracteristicasPaqueteRequest.getCantidad()+"");
+		q.agregarParametroValues("IMP_IMPORTE", ""+detalleCaracteristicasPaqueteRequest.getImporteMonto()+"");
+		q.agregarParametroValues("ID_PROVEEDOR", ""+detalleCaracteristicasPaqueteRequest.getIdProveedor()+"");
+		q.agregarParametroValues("ID_CARACTERISTICAS_PAQUETE", ""+idCaracteristicasPaquete+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
+	// insertar detalle caracteristicas paquete traslado SVC_CARACTERISTICA_PAQUETE_TRASLADO_TEMP/ SVC_CARACTERISTICA_PAQUETE_TRASLADO
+	public String insertarDetalleCaracteristicasPaqueteTrasladoTemp(CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPaqueteTrasladoRequest, Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper("INSERT INTO SVC_CARACTERISTICA_PAQUETE_TRASLADO_TEMP");
+		q.agregarParametroValues("DES_ORIGEN", ""+detalleCaracteristicasPaqueteTrasladoRequest.getOrigen()+"");
+		q.agregarParametroValues("DES_DESTINO", ""+detalleCaracteristicasPaqueteTrasladoRequest.getDestino()+"");
+		q.agregarParametroValues("LATITUD_INICIAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLatitudInicial()+"");
+		q.agregarParametroValues("LATITUD_FINAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLatitudFinal()+"");
+		q.agregarParametroValues("LONGITUD_INICIAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLongitudInicial()+"");
+		q.agregarParametroValues("LONGITUD_FINAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLongitudFinal()+"");
+		q.agregarParametroValues("CAN_TOTAL_KILOMETROS", ""+detalleCaracteristicasPaqueteTrasladoRequest.getTotalKilometros());
+		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", ""+idDetalleCaracteristicasPaquete+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
+	// insertar caracteristicas presupuesto SVC_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_CARACTERISTICAS_PRESUPUESTO
+	public String insertarCaracteristicasPresupuestoTemp(String from,CaracteristicasPaquetePresupuestoRequest caracteristicasPaquetePresupuestoRequest , Integer idOrdenServicio, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper(from);
+		q.agregarParametroValues("ID_PAQUETE", ""+caracteristicasPaquetePresupuestoRequest.getIdPaquete()+"");
+		q.agregarParametroValues("ID_ORDEN_SERVICIO", ""+idOrdenServicio+"");
+		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues("DES_OBSERVACIONES", "'"+caracteristicasPaquetePresupuestoRequest.getObservaciones()+"'");
+		q.agregarParametroValues("DES_NOTAS_SERVICIO", "'"+caracteristicasPaquetePresupuestoRequest.getNotasServicio()+"'");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
+	// insertar detalle caracteristicas presupuesto SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO
+	public String insertarDeatlleCaracteristicasPresupuestoTemp(String from,CaracteristicasPaqueteDetallePresupuestoRequest caracteristicasPaqueteRespuestoRequest , Integer idCaracteristicasPaquetePresupuesto, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper(from);
+		q.agregarParametroValues("ID_INVE_ARTICULO", ""+caracteristicasPaqueteRespuestoRequest.getIdArticulo()+"");
+		q.agregarParametroValues("ID_SERVICIO", ""+caracteristicasPaqueteRespuestoRequest.getIdServicio()+"");
+		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues("CAN_CANTIDAD", ""+caracteristicasPaqueteRespuestoRequest.getCantidad()+"");
+		q.agregarParametroValues("IMP_IMPORTE", ""+caracteristicasPaqueteRespuestoRequest.getImporteMonto()+"");
+		q.agregarParametroValues("ID_PROVEEDOR", ""+caracteristicasPaqueteRespuestoRequest.getIdProveedor()+"");
+		q.agregarParametroValues("ID_CARACTERISTICAS_PRESUPUESTO", ""+idCaracteristicasPaquetePresupuesto+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
+	// insertar detalle caracteristicas presupuesto traslado SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO_TEMP/ SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO
+	public String insertarDetalleCaracteristicasPresupuestoTrasladoTemp(String from,CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPresupuestoTrasladoRequest, Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper(from);
+		q.agregarParametroValues("DES_ORIGEN", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getOrigen()+"");
+		q.agregarParametroValues("DES_DESTINO", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getDestino()+"");
+		q.agregarParametroValues("LATITUD_INICIAL", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getLatitudInicial()+"");
+		q.agregarParametroValues("LATITUD_FINAL", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getLatitudFinal()+"");
+		q.agregarParametroValues("LONGITUD_INICIAL", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getLongitudInicial()+"");
+		q.agregarParametroValues("LONGITUD_FINAL", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getLongitudFinal()+"");
+		q.agregarParametroValues("CAN_TOTAL_KILOMETROS", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getTotalKilometros());
+		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", ""+idDetalleCaracteristicasPaquete+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
 	// insertar informacion servicio
+	public String insertarInformacionServicio(InformacionServicioRequest informacionServicioRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper("SVC_INFORMACION_SERVICIO");
+		q.agregarParametroValues("FEC_CORTEJO", "'"+informacionServicioRequest.getFechaCortejo()+"'");
+		q.agregarParametroValues("TIM_HORA_CORTEJO", "'"+informacionServicioRequest.getHoraCortejo()+"'");
+		q.agregarParametroValues("FEC_RECOGER", "'"+informacionServicioRequest.getFechaRecoger()+"'");
+		q.agregarParametroValues("ID_PANTEON", ""+informacionServicioRequest.getIdPanteon()+"");
+		q.agregarParametroValues("ID_SALA", ""+informacionServicioRequest.getIdSala()+"");
+		q.agregarParametroValues("FEC_CREMACION", "'"+informacionServicioRequest.getFechaCremacion()+"'");
+		q.agregarParametroValues("ID_PROMOTORES", ""+informacionServicioRequest.getIdPromotor());
+		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
 	// insertar informacion servicio velacion
-	
+	public String insertarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest, Integer idInformacionServicio, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper("SVC_INFORMACION_SERVICIO");
+		q.agregarParametroValues(ID_DOMICILIO, ""+informacionServicioRequest.getCp().getIdDomicilio()+"");
+		q.agregarParametroValues("FEC_INSTALACION", "'"+informacionServicioRequest.getFechaInstalacion()+"'");
+		q.agregarParametroValues("TIM_HORA_INSTALACION", "'"+informacionServicioRequest.getHoraInstalacion()+"'");
+		q.agregarParametroValues("FEC_VELACION", ""+informacionServicioRequest.getFechaVelacion()+"");
+		q.agregarParametroValues("TIM_HORA_VELACION", ""+informacionServicioRequest.getHoraVelacion()+"");
+		q.agregarParametroValues("ID_CAPILLA", ""+informacionServicioRequest.getIdCapilla()+"");
+		q.agregarParametroValues("ID_INFORMACION_SERVICIO", ""+idInformacionServicio);
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		return q.obtenerQueryInsertar();
+	}
 	
 
 }

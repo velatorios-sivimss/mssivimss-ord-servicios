@@ -58,6 +58,9 @@ public class OrdenGuardar {
 	private Finado finado;
 	
 	@Autowired
+	private CaracteristicasPresupuesto caracteristicasPresupuesto;
+	
+	@Autowired
 	private LogUtil logUtil;
 	
 	private ResultSet rs;
@@ -128,22 +131,32 @@ public class OrdenGuardar {
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		//contratante
-		
+		if (ordenesServicioRequest.getContratante()==null) {
+			throw new BadRequestException(HttpStatus.BAD_REQUEST,AppConstantes.ERROR_GUARDAR);
+		}
         ordenesServicioRequest.getContratante().setIdContratante(contratante.insertarContratante(ordenesServicioRequest.getContratante(), usuario.getIdUsuario(), connection));
 		
 		// orden de servicio
 		// generar folio
         if (ordenesServicioRequest.getIdEstatus()!=0 || ordenesServicioRequest.getIdEstatus()!=1) {
 			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
+		}		
+        insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
+		
+        //finado
+        if (ordenesServicioRequest.getFinado()!=null) {
+			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
 		}
         
-		
-        insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
-		//finado
-		finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-	
-		//caracteristicas paquete
+        //caracteristicas presupuesto
+        if (ordenesServicioRequest.getIdEstatus()==1) {
+			// temporales
+        	
+		}
+        // buenas buenas
+        
 		//informacion servicio
+        
 		connection.commit();
 		return new Response<>(false, 200, ordenesServicioRequest.getContratante().toString());
 	}
