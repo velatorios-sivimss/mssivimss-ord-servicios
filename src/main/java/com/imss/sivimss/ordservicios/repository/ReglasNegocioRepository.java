@@ -109,14 +109,18 @@ public class ReglasNegocioRepository {
 		.from("SVC_VELATORIO sv")
 		.where("sv.ID_VELATORIO = :idVelatorio")
 		.setParameter("idVelatorio", idVelatorio);
+		
 		SelectQueryUtil ordenServicio= new SelectQueryUtil();
 		ordenServicio.select("COUNT(*)")
 		.from("SVC_ORDEN_SERVICIO")
 		.where("ID_VELATORIO = :idVelatorio")
+		.and("ID_ESTATUS_ORDEN_SERVICIO not in (0,1)")
 		.setParameter("idVelatorio", idVelatorio);
 		
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("CONCAT(("+velatorio.build()+")","'-'","LPAD(("+ordenServicio.build()+"),7,'0')"+") as folio")
+		selectQueryUtil.select("CONCAT(("+velatorio.build()+")","'-'",
+				"LPAD((case when ("+ordenServicio.build()+") = 0 then 1 else ("+ordenServicio.build()+") end)"
+						+ ",7,'0')"+") as folio")
 		.from("dual");
 		query=selectQueryUtil.build();
 		log.info(query);
