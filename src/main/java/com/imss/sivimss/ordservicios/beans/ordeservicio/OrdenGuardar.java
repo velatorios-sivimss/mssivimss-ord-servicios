@@ -141,7 +141,7 @@ public class OrdenGuardar {
 		
 		// orden de servicio
 		// generar folio
-        if (ordenesServicioRequest.getIdEstatus()!=0 || ordenesServicioRequest.getIdEstatus()!=1) {
+        if (ordenesServicioRequest.getIdEstatus()==2) {
 			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
 		}		
         insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
