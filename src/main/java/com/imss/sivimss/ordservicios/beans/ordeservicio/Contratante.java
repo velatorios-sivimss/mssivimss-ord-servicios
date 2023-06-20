@@ -41,7 +41,7 @@ public class Contratante {
         	statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(contratanteRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
     		rs=statement.getGeneratedKeys();
     		if (rs.next()) {
-    			contratanteRequest.setCp(new DomicilioRequest(rs.getInt(1)));
+    			contratanteRequest.getCp().setIdDomicilio(rs.getInt(1));
     		}
     		
     		statement.executeUpdate(reglasNegocioRepository.insertarContratante(contratanteRequest,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);

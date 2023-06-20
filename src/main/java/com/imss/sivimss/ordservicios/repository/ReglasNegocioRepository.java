@@ -314,9 +314,11 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("FEC_CORTEJO", "'"+informacionServicioRequest.getFechaCortejo()+"'");
 		q.agregarParametroValues("TIM_HORA_CORTEJO", "'"+informacionServicioRequest.getHoraCortejo()+"'");
 		q.agregarParametroValues("FEC_RECOGER", "'"+informacionServicioRequest.getFechaRecoger()+"'");
+		q.agregarParametroValues("TIM_HORA_RECOGER", "'"+informacionServicioRequest.getHoraRecoger()+"'");
 		q.agregarParametroValues("ID_PANTEON", ""+informacionServicioRequest.getIdPanteon()+"");
 		q.agregarParametroValues("ID_SALA", ""+informacionServicioRequest.getIdSala()+"");
 		q.agregarParametroValues("FEC_CREMACION", "'"+informacionServicioRequest.getFechaCremacion()+"'");
+		q.agregarParametroValues("TIM_HORA_CREMACION", "'"+informacionServicioRequest.getHoraCremacion()+"'");
 		q.agregarParametroValues("ID_PROMOTORES", ""+informacionServicioRequest.getIdPromotor());
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");

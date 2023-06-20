@@ -47,7 +47,7 @@ public class Finado {
     		statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
     		rs=statement.getGeneratedKeys();
     		if (rs.next()) {
-    			finadoRequest.setCp(new DomicilioRequest(rs.getInt(1)));
+    			finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
     		}
     		
     		statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
