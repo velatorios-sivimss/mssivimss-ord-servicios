@@ -38,9 +38,6 @@ public class OrdenGuardar {
 	private String urlDominio;
 	
 	@Autowired
-	private ProviderServiceRestTemplate providerServiceRestTemplate;
-	
-	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
 	
 	@Autowired
@@ -125,7 +122,6 @@ public class OrdenGuardar {
 	}
 	
 	private Response<Object> servicioInmediato(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
-		Response<Object>response;
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		//contratante

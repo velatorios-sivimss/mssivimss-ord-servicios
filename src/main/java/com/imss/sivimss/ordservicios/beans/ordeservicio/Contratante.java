@@ -13,45 +13,53 @@ import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 
 @Service
 public class Contratante {
-	
+
 	private ResultSet rs;
 
 	private Statement statement;
 
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
-	
-	public Integer insertarContratante(ContratanteRequest contratanteRequest,Integer idUsuarioAlta, Connection connection) throws SQLException{
-		
-	
-        try {	
-        	statement = connection.createStatement();
-        	if (contratanteRequest.getIdContratante()==null) {
-        		statement.executeUpdate(reglasNegocioRepository.insertarPersona(contratanteRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
-    			rs=statement.getGeneratedKeys();
-    			if (rs.next()) {
-    				contratanteRequest.setIdPersona(rs.getInt(1));
-    			} 
-            }
-        	statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(contratanteRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-    		rs=statement.getGeneratedKeys();
-    		if (rs.next()) {
-    			contratanteRequest.getCp().setIdDomicilio(rs.getInt(1));
-    		}
-    		
-    		statement.executeUpdate(reglasNegocioRepository.insertarContratante(contratanteRequest,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-    		rs=statement.getGeneratedKeys();
-    		if (rs.next()) {
-    			return rs.getInt(1);
-    		}
+
+	public Integer insertarContratante(ContratanteRequest contratanteRequest, Integer idUsuarioAlta,
+			Connection connection) throws SQLException {
+
+		try {
+			statement = connection.createStatement();
+			if (contratanteRequest.getIdContratante() == null) {
+				statement.executeUpdate(reglasNegocioRepository.insertarPersona(contratanteRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				rs = statement.getGeneratedKeys();
+				if (rs.next()) {
+					contratanteRequest.setIdPersona(rs.getInt(1));
+				}
+
+				statement.executeUpdate(
+						reglasNegocioRepository.insertarDomicilio(contratanteRequest.getCp(), idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				rs = statement.getGeneratedKeys();
+				if (rs.next()) {
+					contratanteRequest.getCp().setIdDomicilio(rs.getInt(1));
+				}
+
+				statement.executeUpdate(reglasNegocioRepository.insertarContratante(contratanteRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				rs = statement.getGeneratedKeys();
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+			} else {
+				return contratanteRequest.getIdContratante();
+			}
+
 		} finally {
-			if (statement!=null) {
+			if (statement != null) {
 				statement.close();
 			}
-			if (rs!= null) {
+			if (rs != null) {
 				rs.close();
 			}
 		}
-        return 0;
+		return 0;
 	}
 }
