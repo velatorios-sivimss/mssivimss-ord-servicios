@@ -10,13 +10,11 @@ import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalle
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleTrasladoRequest;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaquetePresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteRequest;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.ContratanteRequest;
 import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
 import com.imss.sivimss.ordservicios.model.request.InformacionServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.InformacionServicioVelacionRequest;
-import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
 import com.imss.sivimss.ordservicios.util.QueryHelper;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 
@@ -351,6 +349,16 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query= q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
+	}
+	
+	
+	//buscar ataud y proveedor
+	public String buscarAtaudConProveedorEnInventario() {
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		
+		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
 	}

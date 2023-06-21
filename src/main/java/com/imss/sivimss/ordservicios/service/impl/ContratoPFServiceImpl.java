@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.ContratoPF;
 import com.imss.sivimss.ordservicios.model.request.ContratoPfRequest;
-import com.imss.sivimss.ordservicios.model.response.ArticuloFunerarioResponse;
 import com.imss.sivimss.ordservicios.model.response.ContratoPfSiniestroResponse;
 import com.imss.sivimss.ordservicios.service.ContratoPFService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;

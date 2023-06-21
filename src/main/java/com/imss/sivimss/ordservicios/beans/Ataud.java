@@ -2,20 +2,14 @@ package com.imss.sivimss.ordservicios.beans;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 
-import com.imss.sivimss.ordservicios.exception.BadRequestException;
-import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;

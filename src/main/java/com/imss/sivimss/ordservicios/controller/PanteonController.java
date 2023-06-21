@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,7 +24,6 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 
 @AllArgsConstructor

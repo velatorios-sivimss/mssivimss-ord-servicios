@@ -1,7 +1,6 @@
 package com.imss.sivimss.ordservicios.controller;
 
 import java.io.IOException;
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;

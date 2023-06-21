@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.imss.sivimss.ordservicios.model.request.ContratoPfRequest;
-import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
-import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
-import com.imss.sivimss.ordservicios.util.Response;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 
 import lombok.Getter;

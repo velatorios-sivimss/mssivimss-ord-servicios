@@ -2,14 +2,10 @@ package com.imss.sivimss.ordservicios.beans.ordeservicio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -25,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
-import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;

@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Ataud;
 import com.imss.sivimss.ordservicios.beans.Paquete;
-import com.imss.sivimss.ordservicios.exception.BadRequestException;
 import com.imss.sivimss.ordservicios.model.request.ArticuloFunerarioRequest;
 import com.imss.sivimss.ordservicios.model.request.AsignacionesAtaudRequest;
 import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;

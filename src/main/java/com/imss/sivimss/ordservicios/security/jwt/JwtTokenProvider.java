@@ -37,7 +37,6 @@ public class JwtTokenProvider {
 	public String createToken(String subject) {
 		Map<String, Object> claims = Jwts.claims().setSubject(subject);
 		Date now = new Date();
-		// Date exp = new Date(now.getTime() + 3600 * 1000);
 		Date exp = new Date(now.getTime() + Long.parseLong(expiration) * 1000);
 		return Jwts.builder().setHeaderParam("sistema", "sivimss").setClaims(claims).setIssuedAt(now).setExpiration(exp)
 				.signWith(SignatureAlgorithm.HS512, jwtSecretDominios).compact();
@@ -45,8 +44,6 @@ public class JwtTokenProvider {
 	
 	public String createTokenTest(String subject) {
 		Map<String, Object> claims = Jwts.claims().setSubject(subject);
-		Date now = new Date();
-		Date exp = new Date(now.getTime() + Long.parseLong(expiration) * 1000);
 		return Jwts.builder().setHeaderParam("sistema", "sivimss").setClaims(claims)
 				.signWith(SignatureAlgorithm.HS512, jwtSecretDominios).compact();
 	}

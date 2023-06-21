@@ -9,15 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.model.request.ContratanteRequest;
-import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
-import com.imss.sivimss.ordservicios.util.LogUtil;
 
 @Service
 public class Contratante {
-	
-	@Autowired
-	private LogUtil logUtil;
 	
 	private ResultSet rs;
 

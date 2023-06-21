@@ -5,28 +5,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
-import com.imss.sivimss.ordservicios.util.LogUtil;
 
 @Service
 public class Finado {
 	
-	@Autowired
-	private LogUtil logUtil;
-	
 	private ResultSet rs;
 	
 	private Statement statement;
-	
-	private static final Logger log = LoggerFactory.getLogger(Finado.class);
-
 	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
