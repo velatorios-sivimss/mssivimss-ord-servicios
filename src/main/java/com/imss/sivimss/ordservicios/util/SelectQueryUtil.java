@@ -1,5 +1,8 @@
 package com.imss.sivimss.ordservicios.util;
 
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -7,6 +10,7 @@ import java.util.*;
  * Utiler&iacute;a para crear consultas select.
  *
  * @author esa
+ * @version 1.0.2
  */
 public class SelectQueryUtil {
     // constantes
@@ -15,7 +19,7 @@ public class SelectQueryUtil {
     private static final String FROM = "FROM";
     private static final String WHERE = "WHERE";
     private static final String LEFT_JOIN = "LEFT JOIN";
-    private static final String INNER_JOIN = "INNER_JOIN";
+    private static final String INNER_JOIN = "INNER JOIN";
     private static final String JOIN = "JOIN";
     private static final String ON = "ON";
     private static final String OR = "OR";
@@ -25,6 +29,13 @@ public class SelectQueryUtil {
     private static final String ORDER_BY = "ORDER BY";
     private static final String GROUP_BY = "GROUP BY";
     private static final String LIMIT = "LIMIT";
+    private static final String UNION = "UNION";
+    private static final String ALL = "ALL";
+    private static final String UNION_ALL = UNION + " " + ALL;
+    private static final String EXCEPT = "EXCEPT";
+    private static final String EXCEPT_ALL = EXCEPT + " " + ALL;
+    private static final String INTERSECT = "INTERSECT";
+    private static final String INTERSECT_ALL = INTERSECT + " " + ALL;
     // campos
     private final List<String> tablas = new ArrayList<>();
     private List<String> columnas = new ArrayList<>();
@@ -57,6 +68,7 @@ public class SelectQueryUtil {
      * @param columnas Lista de columnas, dichas columnas representan los valores que se van a recuperar
      *                 de la consulta.
      * @return Regresa la misma instancia para que se le puedan agregar m&aacute;s funciones.
+     * @since 1.0.0
      */
     public SelectQueryUtil select(String... columnas) {
         if (isFromCalled) {
@@ -79,6 +91,7 @@ public class SelectQueryUtil {
      *
      * @param tabla Es una cadena que representa la o las tablas a las que va a realizar la consulta
      * @return Regresa la misma instancia para que se puedan anidar las otras funciones
+     * @since 1.0.0
      */
     public SelectQueryUtil from(String... tabla) {
         if (!isSelectCalled) {
@@ -100,6 +113,7 @@ public class SelectQueryUtil {
      *
      * @param condiciones Lista de condiciones que se van a evaluar en el query
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil where(String... condiciones) {
         if (this.condiciones == null) {
@@ -117,6 +131,7 @@ public class SelectQueryUtil {
      *
      * @param condicion
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil where(String condicion) {
         if (condiciones == null) {
@@ -135,6 +150,7 @@ public class SelectQueryUtil {
      *
      * @param condicion
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil and(String condicion) {
         return validarCondicionesOrAnd(condicion, AND);
@@ -149,9 +165,28 @@ public class SelectQueryUtil {
      *
      * @param condicion
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil or(String condicion) {
         return validarCondicionesOrAnd(condicion, OR);
+    }
+
+    /**
+     * Agrega una o varias condiciones <b>{@code OR}</b>
+     *
+     * @param condiciones lista de condiciones separadas por comas <b>{@code ,}</b>
+     * @return la misma instancia para encadenar las funciones.
+     * @see #or(String)
+     * @since 1.0.1
+     */
+    public SelectQueryUtil or(String... condiciones) {
+        if (condiciones.length == 0) {
+            throw new IllegalStateException("Se debe agregar por lo menos una condicion como parametro");
+        }
+        for (String condicion : condiciones) {
+            this.or(condicion);
+        }
+        return this;
     }
 
     /**
@@ -160,12 +195,10 @@ public class SelectQueryUtil {
      * @param condicion
      * @param or
      * @return
+     * @since 1.0.0
      */
     private SelectQueryUtil validarCondicionesOrAnd(String condicion, String or) {
         if (Objects.equals(lastMethodCalled, WHERE)) {
-//            if (condiciones.isEmpty()) {
-//                throw new IllegalStateException("Se tiene que agregar por lo menos una condicion en el where");
-//            }
             this.condiciones.add(crearCondicion(condicion, or));
         }
         if (lastMethodCalled.equals(JOIN)) {
@@ -181,6 +214,7 @@ public class SelectQueryUtil {
      * @param nombre
      * @param valor
      * @return
+     * @since 1.0.0
      */
     @SuppressWarnings("UnusedReturnValue")
     public SelectQueryUtil setParameter(String nombre, Object valor) {
@@ -197,6 +231,7 @@ public class SelectQueryUtil {
      *
      * @param columna
      * @return
+     * @since 1.0.0
      */
     @SuppressWarnings("UnusedReturnValue")
     public SelectQueryUtil orderBy(String columna) {
@@ -209,6 +244,7 @@ public class SelectQueryUtil {
      *
      * @param columna
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil groupBy(String columna) {
         this.groupBy.add(columna);
@@ -218,9 +254,10 @@ public class SelectQueryUtil {
     /**
      * Agrega la sentencia de <b>{@code LEFT JOIN}</b> para hacer consultas con otras tablas.
      *
-     * @param tabla
-     * @param on
+     * @param tabla nombre de la tabla a la que se le va a hacer el join
+     * @param on    lista de condiciones separadas por <b>{@code ,}</b>
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil leftJoin(String tabla, String... on) {
         helperJoin = new Join(LEFT_JOIN, tabla, on);
@@ -236,6 +273,7 @@ public class SelectQueryUtil {
      * @param tabla
      * @param on
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil innerJoin(String tabla, String... on) {
         helperJoin = new Join(INNER_JOIN, tabla, on);
@@ -251,6 +289,7 @@ public class SelectQueryUtil {
      * @param tabla
      * @param on
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil join(String tabla, String... on) {
         helperJoin = new Join(JOIN, tabla, on);
@@ -268,6 +307,7 @@ public class SelectQueryUtil {
      *
      * @param condiciones
      * @return
+     * @since 1.0.0
      */
     public SelectQueryUtil on(String... condiciones) {
         if (!isJoinCalled && !lastMethodCalled.equals(JOIN)) {
@@ -284,6 +324,7 @@ public class SelectQueryUtil {
      *
      * @param limit
      * @return
+     * @since 1.0.1
      */
     public SelectQueryUtil limit(Integer limit) {
         this.limit = limit;
@@ -291,10 +332,102 @@ public class SelectQueryUtil {
     }
 
     /**
+     * Agrega una cla&uacute;sula <b>{@code UNION}</b> a la consulta actual, uniendo el resultado de la consulta actual con la
+     * consulta generada por el objeto SelectQueryUtil proporcionado.
+     *
+     * @param selectQuery el objeto SelectQueryUtil que representa la consulta a unir
+     * @return una cadena que representa la consulta actual con la cla&uacute;sula <b>{@code UNION}</b> y la consulta proporcionada unida
+     * @throws IllegalStateException si no se ha agregado una sentencia SELECT previamente
+     * @since 1.0.1
+     */
+    public String union(SelectQueryUtil selectQuery) {
+        validarSelectCalled();
+        return this.union(selectQuery.build(), false);
+    }
+
+
+    /**
+     * Agrega la cla&uacute;sula <b>{@code UNION}</b> a la consulta actual, une el resultado del query actual
+     * con un segundo query, para poder mantener el orden en el que se requiere hacer el <b>{@code UNION}</b>
+     *
+     * @param selectQuery el objeto SelectQueryUtil que representa la consulta a unir
+     * @return una cadena que representa la consulta actual con la cla&uacute;sula <b>{@code UNION ALL}</b> y la consulta proporcionada
+     * unida
+     * @see #union(SelectQueryUtil)
+     * @since 1.0.2
+     */
+    public String unionAll(SelectQueryUtil selectQuery) {
+        validarSelectCalled();
+        return this.union(selectQuery.build(), true);
+    }
+
+    /**
+     * Agrega la cla&uacute;sula <b>{@code EXCEPT}</b> a la consulta actual, une el resultado del query actual
+     * con un segundo query, para poder mantener el orden en el que se requiere hacer el <b>{@code EXCEPT}</b>
+     *
+     * @param selectQuery el objeto SelectQueryUtil que representa la consulta a concatenar a la primer consulta
+     * @return una cadena que representa la consulta actual con la cla&uacute;sula <b>{@code EXCEPT}</b> y la consulta proporcionada
+     * juntas
+     * @see #exceptAll(SelectQueryUtil)
+     * @since 1.0.2
+     */
+    public String except(SelectQueryUtil selectQuery) {
+        validarSelectCalled();
+        return this.except(selectQuery.build(), false);
+    }
+
+
+    /**
+     * Agrega la cla&uacute;sula <b>{@code EXCEPT ALL}</b> a la consulta actual, une el resultado del query actual
+     * con un segundo query, para poder mantener el orden en el que se requiere hacer el <b>{@code EXCEPT ALL}</b>
+     *
+     * @param selectQuery el objeto SelectQueryUtil que representa la consulta a concatenar a la primer consulta
+     * @return una cadena que representa la consulta actual con la cla&uacute;sula <b>{@code EXCEPT ALL}</b> y la consulta proporcionada
+     * juntas
+     * @see #except(SelectQueryUtil)
+     * @since 1.0.2
+     */
+    public String exceptAll(SelectQueryUtil selectQuery) {
+        validarSelectCalled();
+        return this.except(selectQuery.build(), true);
+    }
+
+    /**
+     * Agrega la cla&uacute;sula <b>{@code INTERSECT}</b> a la consulta actual, une el resultado del query actual
+     * con un segundo query, para poder mantener el orden en el que se requiere hacer el <b>{@code INTERSECT}</b>
+     *
+     * @param selectQuery el objeto SelectQueryUtil que representa la consulta a concatenar a la primer consulta
+     * @return una cadena que representa la consulta actual con la cla&uacute;sula <b>{@code INTERSECT}</b> y la consulta proporcionada
+     * juntas
+     * @see #intersectAll(SelectQueryUtil)
+     * @since 1.0.2
+     */
+    public String intersect(SelectQueryUtil selectQuery) {
+        validarSelectCalled();
+        return this.intersect(selectQuery.build(), false);
+    }
+
+    /**
+     * Agrega la cla&uacute;sula <b>{@code INTERSECT ALL}</b> a la consulta actual, une el resultado del query actual
+     * con un segundo query, para poder mantener el orden en el que se requiere hacer el <b>{@code INTERSECT ALL}</b>
+     *
+     * @param selectQuery el objeto SelectQueryUtil que representa la consulta a concatenar a la primer consulta
+     * @return una cadena que representa la consulta actual con la cla&uacute;sula <b>{@code INTERSECT ALL}</b> y la consulta proporcionada
+     * juntas
+     * @see #intersect(SelectQueryUtil)
+     * @since 1.0.2
+     */
+    public String intersectAll(SelectQueryUtil selectQuery) {
+        validarSelectCalled();
+        return this.intersect(selectQuery.build(), true);
+    }
+
+    /**
      * Regresa el query que se construy&oacute;.
      * <p>
      *
-     * @return
+     * @return La sentencia armada con los par&aacute;metros que se hayan agregado.
+     * @since 1.0.0
      */
     public String build() {
         StringBuilder stringBuilder = new StringBuilder(SELECT);
@@ -310,6 +443,82 @@ public class SelectQueryUtil {
         return stringBuilder.toString();
     }
 
+    /**
+     * Recupera el query generado ya encriptado y usando utf-8
+     *
+     * @return
+     * @since 1.0.2
+     */
+    public String encrypt(String query) throws UnsupportedEncodingException {
+        return DatatypeConverter
+                .printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Recupera el query generado ya encriptado y usando utf-8
+     *
+     * @return
+     * @since 1.0.2
+     */
+    public String encrypt(String query, String coding) throws UnsupportedEncodingException {
+        return DatatypeConverter
+                .printBase64Binary(query.getBytes(coding));
+    }
+
+    /**
+     * Une la consulta actual con una consulta generada a partir de la cadena proporcionada usando la cláusula
+     * <b>{@code UNION}</b>.
+     *
+     * @param build la cadena que representa la consulta a unir
+     * @return una cadena que representa la consulta actual con la cláusula UNION y la consulta proporcionada unida
+     * @since 1.0.1
+     */
+    private String union(String build, boolean isAll) {
+        final String queryUnion = this.build();
+        return queryUnion + SPACE +
+                (isAll ? UNION_ALL : UNION) +
+                SPACE +
+                build;
+    }
+
+    /**
+     * Crea la sentencia <b>{@code EXCEPT}</b> o <b>{@code EXCEPT ALL}</b>
+     *
+     * @param build es la consulta que se va a agregar a la consulta actual
+     * @param isAll es una bandera que verifica si se agrega o no la palaba <b>{@code ALL}</b>
+     * @return Las sentencias con la instrucci&oacute;n <b>{@code EXCEPT}</b> o <b>{@code EXCEPT ALL}</b>
+     * @since 1.0.2
+     */
+    private String except(String build, boolean isAll) {
+        final String queryUnion = this.build();
+        return queryUnion + SPACE +
+                (isAll ? EXCEPT_ALL : EXCEPT) +
+                SPACE +
+                build;
+    }
+
+    /**
+     * Crea la sentencia <b>{@code INTERSECT}</b> o <b>{@code INTERSECT ALL}</b>
+     *
+     * @param build es la consulta que se va a agregar a la consulta actual
+     * @param isAll es una bandera que verifica si se agrega o no la palaba <b>{@code ALL}</b>
+     * @return Las sentencias con la instrucci&oacute;n <b>{@code INTERSECT}</b> o <b>{@code EXCEPT ALL}</b>
+     * @since 1.0.2
+     */
+    private String intersect(String build, boolean isAll) {
+        final String queryUnion = this.build();
+        return queryUnion + SPACE +
+                (isAll ? INTERSECT_ALL : INTERSECT) +
+                SPACE +
+                build;
+    }
+
+    /**
+     * Agrega la sentencia <b>{@code LIMIT}</b> a la sentencia <b>{@code SQL}</b>
+     *
+     * @param stringBuilder Cadena que se est&aacute; armando para agregar el <b>{@code LIMIT}</b>
+     * @since 1.0.1
+     */
     private void agregarLimit(StringBuilder stringBuilder) {
         if (limit != null) {
             stringBuilder.append(SPACE)
@@ -322,7 +531,8 @@ public class SelectQueryUtil {
     /**
      * Agrega la sentencia <b>{@code FROM}</b> a la cadena para crear el <b>query sql</b>.
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void agregarFrom(StringBuilder stringBuilder) {
         stringBuilder.append(FROM).append(SPACE);
@@ -330,9 +540,10 @@ public class SelectQueryUtil {
     }
 
     /**
-     * Agrega la sentencia <b>{@code WHERE}</b> a la cadena para armar el <b>query sql</b>.
+     * Agrega la sentencia <b>{@code WHERE}</b> a la cadena para armar el query<b>{@code SQL}</b>.
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void agregarWhere(StringBuilder stringBuilder) {
         if (validarCondiciones()) {
@@ -344,10 +555,11 @@ public class SelectQueryUtil {
     /**
      * Agrega los par&aacute;metros a los placeholders de forma din&aacute;mica.
      *
-     * @param stringBuilder
-     * @param index
-     * @param condicion
-     * @param helperCondiciones
+     * @param stringBuilder     Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @param index             &iacute;ndice para saber que condici&oacute;n se est&aacute; procesando.
+     * @param condicion         Condici&oacute;n que se est&aacute; evaluando.
+     * @param helperCondiciones Lista auxiliar para manejar las condiciones.
+     * @since 1.0.0
      */
     private void agregarParametros(StringBuilder stringBuilder, int index, String condicion, List<String> helperCondiciones) {
 
@@ -382,7 +594,8 @@ public class SelectQueryUtil {
     /**
      * Agrega la senetencia order by en caso de que se exista.
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void addOrderBy(StringBuilder stringBuilder) {
         if (!orderBy.isEmpty()) {
@@ -397,7 +610,8 @@ public class SelectQueryUtil {
     /**
      * Agrega la sentencia group by en caso de que exista
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void addGroupBy(StringBuilder stringBuilder) {
         if (!groupBy.isEmpty()) {
@@ -412,7 +626,8 @@ public class SelectQueryUtil {
     /**
      * Agrega la lista de condiciones que se hayan agregado a la consulta.
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void agregarCondicionesWhere(StringBuilder stringBuilder) {
         if (validarCondiciones()) {
@@ -427,6 +642,7 @@ public class SelectQueryUtil {
      * Valida que la lista de condiciones tenga alg&uacute;n valor.
      *
      * @return
+     * @since 1.0.0
      */
     private boolean validarCondiciones() {
         return !condiciones.isEmpty();
@@ -435,7 +651,8 @@ public class SelectQueryUtil {
     /**
      * Agrega los joins si es que se han agregado a la consulta.
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void agregarJoins(StringBuilder stringBuilder) {
         if (!joins.isEmpty()) {
@@ -444,7 +661,6 @@ public class SelectQueryUtil {
                 stringBuilder.append(join.getTipo());
                 stringBuilder.append(SPACE);
                 stringBuilder.append(join.getTabla());
-                stringBuilder.append(SPACE).append(ON).append(SPACE);
                 agregarCondicionesJoin(stringBuilder, join);
             }
         }
@@ -453,12 +669,14 @@ public class SelectQueryUtil {
     /**
      * Agrega la lista de condiciones para la sentencia <b>{@code JOIN}</b> que corresponda
      *
-     * @param stringBuilder
-     * @param join
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @param join          Sentencia <b>{@code JOIN}</b> que se va a agregar.
+     * @since 1.0.0
      */
     private void agregarCondicionesJoin(StringBuilder stringBuilder, Join join) {
         final List<String> condicionesTemp = join.getOn();
         if (!condicionesTemp.isEmpty()) {
+            stringBuilder.append(SPACE).append(ON).append(SPACE);
             for (int index = 0; index < condicionesTemp.size(); index++) {
                 String condicion = condicionesTemp.get(index);
                 agregarParametros(stringBuilder, index, condicion, condicionesTemp);
@@ -469,7 +687,8 @@ public class SelectQueryUtil {
     /**
      * Agrega la lista de columnas para construir la consulta.
      *
-     * @param stringBuilder
+     * @param stringBuilder Cadena para ir armando la sentencia <b>{@code SQL}</b>
+     * @since 1.0.0
      */
     private void agregarColumnas(StringBuilder stringBuilder) {
         if (columnas.isEmpty()) {
@@ -485,15 +704,28 @@ public class SelectQueryUtil {
      * - AND
      * - OR
      *
-     * @param condicion
-     * @param tipo
-     * @return
+     * @param condicion Condici&oacute;n que se va a evaluar.
+     * @param tipo      Operador l&oacute;gico.
+     * @return La condici&oacute;n y el operador, puede ser un <b>{@code OR}</b> o <b>{@code AND}</b>.
+     * @since 1.0.0
      */
     private static String crearCondicion(String condicion, String tipo) {
         return SPACE +
                 "#" + tipo +
                 SPACE +
                 condicion;
+    }
+
+    /**
+     * Valida si la funci&oacute;n <b>{@code select()}</b> ya se ha invocado.
+     *
+     * @see SelectQueryUtil#select(String...)
+     * @since 1.0.2
+     */
+    private void validarSelectCalled() {
+        if (!isSelectCalled) {
+            throw new IllegalStateException("No se puede crear el query sin haber agregado la sentencia select");
+        }
     }
 
 }

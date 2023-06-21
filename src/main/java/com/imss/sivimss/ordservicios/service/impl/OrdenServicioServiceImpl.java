@@ -1,22 +1,18 @@
 package com.imss.sivimss.ordservicios.service.impl;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
-import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.repository.OrdenesDAO;
 import com.imss.sivimss.ordservicios.service.OrdenServicioService;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.Response;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class OrdenServicioServiceImpl implements OrdenServicioService {
 
@@ -28,27 +24,36 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 	}
 
 	@Override
-	public Response<?> peticionOrden(DatosRequest request, Authentication authentication, String accion)
-			throws IOException {
-		Gson gson= new Gson();
-        UsuarioDto usuarioDto = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+	public Response<Object> peticionOrden(DatosRequest request, Authentication authentication, String accion)
+			throws IOException, SQLException {
 		switch (accion) {
 		case "guardar":
-			return ordenesDAO.agregarOrden(request, usuarioDto);
-			
+			return ordenesDAO.agregarOrden(request, authentication);
+
 		case "actualizar":
 			return null;
-		
+
 		case "cambiar-estatus":
-			
 			return null;
-			
-		case "consultar":
-			return null;
-			
+
+		case "buscarOrden":
+			return ordenesDAO.buscarOrden(request, authentication);
+
+		case "detalleOrden":
+			return ordenesDAO.detalleOrden(request, authentication);
+
+		case "consultarOrdenes":
+			return ordenesDAO.consultarOrdenesServicio(request, authentication);
 
 		case "descargar":
 			return null;
+
+		case "buscarRfc":
+			return ordenesDAO.buscarRfc(request, authentication);
+			
+		case "buscarCurp":
+			return ordenesDAO.buscarCurp(request, authentication);
+			
 		default:
 			throw new BadRequestException(HttpStatus.BAD_REQUEST, "La peticion no se pudo realizar");
 		}

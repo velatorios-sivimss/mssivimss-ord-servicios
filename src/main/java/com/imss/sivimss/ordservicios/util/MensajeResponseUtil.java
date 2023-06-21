@@ -11,13 +11,13 @@ public class MensajeResponseUtil {
 		super();
 	}
 
-	public static Response<?> mensajeResponse(Response<?> respuestaGenerado, String numeroMensaje) {
+	public static Response<Object> mensajeResponse(Response<Object> respuestaGenerado, String numeroMensaje) {
 		Integer codigo = respuestaGenerado.getCodigo();
 		if (codigo == 200) {
 			respuestaGenerado.setMensaje(numeroMensaje);
 		} else {
 			log.error("Error.. {}", respuestaGenerado.getMensaje());
-			respuestaGenerado.setMensaje("5");
+			respuestaGenerado.setMensaje(AppConstantes.ERROR_GUARDAR);
 		}
 		return respuestaGenerado;
 	}
@@ -25,6 +25,41 @@ public class MensajeResponseUtil {
 	public static Response<?> mensajeConsultaResponse(Response<?> respuestaGenerado, String numeroMensaje) {
 		Integer codigo = respuestaGenerado.getCodigo();
 		if (codigo == 200 && (!respuestaGenerado.getDatos().toString().contains("id"))) {
+			respuestaGenerado.setMensaje(numeroMensaje);
+		}
+		return respuestaGenerado;
+	}
+	
+	public static Response<Object> mensajeResponseExterno(Response<Object> respuestaGenerado, String numeroMensaje,
+			String numeroMensajeError) {
+		Integer codigo = respuestaGenerado.getCodigo();
+		if (codigo == 400) {
+			respuestaGenerado.setCodigo(200);
+			respuestaGenerado.setMensaje(numeroMensaje);
+		} else if (codigo == 404 || codigo == 500) {
+			respuestaGenerado.setMensaje(numeroMensajeError);
+		}
+		return respuestaGenerado;
+	}
+	
+	public  static Response<Object>mensajeConsultaResponseObject(Response<Object> respuestaGenerado, String numeroMensaje) {
+		Integer codigo = respuestaGenerado.getCodigo();
+		if (codigo == 200 &&  !(respuestaGenerado.getDatos().toString().contains("[]")) ){
+			respuestaGenerado.setMensaje(AppConstantes.EXITO);
+		}else if (codigo == 400 || codigo == 404 || codigo == 500 ) {
+			log.error("Error.. {}", respuestaGenerado.getMensaje());
+			respuestaGenerado.setMensaje(numeroMensaje);
+		}
+		return respuestaGenerado;
+	}
+	
+	public  static Response<Object>mensajeConsultaResponseObject(Response<Object> respuestaGenerado,String numeroMensajeCorrecto, String numeroMensaje) {
+		Integer codigo = respuestaGenerado.getCodigo();
+		if (codigo == 200) {
+			respuestaGenerado.setMensaje(numeroMensajeCorrecto);
+			
+		}else if (codigo == 400 || codigo == 404 || codigo == 500 ) {
+			log.error("Error.. {}", respuestaGenerado.getMensaje());
 			respuestaGenerado.setMensaje(numeroMensaje);
 		}
 		return respuestaGenerado;
