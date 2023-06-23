@@ -74,13 +74,33 @@ public class Paquete {
 	public DatosRequest obtenerCaracteristicasPaquete(Integer idPaquete) {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
-		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("");
-		String query="";
+		SelectQueryUtil selectQueryUtilServicio= new SelectQueryUtil();
+		selectQueryUtilServicio.select("'' AS idCategoria","SPS.ID_SERVICIO AS idServicio","SS.ID_TIPO_SERVICIO AS idTipoServicio","STPS.DES_TIPO_SERVICIO AS grupo",
+				"SS.DES_NOM_SERVICIO AS concepto","SP.MON_PRECIO AS importe","'1' AS cantidad","SP.MON_PRECIO AS totalPaquete");
+		selectQueryUtilServicio.from("SVT_PAQUETE SP")
+		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SPS.ID_PAQUETE = SP.ID_PAQUETE")
+		.leftJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO =SPS.ID_SERVICIO")
+		.innerJoin("SVC_TIPO_SERVICIO STPS", "SS.ID_TIPO_SERVICIO = STPS.ID_TIPO_SERVICIO")
+		.where("SP.ID_PAQUETE = :idPaquete")
+		.and("SPS.IND_ACTIVO = 1")
+		.setParameter("idPaquete", idPaquete);
+		
+		SelectQueryUtil selectQueryUtilArticulo= new SelectQueryUtil();
+		selectQueryUtilArticulo.select("SCA.ID_CATEGORIA_ARTICULO AS idCategoria","'' AS idServicio","'' AS idTipoServicio","SCA.DES_CATEGORIA_ARTICULO AS grupo",
+				"'' AS concepto","SP.MON_PRECIO AS importe","'1' AS cantidad","SP.MON_PRECIO AS totalPaquete");
+		selectQueryUtilArticulo.from("SVT_PAQUETE SP")
+		.innerJoin("SVT_PAQUETE_ARTICULO SPA", "SP.ID_PAQUETE= SPA.ID_PAQUETE ")
+		.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = SPA.ID_CATEGORIA_ARTICULO")
+		.where("SP.ID_PAQUETE = :idPaquete")
+		.and("SPA.IND_ACTIVO = 1")
+		.setParameter("idPaquete", idPaquete);
+		
+		String query=selectQueryUtilServicio.union(selectQueryUtilArticulo);
 		log.info(query);
 
 		String encoded=DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		parametros.put(AppConstantes.QUERY, encoded);
+		datosRequest.setDatos(parametros);
 		return datosRequest;
 	}
 }

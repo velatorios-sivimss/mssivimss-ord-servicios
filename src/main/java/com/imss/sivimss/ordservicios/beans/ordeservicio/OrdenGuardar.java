@@ -28,7 +28,6 @@ import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
-import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 @Service
