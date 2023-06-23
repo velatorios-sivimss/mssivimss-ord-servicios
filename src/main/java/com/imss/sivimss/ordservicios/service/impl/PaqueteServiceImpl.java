@@ -125,7 +125,6 @@ public class PaqueteServiceImpl implements PaqueteService{
 			Gson gson= new Gson();
 			String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 			serviciosRequest= gson.fromJson(datosJson, PaqueteRequest.class);
-			List<PaqueteCaracteristicas>paqueteCaracteristicas;
 			response=providerServiceRestTemplate.consumirServicio(paquete.obtenerCaracteristicasPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
@@ -148,7 +147,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 		List<AsignacionesAtaudResponse> asignacionesAtaudResponse;
 		
 		try {
-            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudTipoAsignacionPaquete", AppConstantes.CONSULTA, authentication);
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarTipoAsignacionAtaud", AppConstantes.CONSULTA, authentication);
             Gson gson= new Gson();
             String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
             paqueteRequest=gson.fromJson(datosJson, PaqueteRequest.class);
@@ -172,7 +171,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 		Response<Object>response;
 		AtaudPaquete ataudPaquete= new AtaudPaquete();
 		try {
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudTipoAsignacionPaquete", AppConstantes.CONSULTA, authentication);
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaud", AppConstantes.CONSULTA, authentication);
             Gson gson= new Gson();
             String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
             ataudPaquete=gson.fromJson(datosJson, AtaudPaquete.class);
@@ -215,7 +214,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 		Response<Object>response;
 		AtaudesInventarioRequest articuloFunerarioRequest= new AtaudesInventarioRequest();
 		try {
-	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarProveedorAtaud", AppConstantes.CONSULTA, authentication);
+	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudInventario", AppConstantes.CONSULTA, authentication);
 	        Gson gson= new Gson();
 	        String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 	        articuloFunerarioRequest= gson.fromJson(datosJson, AtaudesInventarioRequest.class);

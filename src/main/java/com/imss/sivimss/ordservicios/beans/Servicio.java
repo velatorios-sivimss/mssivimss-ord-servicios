@@ -62,6 +62,7 @@ public class Servicio {
 		.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
 		.where("SP.IND_ACTIVO =1")
 		.and("SS.ID_SERVICIO = "+idServicio)
+		.and("SP.FEC_VIGENCIA >= CURRENT_DATE() ")
 		.orderBy("SP.NOM_PROVEEDOR ASC");
 		
 		String query=selectQueryUtil.build();
