@@ -41,6 +41,7 @@ public class ReglasNegocioRepository {
 	public String obtenerDatosContratanteRfc(String rfc) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("SVC.ID_CONTRATANTE AS idContratante",
+				"SPE.ID_PERSONA AS idPersona",
 				"IFNULL(SPE.CVE_RFC,'') AS rfc",
 				"IFNULL(SPE.CVE_CURP,'') AS curp",
 				"IFNULL(SPE.CVE_NSS,'') AS nss",
@@ -72,6 +73,7 @@ public class ReglasNegocioRepository {
 	public String obtenerDatosContratanteCurp(String curp) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("SVC.ID_CONTRATANTE AS idContratante",
+				"SPE.ID_PERSONA AS idPersona",
 				"IFNULL(SPE.CVE_RFC,'') AS rfc",
 				"IFNULL(SPE.CVE_CURP,'') AS curp",
 				"IFNULL(SPE.CVE_NSS,'') AS nss",
