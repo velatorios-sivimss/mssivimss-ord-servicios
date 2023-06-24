@@ -16,6 +16,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PanteonRequest {
 
+	private Integer idPanteon;
+	
 	private String nombrePanteon;
 
 	private DomicilioRequest domicilio;
