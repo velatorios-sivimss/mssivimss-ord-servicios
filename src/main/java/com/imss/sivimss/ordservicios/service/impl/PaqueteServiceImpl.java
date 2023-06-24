@@ -64,19 +64,22 @@ public class PaqueteServiceImpl implements PaqueteService{
 
 	@Override
 	public Response<Object> consultarPaquetes(DatosRequest request, Authentication authentication) throws IOException {
-		Response<Object>response;
+		Response<Object>response; 
+		PaqueteRequest paqueteRequest= new PaqueteRequest();
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarPaquetes", AppConstantes.CONSULTA, authentication);
-
+            Gson gson= new Gson();
+            String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+            paqueteRequest=gson.fromJson(datosJson, PaqueteRequest.class);
 			List<PaqueteResponse>paquetes;
-			response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes(paqueteRequest.getIdVelatorio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 				paquetes=Arrays.asList(mapper.map(response.getDatos(), PaqueteResponse[].class));
 				response.setDatos(ConvertirGenerico.convertInstanceOfObject(paquetes));
 			}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = paquete.obtenerPaquetes().getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = paquete.obtenerPaquetes(paqueteRequest.getIdVelatorio()).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);

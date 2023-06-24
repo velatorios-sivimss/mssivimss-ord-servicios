@@ -11,4 +11,5 @@ import lombok.Setter;
 public class PaqueteRequest {
 
 	private Integer idPaquete;
+	private Integer idVelatorio;
 }
