@@ -33,13 +33,13 @@ public class Servicio {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SS.ID_SERVICIO AS idServicio","SS.NOM_SERVICIO AS nombreServicio")
+		selectQueryUtil.select("SS.ID_SERVICIO AS idServicio","SS.DES_NOM_SERVICIO AS nombreServicio")
 		.from("SVT_SERVICIO SS")
 		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SS.ID_SERVICIO = SCS.ID_SERVICIO")
 		.innerJoin("SVT_CONTRATO SC", "SCS.ID_CONTRATO =SC.ID_CONTRATO")
 		.where("SS.IND_ACTIVO =1")
 		.and("DATE_FORMAT(SC.FEC_FIN_VIG,\"%Y-%M-%D\") <= DATE_FORMAT(CURRENT_DATE(),\"%Y-%M-%D\")")
-		.orderBy("SS.NOM_SERVICIO ASC");
+		.orderBy("nombreServicio ASC");
 		
 		String query=selectQueryUtil.build();
 		log.info(query);
