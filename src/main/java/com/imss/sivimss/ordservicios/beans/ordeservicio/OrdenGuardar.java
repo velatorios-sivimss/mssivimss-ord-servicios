@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
@@ -144,6 +145,7 @@ public class OrdenGuardar {
         //caracteristicas presupuesto
         if (ordenesServicioRequest.getIdEstatus()==1) {
 			// temporales
+        	caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
         	
 		}
         // buenas buenas

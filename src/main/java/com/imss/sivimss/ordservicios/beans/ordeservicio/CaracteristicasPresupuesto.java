@@ -12,6 +12,7 @@ import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalle
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleTrasladoRequest;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteRequest;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
+import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 
 @Service
@@ -24,13 +25,26 @@ public class CaracteristicasPresupuesto {
 
 	private Statement statement;
 	
+	@Autowired
+	private ReglasNegocioRepository reglasNegocioRepository;
+	
 	public void insertarCaracteristicasPresupuestoTemp(CaracteristicasPresupuestoRequest caracteristicasPresupuestoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException{
-		// caracteristicas paquete
-		// detalle caracteristicas paquete
+		try {
+			statement=connection.createStatement();
+			
+			// caracteristicas paquete
+			if (caracteristicasPresupuestoRequest.getCaracteristicasPaquete()!=null) {
+				reglasNegocioRepository.insertarCaracteristicasPaquete(null, null, idOrdenServicio, idUsuarioAlta);
+			}
+			// detalle caracteristicas paquete
 		
 		
-		// caracteristicas presupuesto
-		// detalle caracteristicas paquete
+			// caracteristicas presupuesto
+			// detalle caracteristicas paquete
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		
 	}
 	

@@ -33,10 +33,10 @@ public class Promotor {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SPR.ID_PROMOTOR AS idPromotor","concat(SPR.NOM_PROMOTOR,' ', SPR.NOM_PAPELLIDO,' ',SPR.NOM_SAPELLIDO) as nombrePromotor")
+		selectQueryUtil.select("SPR.ID_PROMOTOR AS idPromotor","CONCAT(SPR.NOM_PROMOTOR,' ', SPR.NOM_PAPELLIDO,' ',SPR.NOM_SAPELLIDO) AS nombrePromotor")
 		.from("SVT_PROMOTOR SPR")
 		.where("SPR.IND_ACTIVO = 1")
-		.orderBy("nombrePromotor ASC");
+		.orderBy("CONCAT(SPR.NOM_PROMOTOR,' ', SPR.NOM_PAPELLIDO,' ',SPR.NOM_SAPELLIDO) ASC");
 		String query= selectQueryUtil.build();
 		log.info(query);
 

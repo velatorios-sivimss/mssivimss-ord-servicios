@@ -76,6 +76,7 @@ public class CapillaServiceImpl implements CapillaService{
 			String consulta = capilla.obtenerCapillas(capillaRequest.getIdVelatorio()).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+	        log.error(e.getMessage());
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
 	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
