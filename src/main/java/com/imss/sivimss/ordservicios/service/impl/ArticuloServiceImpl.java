@@ -159,18 +159,21 @@ public class ArticuloServiceImpl implements ArticuloService{
 	@Override
 	public Response<Object> consultarArticuloComplementario(DatosRequest request, Authentication authentication)
 			throws IOException {
+		ArticuloComplementarioRequest articuloComplementarioRequest= new ArticuloComplementarioRequest();
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarArticuloComplementario", AppConstantes.CONSULTA, authentication);
-
+            String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+            Gson gson= new Gson();
+            articuloComplementarioRequest=gson.fromJson(datosJson, ArticuloComplementarioRequest.class);
 			List<ArticuloComplementarioResponse>articuloFunerarioResponses;
-			Response<Object>response=providerServiceRestTemplate.consumirServicio(articuloComplementario.obtenerArticulosComplementarios().getDatos(), urlConsultar.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			Response<Object>response=providerServiceRestTemplate.consumirServicio(articuloComplementario.obtenerArticulosComplementarios(articuloComplementarioRequest.getIdVelatorio()).getDatos(), urlConsultar.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
 				response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
 			}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = articuloComplementario.obtenerArticulosComplementarios().getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = articuloComplementario.obtenerArticulosComplementarios(articuloComplementarioRequest.getIdVelatorio()).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);

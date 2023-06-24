@@ -23,7 +23,6 @@ import com.imss.sivimss.ordservicios.model.request.AtaudPaquete;
 import com.imss.sivimss.ordservicios.model.request.AtaudesInventarioRequest;
 import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
 import com.imss.sivimss.ordservicios.model.response.AsignacionesAtaudResponse;
-import com.imss.sivimss.ordservicios.model.response.PaqueteCaracteristicas;
 import com.imss.sivimss.ordservicios.model.response.PaqueteResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
 import com.imss.sivimss.ordservicios.service.PaqueteService;
