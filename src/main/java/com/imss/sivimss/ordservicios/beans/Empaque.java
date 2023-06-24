@@ -30,21 +30,41 @@ public class Empaque {
 		return instancia;
 	}
 	
-	public DatosRequest obtenerEmpaque() {
+	public DatosRequest obtenerEmpaque(Integer idVelatorio) {
 		DatosRequest request = new DatosRequest();
 		Map<String, Object>paramtero= new HashMap<>();
-		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_MODELO_ARTICULO AS nombreArticulo")
-		.from("SVT_ARTICULO STA")
-		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = STA .ID_CATEGORIA_ARTICULO")
-		.innerJoin("SVC_TIPO_ARTICULO ST", "STA.ID_TIPO_ARTICULO = ST.ID_TIPO_ARTICULO ")
-		.where("STA.ID_CATEGORIA_ARTICULO = 4")
-		.and("STA.IND_ACTIVO =1")
-		.and("STA.ID_TIPO_ARTICULO =1");
-		String query= selectQueryUtil.build();
+		SelectQueryUtil selectQueryUtilArticulo= new SelectQueryUtil();
+		SelectQueryUtil selectQueryUtilInventarioTemp= new SelectQueryUtil();
+		SelectQueryUtil selectQueryUtilInventario= new SelectQueryUtil();
+		
+		selectQueryUtilInventarioTemp.select("STP.ID_INVE_ARTICULO")
+		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
+		.where("STP.IND_ACTIVO=1")
+		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
+		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
+		
+		selectQueryUtilInventario.select("SDCP.ID_INVE_ARTICULO")
+		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
+		.where("SDCP.IND_ACTIVO=1");
+		
+		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO AS idArticulo","STI.FOLIO_ARTICULO AS nombreArticulo")
+		.from("SVT_INVENTARIO_ARTICULO STI")
+		.innerJoin("SVT_ARTICULO STA", "STI.ID_ARTICULO = STA.ID_ARTICULO")
+		.innerJoin("SVT_ORDEN_ENTRADA SOE2", "SOE2.ID_ODE = STI.ID_ODE")
+		.innerJoin("SVT_CONTRATO SC", "SC.ID_CONTRATO = SOE2.ID_CONTRATO")
+		.innerJoin("SVT_PROVEEDOR SP", "SP .ID_PROVEEDOR = SC.ID_PROVEEDOR")
+		.where("STI.IND_ESTATUS NOT IN (2,3)")
+		.and("STI.ID_VELATORIO = "+idVelatorio)
+		.and("STA.ID_CATEGORIA_ARTICULO = 4")
+		.and("STI.ID_TIPO_ASIGNACION_ART =1")
+		.and("STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventarioTemp.build()+")")
+		.and("STI.ID_INVE_ARTICULO NOT IN("+selectQueryUtilInventario.build()+")");
+		
+		String query=selectQueryUtilArticulo.build();
+		
 		log.info(query);
-
 		String encoded= DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+
 		paramtero.put(AppConstantes.QUERY, encoded);
 		request.setDatos(paramtero);
 		return request;

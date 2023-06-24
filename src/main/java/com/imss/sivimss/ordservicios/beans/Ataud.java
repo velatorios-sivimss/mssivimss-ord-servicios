@@ -1,6 +1,5 @@
 package com.imss.sivimss.ordservicios.beans;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class Ataud {
 		return instancia;
 	}
 	
-	public DatosRequest obtenerAtaudes() {
+	public DatosRequest obtenerAtaudes(Integer idVelatorio) {
 		DatosRequest request = new DatosRequest();
 		Map<String, Object>paramtero= new HashMap<>();
 		SelectQueryUtil selectQueryUtilArticulo= new SelectQueryUtil();
@@ -48,12 +47,15 @@ public class Ataud {
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
-		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO","STI.FOLIO_ARTICULO")
+		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO AS idArticulo","STI.FOLIO_ARTICULO AS nombreArticulo")
 		.from("SVT_INVENTARIO_ARTICULO STI")
+		.innerJoin("SVT_ARTICULO STA", "STI.ID_ARTICULO = STA.ID_ARTICULO")
 		.innerJoin("SVT_ORDEN_ENTRADA SOE2", "SOE2.ID_ODE = STI.ID_ODE")
 		.innerJoin("SVT_CONTRATO SC", "SC.ID_CONTRATO = SOE2.ID_CONTRATO")
 		.innerJoin("SVT_PROVEEDOR SP", "SP .ID_PROVEEDOR = SC.ID_PROVEEDOR")
-		.where("STI.ID_ARTICULO=1 AND STI.IND_ESTATUS NOT IN (2,3)")
+		.where("STI.IND_ESTATUS NOT IN (2,3)")
+		.and("STA.ID_CATEGORIA_ARTICULO = 1")
+		.and("STI.ID_VELATORIO = "+idVelatorio)
 		.and("STI.ID_TIPO_ASIGNACION_ART =1")
 		.and("STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventarioTemp.build()+")")
 		.and("STI.ID_INVE_ARTICULO NOT IN("+selectQueryUtilInventario.build()+")");

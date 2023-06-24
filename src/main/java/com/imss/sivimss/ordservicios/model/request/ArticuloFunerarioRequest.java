@@ -10,4 +10,5 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArticuloFunerarioRequest {
 	private Integer idArticulo;
+	private Integer idVelatorio;
 }
