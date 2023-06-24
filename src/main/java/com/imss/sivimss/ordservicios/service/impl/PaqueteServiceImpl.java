@@ -1,12 +1,8 @@
 package com.imss.sivimss.ordservicios.service.impl;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import javax.xml.bind.DatatypeConverter;
@@ -23,11 +19,10 @@ import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Ataud;
 import com.imss.sivimss.ordservicios.beans.Paquete;
 import com.imss.sivimss.ordservicios.model.request.ArticuloFunerarioRequest;
-import com.imss.sivimss.ordservicios.model.request.AsignacionesAtaudRequest;
+import com.imss.sivimss.ordservicios.model.request.AtaudPaquete;
+import com.imss.sivimss.ordservicios.model.request.AtaudesInventarioRequest;
 import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
-import com.imss.sivimss.ordservicios.model.response.ArticuloFunerarioResponse;
 import com.imss.sivimss.ordservicios.model.response.AsignacionesAtaudResponse;
-import com.imss.sivimss.ordservicios.model.response.PaqueteCaracteristicas;
 import com.imss.sivimss.ordservicios.model.response.PaqueteResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
 import com.imss.sivimss.ordservicios.service.PaqueteService;
@@ -68,19 +63,22 @@ public class PaqueteServiceImpl implements PaqueteService{
 
 	@Override
 	public Response<Object> consultarPaquetes(DatosRequest request, Authentication authentication) throws IOException {
-		Response<Object>response;
+		Response<Object>response; 
+		PaqueteRequest paqueteRequest= new PaqueteRequest();
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarPaquetes", AppConstantes.CONSULTA, authentication);
-
+            Gson gson= new Gson();
+            String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+            paqueteRequest=gson.fromJson(datosJson, PaqueteRequest.class);
 			List<PaqueteResponse>paquetes;
-			response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response=providerServiceRestTemplate.consumirServicio(paquete.obtenerPaquetes(paqueteRequest.getIdVelatorio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 				paquetes=Arrays.asList(mapper.map(response.getDatos(), PaqueteResponse[].class));
 				response.setDatos(ConvertirGenerico.convertInstanceOfObject(paquetes));
 			}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = paquete.obtenerPaquetes().getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = paquete.obtenerPaquetes(paqueteRequest.getIdVelatorio()).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
@@ -129,12 +127,7 @@ public class PaqueteServiceImpl implements PaqueteService{
 			Gson gson= new Gson();
 			String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 			serviciosRequest= gson.fromJson(datosJson, PaqueteRequest.class);
-			List<PaqueteCaracteristicas>paqueteCaracteristicas;
 			response=providerServiceRestTemplate.consumirServicio(paquete.obtenerCaracteristicasPaquete(serviciosRequest.getIdPaquete()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-			if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
-				paqueteCaracteristicas=Arrays.asList(mapper.map(response.getDatos(), PaqueteCaracteristicas[].class));
-				response.setDatos(ConvertirGenerico.convertInstanceOfObject(paqueteCaracteristicas));
-			}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 			String consulta = paquete.obtenerCaracteristicasPaquete(serviciosRequest.getIdPaquete()).getDatos().get(AppConstantes.QUERY).toString();
@@ -148,72 +141,53 @@ public class PaqueteServiceImpl implements PaqueteService{
 	}
 
 	@Override
-	public Response<Object> consultarAtaudTipoAsignacionPaquete(DatosRequest request, Authentication authentication)
+	public Response<Object> consultarTipoAsignacionAtaud(DatosRequest request, Authentication authentication)
 			throws IOException {
 		Response<Object>response= new Response<>(false,HttpStatus.OK.value(),AppConstantes.EXITO);
-		AsignacionesAtaudRequest asignacionesRequest= new AsignacionesAtaudRequest();
+		PaqueteRequest paqueteRequest= new PaqueteRequest();
 		String query="";
-		Map<String, Object>paramtero= new HashMap<>();
-		DatosRequest requestPeticion= new DatosRequest();
-		AsignacionesAtaudResponse asignacionesAtaudResponse= new AsignacionesAtaudResponse();
+		List<AsignacionesAtaudResponse> asignacionesAtaudResponse;
 		
 		try {
-            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudTipoAsignacionPaquete", AppConstantes.CONSULTA, authentication);
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarTipoAsignacionAtaud", AppConstantes.CONSULTA, authentication);
             Gson gson= new Gson();
             String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-            asignacionesRequest=gson.fromJson(datosJson, AsignacionesAtaudRequest.class);
-            for(Integer idTipoAsignacion: asignacionesRequest.getAsignaciones()){
-            	switch (idTipoAsignacion) {
-    			case 1:
-    	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudTipoAsignacionConsignado", AppConstantes.CONSULTA, authentication);
-    				query= ataud.obtenerAtaudTipoAsignacion(idTipoAsignacion);
-    				paramtero.put(AppConstantes.QUERY, DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8)));
-    				requestPeticion.setDatos(paramtero);
-            		response=providerServiceRestTemplate.consumirServicio(requestPeticion.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-            		paramtero.clear();
-            		asignacionesAtaudResponse.setConsigando(obtenerArticulosFunerarios(response));
-            		break;
-    				
-    			case 3:
-    	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudTipoAsignacionDonado", AppConstantes.CONSULTA, authentication);
-    				query= ataud.obtenerAtaudTipoAsignacion(idTipoAsignacion);
-    				paramtero.put(AppConstantes.QUERY, DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8)));
-    				requestPeticion.setDatos(paramtero);
-            		response=providerServiceRestTemplate.consumirServicio(requestPeticion.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-            		paramtero.clear();
-            		asignacionesAtaudResponse.setDonado(obtenerArticulosFunerarios(response));
-            		break;
-    			case 5:
-    	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudTipoAsignacionEconmico", AppConstantes.CONSULTA, authentication);
-    				query= ataud.obtenerAtaudTipoAsignacion(idTipoAsignacion);
-    				paramtero.put(AppConstantes.QUERY, DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8)));
-    				requestPeticion.setDatos(paramtero);
-            		response=providerServiceRestTemplate.consumirServicio(requestPeticion.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-            		paramtero.clear();
-            		asignacionesAtaudResponse.setEconomico(obtenerArticulosFunerarios(response));
-            		break;
-
-    			default:
-    				break;
-    			}
-            }
-            response.setDatos(ConvertirGenerico.convertInstanceOfObject(asignacionesAtaudResponse));
-    		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
+            paqueteRequest=gson.fromJson(datosJson, PaqueteRequest.class);
+            response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAsignacionAtaudPaquete(paqueteRequest.getIdPaquete()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+            if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
+				asignacionesAtaudResponse=Arrays.asList(mapper.map(response.getDatos(), AsignacionesAtaudResponse[].class));
+				
+				
+				response.setDatos(ConvertirGenerico.convertInstanceOfObject(asignacionesAtaudResponse));
+			}
+            return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 	        log.error(AppConstantes.ERROR_QUERY.concat(query));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
 	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
 	}
-	
-	private List<ArticuloFunerarioResponse>obtenerArticulosFunerarios(Response<Object> response){
-		List<ArticuloFunerarioResponse>articuloFunerarioResponses= new ArrayList<>();
-		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
-			articuloFunerarioResponses=Arrays.asList(mapper.map(response.getDatos(), ArticuloFunerarioResponse[].class));
-		}
-		return articuloFunerarioResponses;
-	}
 
+	@Override
+	public Response<Object> consultarAtaud(DatosRequest request, Authentication authentication) throws IOException {
+		Response<Object>response;
+		AtaudPaquete ataudPaquete= new AtaudPaquete();
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaud", AppConstantes.CONSULTA, authentication);
+            Gson gson= new Gson();
+            String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+            ataudPaquete=gson.fromJson(datosJson, AtaudPaquete.class);
+            response=providerServiceRestTemplate.consumirServicio(ataud.obtenerAtaudTipoAsignacion(ataudPaquete.getIdVelatorio(), ataudPaquete.getIdAsignacion()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+		} catch (Exception e) {
+			String consulta = ataud.obtenerAtaudTipoAsignacion(ataudPaquete.getIdVelatorio(), ataudPaquete.getIdAsignacion()).getDatos().get(AppConstantes.QUERY).toString();
+	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		}
+	}
+	
 	@Override
 	public Response<Object> consultarProveedorAtaud(DatosRequest request, Authentication authentication)
 			throws IOException {
@@ -235,7 +209,26 @@ public class PaqueteServiceImpl implements PaqueteService{
 		}
 		
 	}
-	
-	
+
+	@Override
+	public Response<Object> consultarAtaudInventario(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Response<Object>response;
+		AtaudesInventarioRequest articuloFunerarioRequest= new AtaudesInventarioRequest();
+		try {
+	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarAtaudInventario", AppConstantes.CONSULTA, authentication);
+	        Gson gson= new Gson();
+	        String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+	        articuloFunerarioRequest= gson.fromJson(datosJson, AtaudesInventarioRequest.class);
+	        response=providerServiceRestTemplate.consumirServicio(ataud.obtenerListadoAtaudesInventario(articuloFunerarioRequest.getIdAsignacion(),articuloFunerarioRequest.getIdArticulo(),articuloFunerarioRequest.getIdProveedor(),articuloFunerarioRequest.getIdVelatorio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+	        return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR); 
+		} catch (Exception e) {
+			String consulta = ataud.obtenerProveedorAtaud(articuloFunerarioRequest.getIdArticulo()).getDatos().get(AppConstantes.QUERY).toString();
+	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
+			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		}
+	}
 
 }

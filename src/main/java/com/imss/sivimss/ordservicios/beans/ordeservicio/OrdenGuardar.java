@@ -28,7 +28,6 @@ import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
-import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 @Service
@@ -36,9 +35,6 @@ public class OrdenGuardar {
 
 	@Value("${endpoints.mod-catalogos}")
 	private String urlDominio;
-	
-	@Autowired
-	private ProviderServiceRestTemplate providerServiceRestTemplate;
 	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
@@ -125,7 +121,6 @@ public class OrdenGuardar {
 	}
 	
 	private Response<Object> servicioInmediato(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
-		Response<Object>response;
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		//contratante

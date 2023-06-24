@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PaqueteRequest {
-
-	private Integer idPaquete;
+public class AtaudPaquete {
 	private Integer idVelatorio;
-	private Integer idProveedor;
+	private Integer idAsignacion;
 }

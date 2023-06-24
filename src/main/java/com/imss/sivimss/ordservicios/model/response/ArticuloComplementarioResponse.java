@@ -13,4 +13,6 @@ public class ArticuloComplementarioResponse {
 	private Integer idArticulo;
 	
 	private String nombreArticulo;
+	
+	private Double precio;
 }

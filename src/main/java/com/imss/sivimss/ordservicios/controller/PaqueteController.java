@@ -66,12 +66,22 @@ public class PaqueteController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
-	@PostMapping("/consultar/ataud/asignado")
+	@PostMapping("/consultar/ataud/asignacion")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>obtenerAtaudAsignacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException{
-		Response<?>response= paqueteService.consultarAtaudTipoAsignacionPaquete(request, authentication);
+		Response<?>response= paqueteService.consultarTipoAsignacionAtaud(request, authentication);
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+
+	@PostMapping("/consultar/ataud")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object>obtenerAtaud(@RequestBody DatosRequest request,Authentication authentication) throws IOException{
+		Response<?>response= paqueteService.consultarAtaud(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
@@ -82,6 +92,16 @@ public class PaqueteController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>obtenerProveedorAtaud(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
 		Response<?>response=paqueteService.consultarProveedorAtaud(request, authentication);
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
+	@PostMapping("/consultar/ataud/inventario")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo",fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object>obtenerAtaudInventario(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+		Response<?>response=paqueteService.consultarAtaudInventario(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}

@@ -31,15 +31,19 @@ public class ArticuloComplementario {
 		return instancia;
 	}
 	
-	public DatosRequest obtenerArticulosComplementarios() {
+	public DatosRequest obtenerArticulosComplementarios(Integer idVelatorio) {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_ARTICULO AS nombreArticulo")
+		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_ARTICULO AS nombreArticulo","SCTA.MON_PRECIO AS precio")
 		.from("SVT_ARTICULO STA")
-		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = STA .ID_CATEGORIA_ARTICULO")
-		.where("STA.IND_ACTIVO=1")
-		.and("STA.ID_TIPO_ARTICULO = 2 ")
+		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "STA.ID_CATEGORIA_ARTICULO = SCA.ID_CATEGORIA_ARTICULO")
+		.innerJoin("SVT_CONTRATO_ARTICULOS SCTA", "SCTA.ID_ARTICULO = STA .ID_ARTICULO ")
+		.innerJoin("SVT_CONTRATO SC", "SCTA.ID_CONTRATO = SC.ID_CONTRATO")
+		.where("SC.ID_TIPO_ASIGNACION =1")
+		.and("SC.ID_VELATORIO="+idVelatorio)
+		.and("STA.ID_TIPO_ARTICULO =2")
+		.and("STA.IND_ACTIVO =1 ")
 		.orderBy("nombreArticulo ASC");
 		String query=selectQueryUtil.build();
 		
