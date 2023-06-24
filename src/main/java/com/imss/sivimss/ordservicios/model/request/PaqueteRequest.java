@@ -12,4 +12,5 @@ public class PaqueteRequest {
 
 	private Integer idPaquete;
 	private Integer idVelatorio;
+	private Integer idProveedor;
 }

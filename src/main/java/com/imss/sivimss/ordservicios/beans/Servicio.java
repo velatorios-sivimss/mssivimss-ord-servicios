@@ -61,7 +61,9 @@ public class Servicio {
 		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SC.ID_CONTRATO = SCS.ID_CONTRATO")
 		.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
 		.where("SP.IND_ACTIVO =1")
+		.and("SC.IND_ACTIVO =1")
 		.and("SS.ID_SERVICIO = "+idServicio)
+		.and("DATE_FORMAT(SC.FEC_FIN_VIG,\"%Y-%M-%D\") <= DATE_FORMAT(CURRENT_DATE(),\"%Y-%M-%D\")")
 		.and("SP.FEC_VIGENCIA >= CURRENT_DATE() ")
 		.orderBy("SP.NOM_PROVEEDOR ASC");
 		

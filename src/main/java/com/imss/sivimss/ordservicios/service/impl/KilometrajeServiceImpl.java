@@ -57,10 +57,10 @@ public class KilometrajeServiceImpl implements KilometrajeService{
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarKilometrajePorPaquete", AppConstantes.CONSULTA, authentication);
             paqueteRequest=gson.fromJson(datosJson, PaqueteRequest.class);
-            Response<Object>response=providerServiceRestTemplate.consumirServicio(kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+            Response<Object>response=providerServiceRestTemplate.consumirServicio(kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete(),paqueteRequest.getIdProveedor()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
             return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete()).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete(),paqueteRequest.getIdProveedor()).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
