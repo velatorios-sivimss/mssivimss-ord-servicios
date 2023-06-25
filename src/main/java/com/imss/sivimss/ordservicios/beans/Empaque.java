@@ -47,15 +47,16 @@ public class Empaque {
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
-		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO AS idArticulo","STI.FOLIO_ARTICULO AS nombreArticulo")
+		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO AS idArticulo","CONCAT(STI.FOLIO_ARTICULO,'-',STA.DES_MODELO_ARTICULO,' $',SCA.MON_PRECIO) AS nombreArticulo","SCA.MON_PRECIO AS precio")
 		.from("SVT_INVENTARIO_ARTICULO STI")
 		.innerJoin("SVT_ARTICULO STA", "STI.ID_ARTICULO = STA.ID_ARTICULO")
 		.innerJoin("SVT_ORDEN_ENTRADA SOE2", "SOE2.ID_ODE = STI.ID_ODE")
 		.innerJoin("SVT_CONTRATO SC", "SC.ID_CONTRATO = SOE2.ID_CONTRATO")
 		.innerJoin("SVT_PROVEEDOR SP", "SP .ID_PROVEEDOR = SC.ID_PROVEEDOR")
-		.where("STI.IND_ESTATUS NOT IN (2,3)")
+		.innerJoin("SVT_CONTRATO_ARTICULOS SCA", "SCA.ID_CONTRATO = SC.ID_CONTRATO AND STA.ID_ARTICULO = SCA.ID_ARTICULO")
+		.where("STA.ID_CATEGORIA_ARTICULO = 4")
 		.and("STI.ID_VELATORIO = "+idVelatorio)
-		.and("STA.ID_CATEGORIA_ARTICULO = 4")
+		.and("STI.IND_ESTATUS NOT IN (2,3)")
 		.and("STI.ID_TIPO_ASIGNACION_ART =1")
 		.and("STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventarioTemp.build()+")")
 		.and("STI.ID_INVE_ARTICULO NOT IN("+selectQueryUtilInventario.build()+")");
