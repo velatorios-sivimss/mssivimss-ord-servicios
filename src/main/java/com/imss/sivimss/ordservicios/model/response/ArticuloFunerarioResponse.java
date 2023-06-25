@@ -13,4 +13,6 @@ public class ArticuloFunerarioResponse {
 	private Integer idArticulo;
 	
 	private String nombreArticulo;
+	
+	private Double precio;
 }

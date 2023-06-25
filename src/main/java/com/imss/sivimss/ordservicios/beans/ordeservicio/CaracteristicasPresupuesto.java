@@ -34,7 +34,12 @@ public class CaracteristicasPresupuesto {
 			
 			// caracteristicas paquete
 			if (caracteristicasPresupuestoRequest.getCaracteristicasPaquete()!=null) {
-				reglasNegocioRepository.insertarCaracteristicasPaquete(null, null, idOrdenServicio, idUsuarioAlta);
+				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPaquete("SVC_CARACTERISTICAS_PAQUETE_TEMP",caracteristicasPresupuestoRequest.getCaracteristicasPaquete(), idOrdenServicio, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				rs = statement.getGeneratedKeys();
+				if (rs.next()) {
+					caracteristicasPresupuestoRequest.getCaracteristicasPaquete().setIdPaquete(rs.getInt(1));
+				}
 			}
 			// detalle caracteristicas paquete
 		
