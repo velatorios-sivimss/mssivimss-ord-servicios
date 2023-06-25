@@ -227,7 +227,7 @@ public class ReglasNegocioRepository {
 	}
 	// insertar caracteristicas paquete SVC_CARACTERISTICAS_PAQUETE_TEMP/SVC_CARACTERISTICAS_PAQUETE
 	public String insertarCaracteristicasPaquete(String from,CaracteristicasPaqueteRequest caracteristicasPaqueteRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper(from);
+		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
 		q.agregarParametroValues("ID_PAQUETE", ""+caracteristicasPaqueteRequest.getIdPaquete()+"");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
 		q.agregarParametroValues(IND_ACTIVO, "1");
@@ -240,11 +240,11 @@ public class ReglasNegocioRepository {
 	}
 	// insertar detalle caracteristicas paquete SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP/SVC_DETALLE_CARACTERISTICAS_PAQUETE
 	public String insertarDetalleCaracteristicasPaquete(String from,CaracteristicasPaqueteDetalleRequest detalleCaracteristicasPaqueteRequest, Integer idCaracteristicasPaquete, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper(from);
+		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
 		q.agregarParametroValues("ID_ARTICULO", ""+detalleCaracteristicasPaqueteRequest.getIdArticulo()+"");
 		q.agregarParametroValues("ID_SERVICIO", ""+detalleCaracteristicasPaqueteRequest.getIdServicio()+"");
-		q.agregarParametroValues("DES_MOTIVO", "'"+detalleCaracteristicasPaqueteRequest.getIdServicio()+"'");
-		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues("DES_MOTIVO", "'"+detalleCaracteristicasPaqueteRequest.getDesmotivo()+"'");
+		q.agregarParametroValues(IND_ACTIVO, ""+detalleCaracteristicasPaqueteRequest.getActivo()+"");
 		q.agregarParametroValues("CAN_CANTIDAD", ""+detalleCaracteristicasPaqueteRequest.getCantidad()+"");
 		q.agregarParametroValues("IMP_IMPORTE", ""+detalleCaracteristicasPaqueteRequest.getImporteMonto()+"");
 		q.agregarParametroValues("ID_PROVEEDOR", ""+detalleCaracteristicasPaqueteRequest.getIdProveedor()+"");
@@ -257,9 +257,9 @@ public class ReglasNegocioRepository {
 	}
 	// insertar detalle caracteristicas paquete traslado SVC_CARACTERISTICA_PAQUETE_TRASLADO_TEMP/ SVC_CARACTERISTICA_PAQUETE_TRASLADO
 	public String insertarDetalleCaracteristicasPaqueteTraslado(String from,CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPaqueteTrasladoRequest, Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper(from);
-		q.agregarParametroValues("DES_ORIGEN", ""+detalleCaracteristicasPaqueteTrasladoRequest.getOrigen()+"");
-		q.agregarParametroValues("DES_DESTINO", ""+detalleCaracteristicasPaqueteTrasladoRequest.getDestino()+"");
+		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
+		q.agregarParametroValues("DES_ORIGEN", "'"+detalleCaracteristicasPaqueteTrasladoRequest.getOrigen()+"'");
+		q.agregarParametroValues("DES_DESTINO", "'"+detalleCaracteristicasPaqueteTrasladoRequest.getDestino()+"'");
 		q.agregarParametroValues("LATITUD_INICIAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLatitudInicial()+"");
 		q.agregarParametroValues("LATITUD_FINAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLatitudFinal()+"");
 		q.agregarParametroValues("LONGITUD_INICIAL", ""+detalleCaracteristicasPaqueteTrasladoRequest.getLongitudInicial()+"");
@@ -273,8 +273,8 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 	// insertar caracteristicas presupuesto SVC_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_CARACTERISTICAS_PRESUPUESTO
-	public String insertarCaracteristicasPresupuestoTemp(String from,CaracteristicasPaquetePresupuestoRequest caracteristicasPaquetePresupuestoRequest , Integer idOrdenServicio, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper(from);
+	public String insertarCaracteristicasPresupuesto(String from,CaracteristicasPaquetePresupuestoRequest caracteristicasPaquetePresupuestoRequest , Integer idOrdenServicio, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
 		q.agregarParametroValues("ID_PAQUETE", ""+caracteristicasPaquetePresupuestoRequest.getIdPaquete()+"");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, ""+idOrdenServicio+"");
 		q.agregarParametroValues(IND_ACTIVO, "1");
@@ -288,8 +288,8 @@ public class ReglasNegocioRepository {
 	}
 	// insertar detalle caracteristicas presupuesto SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO
 	public String insertarDetalleCaracteristicasPresupuesto(String from,CaracteristicasPaqueteDetallePresupuestoRequest caracteristicasPaqueteRespuestoRequest , Integer idCaracteristicasPaquetePresupuesto, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper(from);
-		q.agregarParametroValues("ID_INVE_ARTICULO", ""+caracteristicasPaqueteRespuestoRequest.getIdArticulo()+"");
+		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
+		q.agregarParametroValues("ID_INVE_ARTICULO", ""+caracteristicasPaqueteRespuestoRequest.getIdInventario()+"");
 		q.agregarParametroValues("ID_SERVICIO", ""+caracteristicasPaqueteRespuestoRequest.getIdServicio()+"");
 		q.agregarParametroValues(IND_ACTIVO, "1");
 		q.agregarParametroValues("CAN_CANTIDAD", ""+caracteristicasPaqueteRespuestoRequest.getCantidad()+"");
@@ -304,7 +304,7 @@ public class ReglasNegocioRepository {
 	}
 	// insertar detalle caracteristicas presupuesto traslado SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO_TEMP/ SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO
 	public String insertarDetalleCaracteristicasPresupuestoTraslado(String from,CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPresupuestoTrasladoRequest, Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
-		final QueryHelper q= new QueryHelper(from);
+		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
 		q.agregarParametroValues("DES_ORIGEN", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getOrigen()+"");
 		q.agregarParametroValues("DES_DESTINO", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getDestino()+"");
 		q.agregarParametroValues("LATITUD_INICIAL", ""+detalleCaracteristicasPresupuestoTrasladoRequest.getLatitudInicial()+"");
@@ -356,11 +356,15 @@ public class ReglasNegocioRepository {
 	}
 	
 	
-	//buscar ataud y proveedor
-	public String buscarAtaudConProveedorEnInventario() {
-		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		
-		query=selectQueryUtil.build();
+	// insertar ataud donado temp
+	public String insertarAtaudDonadoTemp(Integer ordenServicio,Integer idInventario,Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper("INSERT INTO SVC_DONACION_ORDEN_SERVICIO_TEMP");
+		q.agregarParametroValues("ID_ORDEN_SERVICIO", ""+ordenServicio+"");
+		q.agregarParametroValues("ID_INVE_ARTICULO", ""+idInventario+"");
+		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		query=q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
 	}

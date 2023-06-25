@@ -111,6 +111,7 @@ public class OrdenGuardar {
 			return new Response<>(false, 200, AppConstantes.DATOS+usuario.getNombre());
 		} catch (Exception e) {
 			log.error(AppConstantes.ERROR_QUERY.concat(query));
+			log.error(e.getMessage());
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
 		}finally {

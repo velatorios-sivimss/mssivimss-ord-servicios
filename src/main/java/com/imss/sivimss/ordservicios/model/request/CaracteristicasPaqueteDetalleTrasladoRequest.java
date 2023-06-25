@@ -18,5 +18,7 @@ public class CaracteristicasPaqueteDetalleTrasladoRequest {
 	private Double latitudFinal;
 	private Double longitudInicial;
 	private Double longitudFinal;
+	private Integer idDetalleCaracteristicas;
+
 
 }
