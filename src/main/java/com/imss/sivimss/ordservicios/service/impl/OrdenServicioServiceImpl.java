@@ -53,7 +53,29 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 			
 		case "buscarCurp":
 			return ordenesDAO.buscarCurp(request, authentication);
-			
+		//
+		case "consultarVelatorio":
+			return ordenesDAO.buscarVelatorio(request, authentication);
+		case "consultarFolioODS":
+			return ordenesDAO.buscarFolioODS(request, authentication);
+		case "consultarContratante":
+			return ordenesDAO.buscarContrante(request, authentication);
+		case "consultarFinado":
+			return ordenesDAO.buscarFinado(request, authentication);
+		case "consultarTipoODS":
+			return ordenesDAO.buscarTipoOrden(request, authentication);
+		case "consultarUnidadMedica":
+			return ordenesDAO.buscarUnidadMedica(request, authentication);
+		case "consultarContratoConvenio":
+			return ordenesDAO.buscarContratoConvenio(request, authentication);
+		case "consultarEstadoODS":
+			return ordenesDAO.buscarEstadoODS(request, authentication);
+		case "generaTarjetaIdentificacion":
+			return ordenesDAO.generaTarjetaIden(request, authentication);
+		case "consultarODS":
+			return ordenesDAO.buscarODS(request, authentication);
+		case "cancelarODS":
+			return ordenesDAO.cancelarODS(request, authentication);
 		default:
 			throw new BadRequestException(HttpStatus.BAD_REQUEST, "La peticion no se pudo realizar");
 		}
