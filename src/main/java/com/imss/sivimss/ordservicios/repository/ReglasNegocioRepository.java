@@ -404,6 +404,16 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+
+	// actualizar inventario ataud
+	public String actualizarCveTarea(Integer ordenServicio,String cveTarea) {
+		final QueryHelper q= new QueryHelper("UPDATE SVC_ORDEN_SERVICIO ");
+		q.agregarParametroValues("CVE_TAREA", "'"+cveTarea+"'");
+		q.addWhere("ID_ORDEN_SERVICIO = "+ordenServicio);
+		query=q.obtenerQueryActualizar();
+		log.info(query);
+		return query;
+	}
 	
 
 }

@@ -140,13 +140,8 @@ public class OrdenGuardar {
         insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
         
         if (ordenesServicioRequest.getIdEstatus() == 1) {
-        	// generar una funcion de 10 caracteres random
-        	
-        	// concatenar el id de la orden mas los 10 caracteres
-        	
-			// hacer update en la tabla orden de servicio al campo cve_tarea
-        	
-        	
+        	// cve tarea
+        	generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		}
         
         //finado
@@ -217,6 +212,28 @@ public class OrdenGuardar {
 			}
 		}
 		return folio;
+	}
+	
+	private void generarCveTarea(Integer ordenServicio, Connection con) throws SQLException {
+		try {
+			
+			// generar una funcion de 10 caracteres random
+        	String cveTarea="OD"+ordenServicio+OrdenesServicioUtil.cadenaAleatoria(8);
+        	// concatenar el id de la orden mas los 10 caracteres
+        	
+			// hacer update en la tabla orden de servicio al campo cve_tarea
+        	statement = con.createStatement();
+			statement.executeQuery(reglasNegocioRepository.actualizarCveTarea(ordenServicio,cveTarea));
+	
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
+		
 	}
 	
 	private void insertarOrdenServicio(OrdenesServicioRequest ordenesServicioRequest, Integer idUsuarioAlta, Connection con) throws SQLException{
