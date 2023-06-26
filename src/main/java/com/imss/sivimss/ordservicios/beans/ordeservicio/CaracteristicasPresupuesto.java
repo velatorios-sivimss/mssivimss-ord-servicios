@@ -47,7 +47,11 @@ public class CaracteristicasPresupuesto {
 				// detalle caracteristicas paquete
 				if (caracteristicasPresupuestoRequest.getCaracteristicasPaquete().getDetallePaquete()!=null) {
 					for(CaracteristicasPaqueteDetalleRequest detalleRequest: caracteristicasPresupuestoRequest.getCaracteristicasPaquete().getDetallePaquete()) {
-						statement.executeUpdate(reglasNegocioRepository.insertarDetalleCaracteristicasPaquete("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP", detalleRequest, caracteristicasPresupuestoRequest.getCaracteristicasPaquete().getIdCaracteristicasPaquete(), idUsuarioAlta),
+						statement.executeUpdate(reglasNegocioRepository.insertarDetalleCaracteristicasPaquete(
+								"SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP", 
+								detalleRequest, 
+								caracteristicasPresupuestoRequest.getCaracteristicasPaquete().getIdCaracteristicasPaquete(), 
+								idUsuarioAlta),
 								Statement.RETURN_GENERATED_KEYS);
 						rs = statement.getGeneratedKeys();
 						if (rs.next()) {
@@ -80,7 +84,7 @@ public class CaracteristicasPresupuesto {
 						statement.executeUpdate(reglasNegocioRepository.insertarDetalleCaracteristicasPresupuesto(
 								"SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP",
 								detallePresupuestoRequest, 
-								idOrdenServicio, 
+								caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().getIdCaracteristicasPresupuesto(), 
 								idUsuarioAlta),
 								Statement.RETURN_GENERATED_KEYS);
 						rs = statement.getGeneratedKeys();
