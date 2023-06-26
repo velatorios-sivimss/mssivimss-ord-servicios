@@ -10,5 +10,5 @@ import com.imss.sivimss.ordservicios.util.Response;
 
 public interface OrdenServicioService {
 
-	Response<?>peticionOrden(DatosRequest request, Authentication authentication, String accion)throws IOException, SQLException;
+	Response<Object>peticionOrden(DatosRequest request, Authentication authentication, String accion)throws IOException, SQLException;
 }
