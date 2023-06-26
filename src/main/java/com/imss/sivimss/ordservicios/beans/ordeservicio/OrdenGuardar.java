@@ -81,12 +81,12 @@ public class OrdenGuardar {
 			switch (ordenesServicioRequest.getFinado().getIdTipoOrden()) {
 			case 1:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "servicioInmediato", AppConstantes.ALTA, authentication);
-	            response=servicioInmediato(ordenesServicioRequest, usuario);
+	            response=guardarOrdenServicio(ordenesServicioRequest, usuario);
 				break;
 			case 2:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "contratoPF", AppConstantes.ALTA, authentication);
 
-				response=contratoPF(ordenesServicioRequest, usuario);
+				response=guardarOrdenServicio(ordenesServicioRequest, usuario);
 				break;
 			case 3:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "articulosComplementarios", AppConstantes.ALTA, authentication);
@@ -116,63 +116,7 @@ public class OrdenGuardar {
 		
 	}
 	
-	private Response<Object> servicioInmediato(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
-		connection = database.getConnection();
-		connection.setAutoCommit(false);
-		//contratante
-		if (ordenesServicioRequest.getContratante()==null) {
-			throw new BadRequestException(HttpStatus.BAD_REQUEST,AppConstantes.ERROR_GUARDAR);
-		}
-        ordenesServicioRequest.getContratante().setIdContratante(contratante.insertarContratante(ordenesServicioRequest.getContratante(), usuario.getIdUsuario(), connection));
-		
-        
-		// orden de servicio
-		// generar folio
-        if (ordenesServicioRequest.getIdEstatus()==2) {
-			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
-		}		
-        insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
-        
-        if (ordenesServicioRequest.getIdEstatus() == 1) {
-        	// cve tarea
-        	cveTarea=generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
-		}
-        
-        //finado
-        if (ordenesServicioRequest.getFinado()!=null) {
-			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-		}
-        
-        //caracteristicas presupuesto
-        if (ordenesServicioRequest.getIdEstatus()==1) {
-			// temporales
-        	caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-        	
-		}else {
-			// buenas buenas
-        	caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-
-		}
-        
-        
-		//informacion servicio
-        if (ordenesServicioRequest.getInformacionServicio()!=null) {
-			informacionServicio.insertarInformacionServicio(ordenesServicioRequest.getInformacionServicio(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-		}
-        
-       
-		response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
-		
-		connection.commit();
-		
-		// mandar a llamar el job con la clave tarea
-		if (ordenesServicioRequest.getIdEstatus()==1) {
-			
-		}
-		return response;
-	}
-	
-	private Response<Object> contratoPF(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
+	private Response<Object> guardarOrdenServicio(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		//contratante

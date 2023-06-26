@@ -17,7 +17,8 @@ public class FinadoRequest extends Persona{
 	private String extremidad;
 	private String esobito;
 	private String matricula;
-	private String idContratoPrevision;
+	private Integer idContratoPrevision;
+	private Integer idVelatorioContratoPrevision;
 	private DomicilioRequest cp;
 	private String fechaDeceso;
 	private String causaDeceso;
