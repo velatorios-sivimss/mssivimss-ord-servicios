@@ -225,6 +225,18 @@ public class ReglasNegocioRepository {
 			log.info(query);
 			return query;
 	}
+	
+	// insertar finado venta de articulo
+	public String insertarFinadoVentaArticulo(FinadoRequest finadoRequest,Integer idOrdenServicio, Integer idUsuarioAlta) {
+			final QueryHelper q= new QueryHelper("INSERT INTO SVC_FINADO");
+			q.agregarParametroValues("ID_TIPO_ORDEN", ""+finadoRequest.getIdTipoOrden()+"");
+			q.agregarParametroValues(ID_ORDEN_SERVICIO,""+idOrdenServicio+"");
+			q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+			q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+			query= q.obtenerQueryInsertar();
+			log.info(query);
+			return query;
+	}
 	// insertar caracteristicas paquete SVC_CARACTERISTICAS_PAQUETE_TEMP/SVC_CARACTERISTICAS_PAQUETE
 	public String insertarCaracteristicasPaquete(String from,CaracteristicasPaqueteRequest caracteristicasPaqueteRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
@@ -422,10 +434,10 @@ public class ReglasNegocioRepository {
 				"IFNULL(CONCAT(SP.NOM_PERSONA,' ',SP.NOM_PRIMER_APELLIDO,' ',SP.NOM_SEGUNDO_APELLIDO),'') AS contratante",
 				"IFNULL(CONCAT(SP2.NOM_PERSONA,' ',SP2.NOM_PRIMER_APELLIDO,' ',SP2.NOM_SEGUNDO_APELLIDO),'') AS finado")
 		.from("SVC_ORDEN_SERVICIO STO")
-		.innerJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
-		.innerJoin("SVC_PERSONA SP", "SC.ID_PERSONA = SP.ID_PERSONA")
-		.innerJoin("SVC_FINADO STF", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
-		.innerJoin("SVC_PERSONA SP2", "STF.ID_PERSONA =SP2.ID_PERSONA")
+		.leftJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
+		.leftJoin("SVC_PERSONA SP", "SC.ID_PERSONA = SP.ID_PERSONA")
+		.leftJoin("SVC_FINADO STF", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
+		.leftJoin("SVC_PERSONA SP2", "STF.ID_PERSONA =SP2.ID_PERSONA")
 		.where("STO.ID_ORDEN_SERVICIO = "+idOrdenServicio);
 		query=selectQueryUtil.build();
 		log.info(query);

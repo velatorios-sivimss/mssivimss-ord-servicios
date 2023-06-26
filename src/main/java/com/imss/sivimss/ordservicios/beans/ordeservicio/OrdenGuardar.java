@@ -5,11 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
@@ -31,7 +26,6 @@ import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
-import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 @Service
@@ -60,9 +54,6 @@ public class OrdenGuardar {
 	
 	@Autowired
 	private LogUtil logUtil;
-	
-	@Autowired
-	private ProviderServiceRestTemplate providerServiceRestTemplate;
 	
 	private ResultSet rs;
 	
@@ -98,7 +89,7 @@ public class OrdenGuardar {
 			case 3:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "articulosComplementarios", AppConstantes.ALTA, authentication);
 
-				query=articulosComplementarios(ordenesServicioRequest);
+				response=ventaArticulos(ordenesServicioRequest, usuario);
 				break;
 			case 4:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "convenioPF", AppConstantes.ALTA, authentication);
@@ -186,13 +177,51 @@ public class OrdenGuardar {
 		return "";
 	}
 	
-	private String articulosComplementarios(OrdenesServicioRequest ordenesServicioRequest){
+	private Response<Object> ventaArticulos(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
+		connection = database.getConnection();
+		connection.setAutoCommit(false);
 		//contratante
-		//finado
-		//caracteristicas paquete
-
+		if (ordenesServicioRequest.getContratante()==null) {
+			throw new BadRequestException(HttpStatus.BAD_REQUEST,AppConstantes.ERROR_GUARDAR);
+		}
+        
+		ordenesServicioRequest.getContratante().setIdContratante(contratante.insertarContratante(ordenesServicioRequest.getContratante(), usuario.getIdUsuario(), connection));
 		
-		return "";
+		// orden de servicio
+		// generar folio
+        if (ordenesServicioRequest.getIdEstatus()==2) {
+			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
+		}		
+        insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
+        
+        if (ordenesServicioRequest.getIdEstatus() == 1) {
+        	// cve tarea
+        	generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
+		}
+        
+        //finado
+        if (ordenesServicioRequest.getFinado()!=null) {
+			finado.insertarFinadoVentaArticulo(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+		}
+        
+        //caracteristicas presupuesto
+        if (ordenesServicioRequest.getIdEstatus()==1) {
+			// temporales
+        	caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	
+		}else {
+			// buenas buenas
+        	caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+
+		}
+
+	    response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
+		
+		connection.commit();
+		
+		// mandar a llamar el job con la clave tarea
+		
+		return response;
 	}
 	
 	private String convenioPF(OrdenesServicioRequest ordenesServicioRequest){

@@ -36,15 +36,38 @@ public class Finado {
             	statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
             }
-    		
+    	
     		statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
     		rs=statement.getGeneratedKeys();
     		if (rs.next()) {
-    			finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
+    		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
     		}
-    		
-    		statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-    		rs=statement.getGeneratedKeys();
+    	
+			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			rs=statement.getGeneratedKeys();
+    		if (rs.next()) {
+    			return rs.getInt(1);
+    		}
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
+		
+		return 0;
+	}
+	
+    public Integer insertarFinadoVentaArticulo(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
+		
+		try {
+			statement = connection.createStatement();
+		
+    		statement.executeUpdate(reglasNegocioRepository.insertarFinadoVentaArticulo(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+        		
+			rs=statement.getGeneratedKeys();
     		if (rs.next()) {
     			return rs.getInt(1);
     		}
