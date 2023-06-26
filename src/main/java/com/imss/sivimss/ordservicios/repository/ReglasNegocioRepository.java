@@ -414,6 +414,25 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+
+	// consultar orden de servicio
+	public String consultarOrdenServicio(Integer idOrdenServicio) {
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		selectQueryUtil.select("STO.ID_ORDEN_SERVICIO AS idOrdenServicio","STO.CVE_FOLIO AS folio",
+				"IFNULL(CONCAT(SP.NOM_PERSONA,' ',SP.NOM_PRIMER_APELLIDO,' ',SP.NOM_SEGUNDO_APELLIDO),'') AS contratante",
+				"IFNULL(CONCAT(SP2.NOM_PERSONA,' ',SP2.NOM_PRIMER_APELLIDO,' ',SP2.NOM_SEGUNDO_APELLIDO),'') AS finado")
+		.from("SVC_ORDEN_SERVICIO STO")
+		.innerJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
+		.innerJoin("SVC_PERSONA SP", "SC.ID_PERSONA = SP.ID_PERSONA")
+		.innerJoin("SVC_FINADO STF", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
+		.innerJoin("SVC_PERSONA SP2", "STF.ID_PERSONA =SP2.ID_PERSONA")
+		.where("STO.ID_ORDEN_SERVICIO = "+idOrdenServicio);
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+	
+	
 	
 
 }

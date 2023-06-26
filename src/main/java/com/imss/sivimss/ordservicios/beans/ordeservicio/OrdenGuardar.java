@@ -24,11 +24,14 @@ import com.imss.sivimss.ordservicios.exception.BadRequestException;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
+import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
+import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
+import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 @Service
@@ -57,6 +60,9 @@ public class OrdenGuardar {
 	
 	@Autowired
 	private LogUtil logUtil;
+	
+	@Autowired
+	private ProviderServiceRestTemplate providerServiceRestTemplate;
 	
 	private ResultSet rs;
 	
@@ -100,15 +106,11 @@ public class OrdenGuardar {
 				query= convenioPF(ordenesServicioRequest);
 				break;
 			default:
-				throw new BadRequestException(HttpStatus.BAD_REQUEST, query);
+				throw new BadRequestException(HttpStatus.BAD_REQUEST, AppConstantes.ERROR_GUARDAR);
 			}
-			DatosRequest request= new DatosRequest();
-			Map<String, Object>parametros= new HashMap<>();
-			String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-			parametros.put(AppConstantes.QUERY, encoded);
-			request.setDatos(parametros);
-			//return response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CREAR_MULTIPLE), authentication);
-			return new Response<>(false, 200, AppConstantes.DATOS+usuario.getNombre());
+			
+			return response;
+			//return new Response<>(false, 200, AppConstantes.DATOS+usuario.getNombre());
 		} catch (Exception e) {
 			log.error(AppConstantes.ERROR_QUERY.concat(query));
 			log.error(e.getMessage());
@@ -166,11 +168,14 @@ public class OrdenGuardar {
 			informacionServicio.insertarInformacionServicio(ordenesServicioRequest.getInformacionServicio(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
 		}
         
+       
+		response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
+		
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
 		
-		return new Response<>(false, 200, ordenesServicioRequest.getContratante().toString());
+		return response;
 	}
 	
 	private String contratoPF(OrdenesServicioRequest ordenesServicioRequest){
@@ -247,6 +252,28 @@ public class OrdenGuardar {
 				ordenesServicioRequest.setIdOrdenServicio(rs.getInt(1));
 			}
 		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
+	}
+	
+	public Response<Object> consultarOrden(Integer idOrdenServicio, Connection con)throws SQLException{
+		try {
+			OrdenServicioResponse ordenServicioResponse;
+        	statement = con.createStatement();
+			rs=statement.executeQuery(reglasNegocioRepository.consultarOrdenServicio(idOrdenServicio));
+	
+			if (rs.next()) {
+				ordenServicioResponse= new OrdenServicioResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				response= new Response<>(false, 200, AppConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(ordenServicioResponse));
+				
+			}
+			return response;
+		}finally {
 			if (statement!=null) {
 				statement.close();
 			}
