@@ -11,6 +11,7 @@ import lombok.Setter;
 public class CaracteristicasPaqueteDetallePresupuestoRequest {
 	private Integer idPaqueteDetallePresupuesto;
 	private Integer idCategoria;
+	private Integer idArticulo;
 	private Integer idInventario;
 	private Integer idTipoServicio;
 	private Integer idServicio;

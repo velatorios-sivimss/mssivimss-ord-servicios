@@ -302,6 +302,7 @@ public class ReglasNegocioRepository {
 	// insertar detalle caracteristicas presupuesto SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP/ SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO
 	public String insertarDetalleCaracteristicasPresupuesto(String from,CaracteristicasPaqueteDetallePresupuestoRequest caracteristicasPaqueteRespuestoRequest , Integer idCaracteristicasPaquetePresupuesto, Integer idUsuarioAlta) {
 		final QueryHelper q= new QueryHelper("INSERT INTO "+from);
+		q.agregarParametroValues("ID_ARTICULO", ""+caracteristicasPaqueteRespuestoRequest.getIdArticulo()+"");
 		q.agregarParametroValues("ID_INVE_ARTICULO", ""+caracteristicasPaqueteRespuestoRequest.getIdInventario()+"");
 		q.agregarParametroValues("ID_SERVICIO", ""+caracteristicasPaqueteRespuestoRequest.getIdServicio()+"");
 		q.agregarParametroValues(IND_ACTIVO, "1");
