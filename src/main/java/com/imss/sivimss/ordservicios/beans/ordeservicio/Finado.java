@@ -32,6 +32,9 @@ public class Finado {
     			if (rs.next()) {
     				finadoRequest.setIdPersona(rs.getInt(1));
     			} 
+            }else {
+            	statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
             }
     		
     		statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);

@@ -432,7 +432,29 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 	
-	
-	
+	// actualizar persona
+	public String actualizarPersona(
+			Persona personaRequest, Integer idUsuario) {
+		final QueryHelper q= new QueryHelper("UPDATE SVC_PERSONA ");
+		q.agregarParametroValues("CVE_RFC", "'"+personaRequest.getRfc()+"'");
+		q.agregarParametroValues("CVE_CURP", "'"+personaRequest.getCurp()+"'");
+		q.agregarParametroValues("CVE_NSS", "'"+personaRequest.getNss()+"'");
+		q.agregarParametroValues("NOM_PERSONA", "'"+personaRequest.getNomPersona()+"'");
+		q.agregarParametroValues("NOM_PRIMER_APELLIDO", "'"+personaRequest.getPrimerApellido()+"'");
+		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", "'"+personaRequest.getSegundoApellido()+"'");
+		q.agregarParametroValues("NUM_SEXO", ""+personaRequest.getSexo()+"");
+		q.agregarParametroValues("DES_OTRO_SEXO", "'"+personaRequest.getOtroSexo()+"'");
+		q.agregarParametroValues("FEC_NAC", "'"+personaRequest.getFechaNac()+"'");
+		q.agregarParametroValues("ID_PAIS", ""+personaRequest.getIdPais()+"");
+		q.agregarParametroValues("ID_ESTADO", ""+personaRequest.getIdEstado()+"");
+		q.agregarParametroValues("DES_TELEFONO", "'"+personaRequest.getTelefono()+"'");
+		q.agregarParametroValues("DES_CORREO", "'"+personaRequest.getCorreo()+"'");
+		q.agregarParametroValues("ID_USUARIO_MODIFICA", ""+idUsuario+"");
+		q.agregarParametroValues("FEC_ACTUALIZACION", CURRENT_TIMESTAMP);
+		q.addWhere("ID_PERSONA = "+personaRequest.getIdPersona());
+		query= q.obtenerQueryActualizar();
+		log.info(query);
+		return query;
+	}	
 
 }

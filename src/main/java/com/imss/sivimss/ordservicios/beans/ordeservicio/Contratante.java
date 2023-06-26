@@ -49,6 +49,9 @@ public class Contratante {
 					return rs.getInt(1);
 				}
 			} else {
+				statement.executeUpdate(reglasNegocioRepository.actualizarPersona(contratanteRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				
 				return contratanteRequest.getIdContratante();
 			}
 
