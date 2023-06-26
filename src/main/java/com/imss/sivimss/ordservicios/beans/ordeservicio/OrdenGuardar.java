@@ -65,6 +65,8 @@ public class OrdenGuardar {
 
 	private Response<Object>response;
 	
+	private String cveTarea;
+	
 	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		
 		String query="El tipo orden de servicio es incorrecto.";
@@ -84,7 +86,7 @@ public class OrdenGuardar {
 			case 2:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "contratoPF", AppConstantes.ALTA, authentication);
 
-				query=contratoPF(ordenesServicioRequest);
+				response=contratoPF(ordenesServicioRequest, usuario);
 				break;
 			case 3:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "articulosComplementarios", AppConstantes.ALTA, authentication);
@@ -134,7 +136,7 @@ public class OrdenGuardar {
         
         if (ordenesServicioRequest.getIdEstatus() == 1) {
         	// cve tarea
-        	generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
+        	cveTarea=generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		}
         
         //finado
@@ -165,21 +167,24 @@ public class OrdenGuardar {
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
-		
+		if (ordenesServicioRequest.getIdEstatus()==1) {
+			
+		}
 		return response;
 	}
 	
-	private String contratoPF(OrdenesServicioRequest ordenesServicioRequest){
+	private Response<Object> contratoPF(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario){
 		//contratante
 		//finado
 		//caracteristicas paquete
 		//informacion servicio
-		return "";
+		return response;
 	}
 	
 	private Response<Object> ventaArticulos(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
+		
 		//contratante
 		if (ordenesServicioRequest.getContratante()==null) {
 			throw new BadRequestException(HttpStatus.BAD_REQUEST,AppConstantes.ERROR_GUARDAR);
@@ -196,7 +201,7 @@ public class OrdenGuardar {
         
         if (ordenesServicioRequest.getIdEstatus() == 1) {
         	// cve tarea
-        	generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
+        	cveTarea=generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		}
         
         //finado
@@ -220,7 +225,9 @@ public class OrdenGuardar {
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
-		
+		if (ordenesServicioRequest.getIdOrdenServicio()==1) {
+			
+		}
 		return response;
 	}
 	
@@ -248,7 +255,7 @@ public class OrdenGuardar {
 		return folio;
 	}
 	
-	private void generarCveTarea(Integer ordenServicio, Connection con) throws SQLException {
+	private String generarCveTarea(Integer ordenServicio, Connection con) throws SQLException {
 		try {
 			
 			// generar una funcion de 10 caracteres random
@@ -258,7 +265,7 @@ public class OrdenGuardar {
 			// hacer update en la tabla orden de servicio al campo cve_tarea
         	statement = con.createStatement();
 			statement.executeQuery(reglasNegocioRepository.actualizarCveTarea(ordenServicio,cveTarea));
-	
+	        return cveTarea;
 		} finally {
 			if (statement!=null) {
 				statement.close();
@@ -267,6 +274,8 @@ public class OrdenGuardar {
 				rs.close();
 			}
 		}
+		
+		
 		
 	}
 	
