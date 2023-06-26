@@ -131,13 +131,24 @@ public class OrdenGuardar {
 		}
         ordenesServicioRequest.getContratante().setIdContratante(contratante.insertarContratante(ordenesServicioRequest.getContratante(), usuario.getIdUsuario(), connection));
 		
+        
 		// orden de servicio
 		// generar folio
         if (ordenesServicioRequest.getIdEstatus()==2) {
 			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
 		}		
         insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
-		
+        
+        if (ordenesServicioRequest.getIdEstatus() == 1) {
+        	// generar una funcion de 10 caracteres random
+        	
+        	// concatenar el id de la orden mas los 10 caracteres
+        	
+			// hacer update en la tabla orden de servicio al campo cve_tarea
+        	
+        	
+		}
+        
         //finado
         if (ordenesServicioRequest.getFinado()!=null) {
 			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
@@ -148,8 +159,12 @@ public class OrdenGuardar {
 			// temporales
         	caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
         	
+		}else {
+			// buenas buenas
+        	caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+
 		}
-        // buenas buenas
+        
         
 		//informacion servicio
         if (ordenesServicioRequest.getInformacionServicio()!=null) {
@@ -157,6 +172,9 @@ public class OrdenGuardar {
 		}
         
 		connection.commit();
+		
+		// mandar a llamar el job con la clave tarea
+		
 		return new Response<>(false, 200, ordenesServicioRequest.getContratante().toString());
 	}
 	
