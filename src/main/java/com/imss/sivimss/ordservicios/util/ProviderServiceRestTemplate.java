@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.ordservicios.model.request.TareasDTO;
 import com.imss.sivimss.ordservicios.security.jwt.JwtTokenProvider;
 
 
@@ -59,6 +60,21 @@ public class ProviderServiceRestTemplate {
 			throws IOException {
 		try {
 			return restTemplateUtil.sendGetRequest(url);
+		} catch (IOException exception) {
+			log.error("Ha ocurrido un error al recuperar la informacion");
+			throw exception;
+		}
+	}
+
+	public Response<Object> consumirServicioProceso(TareasDTO body, String url, Authentication authentication )
+			throws IOException {
+		try {
+			
+			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayTokenProcesos(url,
+					new TareasDTO(body.getTipoHoraMinuto(), body.getCveTarea(), body.getTotalHoraMinuto(), body.getTipoEjecucion(), body.getValidacion(), body.getDatos()), 
+					jwtTokenProvider.createToken((String) authentication.getPrincipal()),
+					Response.class);
+			return respuestaGenerado;
 		} catch (IOException exception) {
 			log.error("Ha ocurrido un error al recuperar la informacion");
 			throw exception;

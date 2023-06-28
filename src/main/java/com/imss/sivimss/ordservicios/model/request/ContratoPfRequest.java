@@ -11,5 +11,9 @@ import lombok.Setter;
 public class ContratoPfRequest {
 	
 	private String folio;
+	
+	private Integer idContrato;
+
+	private Integer idContratante;
 
 }

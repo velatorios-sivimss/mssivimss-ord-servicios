@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
+import com.imss.sivimss.ordservicios.model.request.TareasDTO;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
@@ -26,6 +27,7 @@ import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
+import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 @Service
@@ -34,8 +36,20 @@ public class OrdenGuardar {
 	@Value("${endpoints.mod-catalogos}")
 	private String urlDominio;
 	
+	@Value("${endpoints.ms-procesos}")
+	private String urlProceso;
+
+	@Value("${tipoHoraMinuto}")
+	private String tipoHoraMinuto;
+	
+	@Value("${totalHoraMinuto}")
+	private String totalHoraMinuto;
+	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
+	
+	@Autowired
+	private ProviderServiceRestTemplate  resTemplateProviderServiceRestTemplate;
 	
 	@Autowired
 	private Database database;
@@ -67,6 +81,8 @@ public class OrdenGuardar {
 	
 	private String cveTarea;
 	
+	private static final String EXITO="47"; // La Orden de Servicio se ha generado exitosamente.
+	
 	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		
 		String query="El tipo orden de servicio es incorrecto.";
@@ -81,17 +97,17 @@ public class OrdenGuardar {
 			switch (ordenesServicioRequest.getFinado().getIdTipoOrden()) {
 			case 1:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "servicioInmediato", AppConstantes.ALTA, authentication);
-	            response=guardarOrdenServicio(ordenesServicioRequest, usuario);
+	            response=guardarOrdenServicio(ordenesServicioRequest, usuario,authentication);
 				break;
 			case 2:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "contratoPF", AppConstantes.ALTA, authentication);
 
-				response=guardarOrdenServicio(ordenesServicioRequest, usuario);
+				response=guardarOrdenServicio(ordenesServicioRequest, usuario,authentication);
 				break;
 			case 3:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "articulosComplementarios", AppConstantes.ALTA, authentication);
 
-				response=ventaArticulos(ordenesServicioRequest, usuario);
+				response=ventaArticulos(ordenesServicioRequest, usuario,authentication);
 				break;
 			case 4:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "convenioPF", AppConstantes.ALTA, authentication);
@@ -116,7 +132,7 @@ public class OrdenGuardar {
 		
 	}
 	
-	private Response<Object> guardarOrdenServicio(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
+	private Response<Object> guardarOrdenServicio(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,Authentication authentication) throws SQLException, IOException{
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		//contratante
@@ -166,13 +182,19 @@ public class OrdenGuardar {
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
-		if (ordenesServicioRequest.getIdEstatus()==1) {
+		if (ordenesServicioRequest.getIdEstatus()==1 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+			Object datos="{\"idODS\":"+ordenesServicioRequest.getIdOrdenServicio()+"}";
+			TareasDTO tareas=new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS", "INSERT", datos);
+			Response<Object>respuestaProceso=resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareas,urlProceso.concat(AppConstantes.PROCESO),authentication);
+			
+			return response;
+			
 			
 		}
 		return response;
 	}
 	
-	private Response<Object> ventaArticulos(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException{
+	private Response<Object> ventaArticulos(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,Authentication authentication) throws SQLException, IOException{
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		
@@ -216,8 +238,12 @@ public class OrdenGuardar {
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
-		if (ordenesServicioRequest.getIdOrdenServicio()==1) {
-			
+		if (ordenesServicioRequest.getIdEstatus()==1 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+			Object datos="{\"idODS\":"+ordenesServicioRequest.getIdOrdenServicio()+"}";
+			TareasDTO tareas=new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS", "INSERT", datos);
+			Response<Object>respuestaProceso=resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareas,urlProceso.concat(AppConstantes.PROCESO),authentication);
+			return response;
+							
 		}
 		return response;
 	}
@@ -298,7 +324,7 @@ public class OrdenGuardar {
 	
 			if (rs.next()) {
 				ordenServicioResponse= new OrdenServicioResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
-				response= new Response<>(false, 200, AppConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(ordenServicioResponse));
+				response= new Response<>(false, 200, EXITO, ConvertirGenerico.convertInstanceOfObject(ordenServicioResponse));
 				
 			}
 			return response;
