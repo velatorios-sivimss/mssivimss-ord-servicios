@@ -77,9 +77,11 @@ public class Ataud {
 		DatosRequest request = new DatosRequest();
 		Map<String, Object>paramtero= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("ifnull(group_concat(SPAT.ID_TIPO_ASIGNACION_ARTICULO),'0') AS idAsignacion")
-		.from("SVT_PAQUETE_ARTICULO_TIPO SPAT")
-		.where("SPAT.ID_PAQUETE_ARTICULO = :idPaquete")
+		selectQueryUtil.select("ifnull(group_concat(STPA.ID_TIPO_ASIGNACION_ARTICULO),'0') AS idAsignacion")
+		.from("SVT_PAQUETE SPA")
+		.innerJoin("SVT_PAQUETE_ARTICULO STA", "STA.ID_PAQUETE=SPA.ID_PAQUETE")
+		.innerJoin("SVT_PAQUETE_ARTICULO_TIPO STPA", "STPA.ID_PAQUETE_ARTICULO = STA.ID_PAQUETE_ARTICULO")
+		.where("SPA.ID_PAQUETE = :idPaquete")
 		.setParameter("idPaquete", idPaquete);
 		String query=selectQueryUtil.build();
 	
@@ -99,13 +101,13 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilInventario= new SelectQueryUtil();
 		SelectQueryUtil selectQueryUtilCosto= new SelectQueryUtil();
 		
-		selectQueryUtilInventarioTemp.select("STP.ID_INVE_ARTICULO")
+		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
-		selectQueryUtilInventario.select("SDCP.ID_INVE_ARTICULO")
+		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
@@ -173,13 +175,13 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilInventario= new SelectQueryUtil();
 		SelectQueryUtil selectQueryUtilCosto= new SelectQueryUtil();
 		
-		selectQueryUtilInventarioTemp.select("STP.ID_INVE_ARTICULO")
+		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
-		selectQueryUtilInventario.select("SDCP.ID_INVE_ARTICULO")
+		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
