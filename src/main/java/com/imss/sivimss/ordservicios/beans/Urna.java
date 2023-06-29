@@ -36,13 +36,13 @@ public class Urna {
 		SelectQueryUtil selectQueryUtilInventarioTemp= new SelectQueryUtil();
 		SelectQueryUtil selectQueryUtilInventario= new SelectQueryUtil();
 		
-		selectQueryUtilInventarioTemp.select("STP.ID_INVE_ARTICULO")
+		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
-		selectQueryUtilInventario.select("SDCP.ID_INVE_ARTICULO")
+		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
@@ -55,7 +55,7 @@ public class Urna {
 		.innerJoin("SVT_CONTRATO_ARTICULOS SCA", "SCA.ID_CONTRATO = SC.ID_CONTRATO AND STA.ID_ARTICULO = SCA.ID_ARTICULO")
 		.where("STA.ID_CATEGORIA_ARTICULO = 2")
 		.and("STI.ID_VELATORIO = "+idVelatorio)
-		.and("STI.IND_ESTATUS NOT IN (2,3)")
+		.and("STI.IND_ESTATUS NOT IN (1,2,3)")
 		.and("STI.ID_TIPO_ASIGNACION_ART =1")
 		.and("STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventarioTemp.build()+")")
 		.and("STI.ID_INVE_ARTICULO NOT IN("+selectQueryUtilInventario.build()+")");

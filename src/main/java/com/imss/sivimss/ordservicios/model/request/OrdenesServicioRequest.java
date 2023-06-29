@@ -21,6 +21,8 @@ public class OrdenesServicioRequest {
 	private Integer idOperador;
 
 	private Integer idEstatus;
+	
+	private Integer idContratantePf;
 
 	private ContratanteRequest contratante;
 

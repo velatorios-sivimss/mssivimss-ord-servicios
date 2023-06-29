@@ -37,13 +37,13 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilInventarioTemp= new SelectQueryUtil();
 		SelectQueryUtil selectQueryUtilInventario= new SelectQueryUtil();
 		
-		selectQueryUtilInventarioTemp.select("STP.ID_INVE_ARTICULO")
+		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
-		selectQueryUtilInventario.select("SDCP.ID_INVE_ARTICULO")
+		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
 		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
@@ -54,7 +54,7 @@ public class Ataud {
 		.innerJoin("SVT_CONTRATO SC", "SC.ID_CONTRATO = SOE2.ID_CONTRATO")
 		.innerJoin("SVT_PROVEEDOR SP", "SP .ID_PROVEEDOR = SC.ID_PROVEEDOR")
 		.innerJoin("SVT_CONTRATO_ARTICULOS SCA", "SCA.ID_CONTRATO = SC.ID_CONTRATO")
-		.where("STI.IND_ESTATUS NOT IN (2,3)")
+		.where("STI.IND_ESTATUS NOT IN (1,2,3)")
 		.and("STA.ID_CATEGORIA_ARTICULO = 1")
 		.and("STI.ID_VELATORIO = "+idVelatorio)
 		.and("STI.ID_TIPO_ASIGNACION_ART =1")
@@ -194,7 +194,7 @@ public class Ataud {
 		.innerJoin("SVT_CONTRATO_ARTICULOS SCA", "SCA.ID_CONTRATO = SC.ID_CONTRATO")
 		.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SC.ID_PROVEEDOR")
 		.where("SC.ID_PROVEEDOR = "+idProveedor)
-		.and("STI.IND_ESTATUS NOT IN (2,3) AND SCA.ID_ARTICULO = "+idArticulo);
+		.and("STI.IND_ESTATUS NOT IN (1,2,3) AND SCA.ID_ARTICULO = "+idArticulo);
 		
 		if (idAsignacion==5) {
 			selectQueryUtilArticulo.and("STI.ID_TIPO_ASIGNACION_ART in(1,3)");

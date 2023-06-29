@@ -255,10 +255,18 @@ public class CaracteristicasPresupuesto {
 					statement.executeUpdate(reglasNegocioRepository.actualizarAtaudTipoAsignacion(
 							detallePresupuestoRequest.getIdInventario(),
 							3,
-							idUsuarioAlta),
+							idUsuarioAlta,1),
 							Statement.RETURN_GENERATED_KEYS);
 					
 				}
+				
+				if(detallePresupuestoRequest.getIdInventario()!=null && (detallePresupuestoRequest.getIdCategoria()==1 || detallePresupuestoRequest.getIdCategoria()==2 || detallePresupuestoRequest.getIdCategoria()==4)) {
+					statement.executeUpdate(reglasNegocioRepository.actualizarEstatusAtaud(
+							detallePresupuestoRequest.getIdInventario(),
+							idUsuarioAlta,1),
+							Statement.RETURN_GENERATED_KEYS);
+				}
+				
 				// traslado
 				caracteristicasPresupuestoDetalleTraslado(detallePresupuestoRequest, idUsuarioAlta);
 				

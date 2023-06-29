@@ -186,12 +186,13 @@ public class ReglasNegocioRepository {
 	}
 	
 	// insertar orden de servicio
-	public String insertarOrdenServicio(String folio, Integer idContratante, Integer idParentesco, Integer idVelatorio,	Integer idEstatus,Integer idUsuarioAlta) {
+	public String insertarOrdenServicio(String folio, Integer idContratante, Integer idParentesco, Integer idVelatorio, Integer idContratantePf, Integer idEstatus,Integer idUsuarioAlta) {
 		final QueryHelper q= new QueryHelper("INSERT INTO SVC_ORDEN_SERVICIO");
 		q.agregarParametroValues("CVE_FOLIO",  "'"+folio+"'");
 		q.agregarParametroValues("ID_CONTRATANTE",  ""+idContratante+"");
 		q.agregarParametroValues("ID_PARENTESCO",  ""+idParentesco+"");
 		q.agregarParametroValues("ID_VELATORIO",  ""+idVelatorio+"");
+		q.agregarParametroValues("ID_CONTRATANTE_PF",  ""+idContratantePf+"");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO",  ""+idEstatus+"");
 		q.agregarParametroValues(ID_USUARIO_ALTA,  ""+idUsuarioAlta+"");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
@@ -408,9 +409,10 @@ public class ReglasNegocioRepository {
 	}
 
 	// actualizar inventario ataud
-	public String actualizarAtaudTipoAsignacion(Integer idInventarioArticulo,Integer idAsignacion, Integer idUsuarioModifica) {
+	public String actualizarAtaudTipoAsignacion(Integer idInventarioArticulo,Integer idAsignacion, Integer idUsuarioModifica, Integer estatus) {
 		final QueryHelper q= new QueryHelper("UPDATE SVT_INVENTARIO_ARTICULO ");
 		q.agregarParametroValues("ID_TIPO_ASIGNACION_ART", ""+idAsignacion+"");
+		q.agregarParametroValues("IND_ESTATUS", ""+estatus+"");
 		q.agregarParametroValues("FEC_ACTUALIZACION", CURRENT_TIMESTAMP);
 		q.agregarParametroValues("ID_USUARIO_MODIFICA", ""+idUsuarioModifica+"");
 		q.addWhere("ID_INVE_ARTICULO = "+idInventarioArticulo);
@@ -419,7 +421,7 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 
-	// actualizar inventario ataud
+	// actualizar CveTarea
 	public String actualizarCveTarea(Integer ordenServicio,String cveTarea) {
 		final QueryHelper q= new QueryHelper("UPDATE SVC_ORDEN_SERVICIO ");
 		q.agregarParametroValues("CVE_TAREA", "'"+cveTarea+"'");
@@ -470,5 +472,35 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}	
+	
+	// actualizar inventario ataud
+	public String actualizarEstatusAtaud(Integer idInventarioArticulo, Integer idUsuarioModifica, Integer estatus) {
+			final QueryHelper q= new QueryHelper("UPDATE SVT_INVENTARIO_ARTICULO ");
+			q.agregarParametroValues("IND_ESTATUS", ""+estatus+"");
+			q.agregarParametroValues("FEC_ACTUALIZACION", CURRENT_TIMESTAMP);
+			q.agregarParametroValues("ID_USUARIO_MODIFICA", ""+idUsuarioModifica+"");
+			q.addWhere("ID_INVE_ARTICULO = "+idInventarioArticulo);
+			query=q.obtenerQueryActualizar();
+			log.info(query);
+			return query;
+	}
+	
+	// insertar bitacora pago
+	public String insertarBitacoraPago(Integer idRegistro,Integer idVelatorio, String contratante, String folio, String valor, Integer estatus, Integer idUsuarioAlta) {
+		final QueryHelper q= new QueryHelper("INSERT INTO SVT_PAGO_BITACORA");
+		q.agregarParametroValues("ID_REGISTRO", ""+idRegistro+"");
+		q.agregarParametroValues("ID_FLUJO_PAGOS", "1");
+		q.agregarParametroValues("ID_VELATORIO", ""+idVelatorio+"");
+		q.agregarParametroValues("FEC_ODS", CURRENT_TIMESTAMP);
+		q.agregarParametroValues("NOM_CONTRATANTE", "'"+contratante+"'");
+		q.agregarParametroValues("CVE_FOLIO", "'"+folio+"'");
+		q.agregarParametroValues("DESC_VALOR", "'"+valor+"'");
+		q.agregarParametroValues("CVE_ESTATUS_PAGO", ""+estatus+"");
+		q.agregarParametroValues(ID_USUARIO_ALTA, ""+idUsuarioAlta+"");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		query=q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
+	}
 
 }

@@ -146,7 +146,7 @@ public class OrdenGuardar {
 		// generar folio
         if (ordenesServicioRequest.getIdEstatus()==2) {
 			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
-		}		
+        }		
         insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
         
         if (ordenesServicioRequest.getIdEstatus() == 1) {
@@ -176,6 +176,11 @@ public class OrdenGuardar {
 			informacionServicio.insertarInformacionServicio(ordenesServicioRequest.getInformacionServicio(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
 		}
         
+       // pago bitacora
+        if (ordenesServicioRequest.getIdEstatus()==2) {
+        	insertarPagoBitacora(ordenesServicioRequest, usuario.getIdUsuario(), connection);
+
+        }	
        
 		response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		
@@ -209,7 +214,7 @@ public class OrdenGuardar {
 		// generar folio
         if (ordenesServicioRequest.getIdEstatus()==2) {
 			ordenesServicioRequest.setFolio(generarFolio(ordenesServicioRequest.getIdVelatorio(),connection));
-		}		
+        }		
         insertarOrdenServicio(ordenesServicioRequest, usuario.getIdRol(), connection);
         
         if (ordenesServicioRequest.getIdEstatus() == 1) {
@@ -233,6 +238,12 @@ public class OrdenGuardar {
 
 		}
 
+        // pago bitacora
+        if (ordenesServicioRequest.getIdEstatus()==2) {
+        	insertarPagoBitacora(ordenesServicioRequest, usuario.getIdUsuario(), connection);
+
+        }
+        
 	    response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		
 		connection.commit();
@@ -300,12 +311,35 @@ public class OrdenGuardar {
 		try {
 			statement = con.createStatement();
 			statement.executeUpdate(reglasNegocioRepository.insertarOrdenServicio(
-					ordenesServicioRequest.getFolio(),ordenesServicioRequest.getContratante().getIdContratante(),ordenesServicioRequest.getIdParentesco(),ordenesServicioRequest.getIdVelatorio(),
+					ordenesServicioRequest.getFolio(),ordenesServicioRequest.getContratante().getIdContratante(),ordenesServicioRequest.getIdParentesco(),ordenesServicioRequest.getIdVelatorio(), ordenesServicioRequest.getIdContratantePf(),
 					ordenesServicioRequest.getIdEstatus(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
 			if (rs.next()) {
 				ordenesServicioRequest.setIdOrdenServicio(rs.getInt(1));
 			}
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
+	}
+	private void insertarPagoBitacora(OrdenesServicioRequest ordenesServicioRequest, Integer idUsuarioAlta, Connection con) throws SQLException{
+		try {
+			statement = con.createStatement();
+			statement.executeUpdate(reglasNegocioRepository.insertarBitacoraPago(
+					ordenesServicioRequest.getIdOrdenServicio(),
+					ordenesServicioRequest.getIdVelatorio(),
+					ordenesServicioRequest.getContratante().getNomPersona()+" "+ordenesServicioRequest.getContratante().getPrimerApellido()+" "+
+					ordenesServicioRequest.getContratante().getSegundoApellido(),
+					ordenesServicioRequest.getFolio(),
+					ordenesServicioRequest.getCaracteristicasPresupuesto().getCaracteristicasDelPresupuesto().getTotalPresupuesto(),
+					ordenesServicioRequest.getIdEstatus(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			rs=statement.getGeneratedKeys();
+			
+		
 		} finally {
 			if (statement!=null) {
 				statement.close();
