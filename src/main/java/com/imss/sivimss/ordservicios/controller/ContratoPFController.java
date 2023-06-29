@@ -1,6 +1,7 @@
 package com.imss.sivimss.ordservicios.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -34,8 +35,22 @@ public class ContratoPFController {
 	private final LogUtil logUtil;
 	
 	@PostMapping("/consultar-folio")
-	public CompletableFuture<?> consultarContratoPF(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+	public CompletableFuture<Object> consultarContratoPF(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException {
 		Response<?>response=contratoPFService.obtenerContratoPF(request, authentication);
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
+	@PostMapping("/consultar-contratante")
+	public CompletableFuture<Object> consultarContratante(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException {
+		Response<?>response=contratoPFService.obtenerContratantes(request, authentication);
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+
+	@PostMapping("/consultar-contratante-beneficiarios")
+	public CompletableFuture<Object> consultarContratanteBeneficiarios(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException {
+		Response<?>response=contratoPFService.obtenerContratanteBeneficiarios(request, authentication);
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}

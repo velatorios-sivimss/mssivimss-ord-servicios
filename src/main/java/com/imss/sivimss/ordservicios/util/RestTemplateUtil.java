@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.imss.sivimss.ordservicios.model.request.TareasDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,10 +39,10 @@ public class RestTemplateUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public Response<?> sendPostRequestByteArray(String url, EnviarDatosRequest body, Class<?> clazz)
-			throws IOException {
+	public Response<?> sendPostRequestByteArrayTokenProcesos(String url, TareasDTO body, String subject,
+			Class<?> clazz) throws IOException {
 		Response<?> responseBody = new Response<>();
-		HttpHeaders headers = RestTemplateUtil.createHttpHeaders();
+		HttpHeaders headers = RestTemplateUtil.createHttpHeadersToken(subject);
 
 		HttpEntity<Object> request = new HttpEntity<>(body, headers);
 		ResponseEntity<?> responseEntity = null;
@@ -65,7 +65,6 @@ public class RestTemplateUtil {
 
 		return responseBody;
 	}
-
 	/**
 	 * Env&iacute;a una petici&oacute;n con Body y token.
 	 *

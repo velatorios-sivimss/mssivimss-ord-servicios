@@ -1,4 +1,4 @@
-package com.imss.sivimss.ordservicios.model.response;
+package com.imss.sivimss.ordservicios.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContratoPfSiniestroResponse {
+public class OperadorRequest {
 
-	private Integer siniestros;
-	
-	private Integer tipoPrevision;
+	private String idOperador;
 }

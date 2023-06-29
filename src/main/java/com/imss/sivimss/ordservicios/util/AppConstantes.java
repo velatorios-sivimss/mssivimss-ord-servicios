@@ -16,6 +16,7 @@ public class AppConstantes {
 	public static final String CATALOGO_CONSULTA_PAGINADO= "/paginado";
 	public static final String CATALOGO_CREAR_MULTIPLE= "/crearMultiple";
 	public static final String CATALOGO_ACTUALIZAR= "/actualizar";
+	public static final String PROCESO= "/lote/generico";
 	
 	public static final String STATUSEXCEPTION = "status";
 	public static final String EXPIREDJWTEXCEPTION = "expired";

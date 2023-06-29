@@ -8,12 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContratoPfRequest {
-	
-	private String folio;
-	
-	private Integer idContrato;
+public class VelatorioRequest {
 
-	private Integer idContratante;
-
+	private String idDelegacion;
 }
