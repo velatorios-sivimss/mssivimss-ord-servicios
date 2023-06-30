@@ -82,4 +82,29 @@ public class Finado {
 		
 		return 0;
 	}
+    
+    public Integer actualizarFinado(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
+		
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(), idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+
+			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+
+			statement.executeUpdate(reglasNegocioRepository.actualizarFinado(finadoRequest, idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+			
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
+		
+		return 0;
+	}
 }
