@@ -78,4 +78,44 @@ public class InformacionServicio {
 			}
 		}
 	}
+	
+	public void actualizarInformacionServicio(InformacionServicioRequest informacionServicioRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
+		try {
+			statement=connection.createStatement();
+			statement.executeUpdate(reglasNegocioRepository.actualizarInformacionServicio(informacionServicioRequest, idOrdenServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			
+			if (informacionServicioRequest.getInformacionServicioVelacion()!=null) {
+				actualizarInformacionVelacion(informacionServicioRequest.getInformacionServicioVelacion(), informacionServicioRequest.getIdInformacionServicio(), idUsuarioAlta, connection);
+			}
+			
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			
+			if (rs!=null) {
+				rs.close();
+			}
+		}
+	}
+	
+	private void actualizarInformacionVelacion(InformacionServicioVelacionRequest informacionServicioVelacionRequest,Integer idInformacionServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
+		try {
+			statement=connection.createStatement();
+			statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(informacionServicioVelacionRequest.getCp(), idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+			
+			statement.executeUpdate(reglasNegocioRepository.actualizarInformacionServicioVelacion(informacionServicioVelacionRequest, idInformacionServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			rs=statement.getGeneratedKeys();
+			
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			
+			if (rs!=null) {
+				rs.close();
+			}
+		}
+	}
 }

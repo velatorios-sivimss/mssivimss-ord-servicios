@@ -65,4 +65,28 @@ public class Contratante {
 		}
 		return 0;
 	}
+	
+	public Integer actualizarContacto(ContratanteRequest contratanteRequest, Integer idUsuarioAlta,
+			Connection connection) throws SQLException {
+		try {
+			
+			statement = connection.createStatement();
+			
+			
+			statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(contratanteRequest.getCp(), idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+
+			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(contratanteRequest, idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+			
+			return contratanteRequest.getIdContratante();
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!=null) {
+				rs.close();
+			}
+		}
+	}
 }

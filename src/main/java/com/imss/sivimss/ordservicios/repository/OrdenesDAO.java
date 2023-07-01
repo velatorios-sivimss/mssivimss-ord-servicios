@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenActualizar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenConsultar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenGuardar;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
@@ -23,12 +24,15 @@ public class OrdenesDAO {
 	@Autowired
 	private OrdenGuardar ordenGuardar;
 	
+	@Autowired
+	private OrdenActualizar ordenActualizar;
+	
 	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		return ordenGuardar.agregarOrden(datosRequest, authentication);
 	}
 	
-	public Response<Object> actualizarOrden(DatosRequest datosRequest, Authentication authentication) {
-		return null;
+	public Response<Object> actualizarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException {
+		return ordenActualizar.actualizar(datosRequest, authentication);
 	}
 	
 	public Response<Object> buscarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException {
