@@ -123,7 +123,7 @@ public class OrdenActualizar {
 						this.getClass().getPackage().toString(), "articulosComplementarios", AppConstantes.ALTA,
 						authentication);
 
-				response = ventaArticulos(ordenesServicioRequest, datosJson, usuario, authentication);
+				response = guardarVentaArticulos(ordenesServicioRequest, datosJson, usuario, authentication);
 				break;
 			case 4:
 				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
@@ -165,13 +165,18 @@ public class OrdenActualizar {
 			connection.commit();
 
 			// mandar a llamar el job con el id de la orden para cancelarlo
-
+			Object datosDesactivar = "{\"idODS\":" + idOrden + "}";
+			TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
+					"CANCELAR", datosDesactivar);
+			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
+					urlProceso.concat(AppConstantes.PROCESO), authentication);
+			
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
 				TareasDTO tareas = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
 						"INSERT", datos);
-				Response<Object> respuestaProceso = resTemplateProviderServiceRestTemplate
+				resTemplateProviderServiceRestTemplate
 						.consumirServicioProceso(tareas, urlProceso.concat(AppConstantes.PROCESO), authentication);
 
 				return response;
@@ -185,24 +190,29 @@ public class OrdenActualizar {
 		return response;
 	}
 
-	private Response<Object> ventaArticulos(OrdenesServicioRequest ordenesServicioRequest, String datosJson,
+	private Response<Object> guardarVentaArticulos(OrdenesServicioRequest ordenesServicioRequest, String datosJson,
 			UsuarioDto usuario, Authentication authentication) throws IOException, SQLException {
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
 		// desactiva registros si tipo de orden es diferente
 		desactivarRegistros(ordenesServicioRequest, usuario, authentication);
 		if (Boolean.TRUE.equals(desactivado)) {
+			Integer idOrden = ordenesServicioRequest.getIdOrdenServicio();
 			response = insertarVentaArticulo(ordenesServicioRequest, usuario);
 			connection.commit();
 
 			// mandar a llamar el job de desactivar
-
+			Object datosDesactivar = "{\"idODS\":" + idOrden + "}";
+			TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
+					"CANCELAR", datosDesactivar);
+			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
+					urlProceso.concat(AppConstantes.PROCESO), authentication);
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
 				TareasDTO tareas = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
 						"INSERT", datos);
-				Response<Object> respuestaProceso = resTemplateProviderServiceRestTemplate
+				resTemplateProviderServiceRestTemplate
 						.consumirServicioProceso(tareas, urlProceso.concat(AppConstantes.PROCESO), authentication);
 				return response;
 
@@ -397,18 +407,22 @@ public class OrdenActualizar {
 
 		response = consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
 
+		// mandar a llamar el job de desactivar
+		Object datosDesactivar = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
+		TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
+					"CANCELAR", datosDesactivar);
+			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
+		urlProceso.concat(AppConstantes.PROCESO), authentication);
 		
 		
 		// mandar a llamar el job con la clave tarea
 		if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 			
-			// mandar a llamar el job de desactivar
-			
 			// mandar a llamar el job con la clave tarea
 			Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
 			TareasDTO tareas = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
-					"INSERT", datos);
-			Response<Object> respuestaProceso = resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareas,
+					"ACTUALIZAR", datos);
+			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareas,
 					urlProceso.concat(AppConstantes.PROCESO), authentication);
 			return response;
 
@@ -459,9 +473,8 @@ public class OrdenActualizar {
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
-		  connection);
-		  
-		  }
+		  connection);  
+		}
 		 
 		// pago bitacora
 		if (ordenesServicioRequest.getIdEstatus() == 2) {
@@ -471,18 +484,22 @@ public class OrdenActualizar {
 
 		response = consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
 
-		
+		// mandar a llamar el job de desactivar
+		Object datosDesactivar = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
+		TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
+					"CANCELAR", datosDesactivar);
+			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
+		urlProceso.concat(AppConstantes.PROCESO), authentication);
 		
 		// mandar a llamar el job con la clave tarea
 		if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 			
-			// mandar a llamar el job de desactivar
-			
+		
 			// mandar a llamar el job con la clave tarea
 			Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
 			TareasDTO tareas = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
-					"INSERT", datos);
-			Response<Object> respuestaProceso = resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareas,
+					"ACTUALIZAR", datos);
+			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareas,
 					urlProceso.concat(AppConstantes.PROCESO), authentication);
 			return response;
 
