@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenActualizar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenConsultar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenGuardar;
+import com.imss.sivimss.ordservicios.service.GeneraReporteService;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.Response;
 
@@ -23,6 +24,9 @@ public class OrdenesDAO {
 	
 	@Autowired
 	private OrdenGuardar ordenGuardar;
+	
+		@Autowired
+	private GeneraReporteService generaReporteService;
 	
 	@Autowired
 	private OrdenActualizar ordenActualizar;
@@ -103,5 +107,15 @@ public class OrdenesDAO {
 	}	
 	public Response<Object> cancelarODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.cancelarODS(datos, auth);
+	}
+
+	public Response<Object> generaReporteConsultaODS(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.generaReporteConsultaODS(datos, auth);
+	}
+	public Response<Object> generaReporteServicioInmediato(DatosRequest datos, Authentication auth) throws IOException{
+		return generaReporteService.generarDocumentoContratoServInmediato(datos, auth);
+	}
+	public Response<Object> generaReporteOrdenServicio(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.generarDocumentoOrdenServicio(datos, auth);
 	}
 }
