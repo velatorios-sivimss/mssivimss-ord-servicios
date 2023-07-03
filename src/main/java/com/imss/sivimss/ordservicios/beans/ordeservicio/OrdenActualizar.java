@@ -160,7 +160,11 @@ public class OrdenActualizar {
 	}
 	
 	public Response<Object> consultarDetallePreOrden(DatosRequest datosRequest,
-			Authentication authentication) throws IOException, SQLException {
+			Authentication authentication) throws SQLException {
+		ResultSet resultSetDetallePresupuesto =null;
+		ResultSet resultSetDetallePresupuestoTraslado=null;
+		ResultSet resultSetDetalle=null;
+		ResultSet resultSetDetalleTraslado=null;
 		try {
 			connection = database.getConnection();
 			connection.setAutoCommit(false);
@@ -175,7 +179,7 @@ public class OrdenActualizar {
 			InformacionServicioResponse informacionServicioResponse=null;
 			statement = connection.createStatement();
 			rs = statement.executeQuery(reglasNegocioRepository.consultarOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
-
+		
 			// orden de servicio
 			if (rs.next()) {
 				servicioResponse.setIdOrdenServicio(rs.getInt(1));
@@ -281,8 +285,7 @@ public class OrdenActualizar {
 				caracteristicasPaqueteResponse.setIdCaracteristicasPaquete(rs.getInt(1));
 				caracteristicasPaqueteResponse.setIdPaquete(rs.getInt(2));
 				caracteristicasPaqueteResponse.setOtorgamiento(rs.getString(3));
-				ResultSet resultSetDetalle;
-				ResultSet resultSetDetalleTraslado;
+				
 				resultSetDetalle = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(caracteristicasPaqueteResponse.getIdCaracteristicasPaquete()));
 				caracteristicasPaqueteDetalleResponse= new ArrayList<>();
 				CaracteristicasPaqueteDetalleResponse detalleResponse=null;
@@ -328,8 +331,7 @@ public class OrdenActualizar {
 			CaracteristicasPaqueteDetallePresupuestoResponse paqueteDetallePresupuesto;
 			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPresupuestoDetalleTrasladoRequest=null;
 
-			ResultSet resultSetDetallePresupuesto;
-			ResultSet resultSetDetallePresupuestoTraslado;
+			
 			rs = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPresupuestoTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
 			if (rs.next()) {
 				caracteristicasPaquetePresupuestoResponse= new CaracteristicasPaquetePresupuestoResponse();
@@ -436,11 +438,13 @@ public class OrdenActualizar {
 			if (statement != null) {
 				statement.close();
 			}
-			if (rs != null) {
+			if (rs != null || resultSetDetalle != null || resultSetDetallePresupuesto !=null || resultSetDetallePresupuestoTraslado !=null || resultSetDetalleTraslado !=null) {
 				rs.close();
 			}
 		}
 	}
+	
+
 
 	private Response<Object> guardarOrdenServicio(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,
 			Authentication authentication) throws IOException, SQLException {
