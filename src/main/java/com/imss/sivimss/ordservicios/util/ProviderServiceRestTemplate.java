@@ -43,7 +43,7 @@ public class ProviderServiceRestTemplate {
 		}
 	}
 
-	public Response<?> consumirServicioReportes(Map<String, Object> dato,
+	public Response<Object> consumirServicioReportes(Map<String, Object> dato,
 												String url, Authentication authentication) throws IOException {
 		try {
 			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,

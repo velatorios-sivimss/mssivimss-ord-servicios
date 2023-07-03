@@ -76,6 +76,12 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 			return ordenesDAO.buscarODS(request, authentication);
 		case "cancelarODS":
 			return ordenesDAO.cancelarODS(request, authentication);
+		case "generaReporteConsultaODS":
+			return ordenesDAO.generaReporteConsultaODS(request, authentication);
+		case "generaReporteServicioInmediato":
+			return ordenesDAO.generaReporteServicioInmediato(request, authentication);
+		case "generaReporteOrdenServicio":
+			return ordenesDAO.generaReporteOrdenServicio(request, authentication);
 		default:
 			throw new BadRequestException(HttpStatus.BAD_REQUEST, "La peticion no se pudo realizar");
 		}
