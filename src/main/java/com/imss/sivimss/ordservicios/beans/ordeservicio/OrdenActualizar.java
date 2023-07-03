@@ -160,7 +160,7 @@ public class OrdenActualizar {
 	}
 	
 	public Response<Object> consultarDetallePreOrden(DatosRequest datosRequest,
-			Authentication authentication) throws SQLException {
+			Authentication authentication) throws SQLException, IOException {
 		ResultSet resultSetDetallePresupuesto =null;
 		ResultSet resultSetDetallePresupuestoTraslado=null;
 		ResultSet resultSetDetalle=null;
@@ -177,6 +177,8 @@ public class OrdenActualizar {
 			FinadoResponse finadoResponse=null;
 			CaracteristicasPresupuestoResponse caracteristicasPresupuestoResponse=null;
 			InformacionServicioResponse informacionServicioResponse=null;
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultarDetallePreOrden", AppConstantes.CONSULTA, authentication);
 			statement = connection.createStatement();
 			rs = statement.executeQuery(reglasNegocioRepository.consultarOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
 		
@@ -430,7 +432,14 @@ public class OrdenActualizar {
 			response= new Response<>(false, 200, AppConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(servicioResponse));
 			
 			return response;
-		} finally {
+		}catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_CONSULTAR));
+			log.error(e.getMessage());
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
+					authentication);
+			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		}finally {
 			if (connection != null) {
 				connection.close();
 			}
