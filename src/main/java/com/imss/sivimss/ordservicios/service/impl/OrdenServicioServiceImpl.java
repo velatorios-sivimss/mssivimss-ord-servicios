@@ -39,7 +39,7 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 		case "buscarOrden":
 			return ordenesDAO.buscarOrden(request, authentication);
 
-		case "detalleOrden":
+		case "detalle-preorden":
 			return ordenesDAO.detalleOrden(request, authentication);
 
 		case "consultarOrdenes":

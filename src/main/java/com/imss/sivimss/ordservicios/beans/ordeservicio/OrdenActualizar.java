@@ -5,8 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -20,9 +20,21 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
+import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleTrasladoRequest;
+import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.TareasDTO;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
+import com.imss.sivimss.ordservicios.model.response.CaracteristicasPaqueteDetallePresupuestoResponse;
+import com.imss.sivimss.ordservicios.model.response.CaracteristicasPaqueteDetalleResponse;
+import com.imss.sivimss.ordservicios.model.response.CaracteristicasPaquetePresupuestoResponse;
+import com.imss.sivimss.ordservicios.model.response.CaracteristicasPaqueteResponse;
+import com.imss.sivimss.ordservicios.model.response.CaracteristicasPresupuestoResponse;
+import com.imss.sivimss.ordservicios.model.response.ContratanteResponse;
+import com.imss.sivimss.ordservicios.model.response.DetalleOrdenesServicioResponse;
+import com.imss.sivimss.ordservicios.model.response.FinadoResponse;
+import com.imss.sivimss.ordservicios.model.response.InformacionServicioResponse;
+import com.imss.sivimss.ordservicios.model.response.InformacionServicioVelacionResponse;
 import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
@@ -53,9 +65,6 @@ public class OrdenActualizar {
 
 	@Autowired
 	private ProviderServiceRestTemplate resTemplateProviderServiceRestTemplate;
-
-	@Autowired
-	private OrdenGuardar ordenGuardar;
 
 	@Autowired
 	private Contratante contratante;
@@ -146,6 +155,289 @@ public class OrdenActualizar {
 		} finally {
 			if (connection != null) {
 				connection.close();
+			}
+		}
+	}
+	
+	public Response<Object> consultarDetallePreOrden(DatosRequest datosRequest,
+			Authentication authentication) throws IOException, SQLException {
+		try {
+			connection = database.getConnection();
+			connection.setAutoCommit(false);
+			Gson gson = new Gson();
+			String datosJson = datosRequest.getDatos().get(AppConstantes.DATOS).toString();
+			OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
+			DetalleOrdenesServicioResponse servicioResponse= new DetalleOrdenesServicioResponse();
+			ContratanteResponse contratanteResponse= null;
+			DomicilioRequest domicilioRequest;
+			FinadoResponse finadoResponse=null;
+			CaracteristicasPresupuestoResponse caracteristicasPresupuestoResponse=null;
+			InformacionServicioResponse informacionServicioResponse=null;
+			statement = connection.createStatement();
+			rs = statement.executeQuery(reglasNegocioRepository.consultarOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+
+			// orden de servicio
+			if (rs.next()) {
+				servicioResponse.setIdOrdenServicio(rs.getInt(1));
+				servicioResponse.setFolio(rs.getString(2));
+				servicioResponse.setIdParentesco(rs.getInt(3));
+				servicioResponse.setIdVelatorio(rs.getInt(4));
+				servicioResponse.setIdOperador(rs.getInt(5));
+				servicioResponse.setIdEstatus(rs.getInt(6));
+				servicioResponse.setIdContratantePf(rs.getInt(7));
+				
+				// contratante
+				rs = statement.executeQuery(reglasNegocioRepository.consultarContratanteOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+				if (rs.next()) {
+					contratanteResponse= new ContratanteResponse();
+					domicilioRequest= new DomicilioRequest();
+					contratanteResponse.setIdPersona(rs.getInt(1));
+					contratanteResponse.setIdContratante(rs.getInt(2));
+					contratanteResponse.setMatricula(rs.getString(3));
+					contratanteResponse.setRfc(rs.getString(4));
+					contratanteResponse.setCurp(rs.getString(5));
+					contratanteResponse.setNomPersona(rs.getString(6));
+					contratanteResponse.setPrimerApellido(rs.getString(7));
+					contratanteResponse.setSegundoApellido(rs.getString(8));
+					contratanteResponse.setSexo(rs.getString(9));
+					contratanteResponse.setOtroSexo(rs.getString(10));
+					contratanteResponse.setFechaNac(rs.getString(11));
+					contratanteResponse.setNacionalidad(rs.getString(12));
+					contratanteResponse.setIdPais(rs.getString(13));
+					contratanteResponse.setIdEstado(rs.getString(14));
+					contratanteResponse.setTelefono(rs.getString(15));
+					contratanteResponse.setCorreo(rs.getString(16));
+					domicilioRequest.setIdDomicilio(rs.getInt(17));
+					domicilioRequest.setDesCalle(rs.getString(18));
+					domicilioRequest.setNumExterior(rs.getString(19));
+					domicilioRequest.setNumInterior(rs.getString(20));
+					domicilioRequest.setCodigoPostal(rs.getString(21));
+					domicilioRequest.setDesColonia(rs.getString(22));
+					domicilioRequest.setDesMunicipio(rs.getString(23));
+					domicilioRequest.setDesEstado(rs.getString(24));
+					
+					contratanteResponse.setCp(domicilioRequest.getIdDomicilio()==0 || domicilioRequest.getIdDomicilio()==null?null:domicilioRequest);
+					
+					servicioResponse.setContratante(contratanteResponse);
+				}
+				
+				rs = statement.executeQuery(reglasNegocioRepository.consultarFinadoOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+				
+				// finado
+				
+				if (rs.next()) {
+					finadoResponse= new FinadoResponse();
+					domicilioRequest= new DomicilioRequest();
+					finadoResponse.setIdFinado(rs.getInt(1));
+					finadoResponse.setIdPersona(rs.getInt(2));
+					finadoResponse.setIdTipoOrden(rs.getInt(3));
+					finadoResponse.setExtremidad(rs.getString(4));;
+					finadoResponse.setEsobito(rs.getString(5));
+					finadoResponse.setMatricula(rs.getString(6));
+					finadoResponse.setRfc(rs.getString(7));
+					finadoResponse.setCurp(rs.getString(8));
+					finadoResponse.setNss(rs.getInt(9));
+					finadoResponse.setNomPersona(rs.getString(10));
+					finadoResponse.setPrimerApellido(rs.getString(11));
+					finadoResponse.setSegundoApellido(rs.getString(12));
+					finadoResponse.setSexo(rs.getString(13));
+					finadoResponse.setOtroSexo(rs.getString(14));
+					finadoResponse.setFechaNac(rs.getString(15));
+					finadoResponse.setNacionalidad(rs.getString(16));
+					finadoResponse.setIdPais(rs.getString(17));
+					finadoResponse.setIdEstado(rs.getString(18));
+					finadoResponse.setTelefono(rs.getString(19));
+					finadoResponse.setCorreo(rs.getString(20));
+					domicilioRequest.setIdDomicilio(rs.getInt(21));
+					domicilioRequest.setDesCalle(rs.getString(22));
+					domicilioRequest.setNumExterior(rs.getString(23));
+					domicilioRequest.setNumInterior(rs.getString(24));
+					domicilioRequest.setCodigoPostal(rs.getString(25));
+					domicilioRequest.setDesColonia(rs.getString(26));
+					domicilioRequest.setDesMunicipio(rs.getString(27));
+					domicilioRequest.setDesEstado(rs.getString(28));
+					finadoResponse.setCp(domicilioRequest.getIdDomicilio()==0 || domicilioRequest.getIdDomicilio()==null?null:domicilioRequest);
+					finadoResponse.setFechaDeceso(rs.getString(29));
+					finadoResponse.setCausaDeceso(rs.getString(30));
+					finadoResponse.setLugarDeceso(rs.getString(31));
+					finadoResponse.setHora(rs.getString(32));
+					finadoResponse.setIdClinicaAdscripcion(rs.getString(33));
+					finadoResponse.setIdUnidadProcedencia(rs.getString(34));
+					finadoResponse.setProcedenciaFinado(rs.getString(35));
+					finadoResponse.setIdTipoPension(rs.getInt(36));
+
+					servicioResponse.setFinado(finadoResponse);
+			}
+			
+			// caracteristicas presupuesto paquete
+				CaracteristicasPaqueteResponse caracteristicasPaqueteResponse=null;
+				List<CaracteristicasPaqueteDetalleResponse> caracteristicasPaqueteDetalleResponse=null;
+				CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPaqueteDetalleTrasladoRequest=null;
+				caracteristicasPresupuestoResponse= new CaracteristicasPresupuestoResponse();
+			rs = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPaqueteTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+			if (rs.next()) {
+				
+				caracteristicasPaqueteResponse= new CaracteristicasPaqueteResponse();
+				caracteristicasPaqueteResponse.setIdCaracteristicasPaquete(rs.getInt(1));
+				caracteristicasPaqueteResponse.setIdPaquete(rs.getInt(2));
+				caracteristicasPaqueteResponse.setOtorgamiento(rs.getString(3));
+				ResultSet resultSetDetalle;
+				ResultSet resultSetDetalleTraslado;
+				resultSetDetalle = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(caracteristicasPaqueteResponse.getIdCaracteristicasPaquete()));
+				caracteristicasPaqueteDetalleResponse= new ArrayList<>();
+				CaracteristicasPaqueteDetalleResponse detalleResponse=null;
+				
+				while (resultSetDetalle.next()) {
+					detalleResponse= new CaracteristicasPaqueteDetalleResponse();
+					detalleResponse.setIdPaqueteDetalle(resultSetDetalle.getInt(1));
+					detalleResponse.setIdArticulo(resultSetDetalle.getInt(2)==0?null:resultSetDetalle.getInt(2));
+					detalleResponse.setIdServicio(resultSetDetalle.getInt(3)==0?null:resultSetDetalle.getInt(3));
+					detalleResponse.setIdTipoServicio(resultSetDetalle.getInt(4)==0?null:resultSetDetalle.getInt(4));
+					detalleResponse.setGrupo(resultSetDetalle.getString(5));
+					detalleResponse.setConcepto(resultSetDetalle.getString(6));
+					detalleResponse.setDesmotivo(resultSetDetalle.getString(7));
+					detalleResponse.setActivo(resultSetDetalle.getInt(8));
+					detalleResponse.setCantidad(resultSetDetalle.getInt(9));
+					detalleResponse.setIdProveedor(resultSetDetalle.getInt(10));
+					detalleResponse.setNombreProveedor(resultSetDetalle.getString(11));
+					detalleResponse.setImporteMonto(resultSetDetalle.getDouble(12));
+					detalleResponse.setTotalPaquete(resultSetDetalle.getDouble(13));
+					resultSetDetalleTraslado = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(detalleResponse.getIdPaqueteDetalle()));
+					caracteristicasPaqueteDetalleTrasladoRequest= null;
+					if (resultSetDetalleTraslado.next()) {
+						caracteristicasPaqueteDetalleTrasladoRequest= new CaracteristicasPaqueteDetalleTrasladoRequest();
+						caracteristicasPaqueteDetalleTrasladoRequest.setIdCaracteristicasPaqueteDetalleTraslado(resultSetDetalleTraslado.getInt(1));
+						caracteristicasPaqueteDetalleTrasladoRequest.setOrigen(resultSetDetalleTraslado.getString(2));
+						caracteristicasPaqueteDetalleTrasladoRequest.setDestino(resultSetDetalleTraslado.getString(3));
+						caracteristicasPaqueteDetalleTrasladoRequest.setTotalKilometros(resultSetDetalleTraslado.getString(4));
+						caracteristicasPaqueteDetalleTrasladoRequest.setLatitudInicial(resultSetDetalleTraslado.getDouble(5));
+						caracteristicasPaqueteDetalleTrasladoRequest.setLatitudFinal(resultSetDetalleTraslado.getDouble(6));
+						caracteristicasPaqueteDetalleTrasladoRequest.setLongitudInicial(resultSetDetalleTraslado.getDouble(7));
+						caracteristicasPaqueteDetalleTrasladoRequest.setLongitudFinal(resultSetDetalleTraslado.getDouble(8));
+						caracteristicasPaqueteDetalleTrasladoRequest.setIdDetalleCaracteristicas(detalleResponse.getIdPaqueteDetalle());
+					}
+					detalleResponse.setServicioDetalleTraslado(Objects.isNull(caracteristicasPaqueteDetalleTrasladoRequest)?null:caracteristicasPaqueteDetalleTrasladoRequest);
+					caracteristicasPaqueteDetalleResponse.add(detalleResponse);
+				}
+				caracteristicasPaqueteResponse.setDetallePaquete(caracteristicasPaqueteDetalleResponse);
+				caracteristicasPresupuestoResponse.setCaracteristicasPaqueteResponse(Objects.isNull(caracteristicasPaqueteResponse)?null:caracteristicasPaqueteResponse);
+			}
+			// caracteristicas presupuesto presupuesto
+			CaracteristicasPaquetePresupuestoResponse caracteristicasPaquetePresupuestoResponse=null;
+			List<CaracteristicasPaqueteDetallePresupuestoResponse> caracteristicasPaqueteDetallePresupuestoResponse= new ArrayList<>();
+			CaracteristicasPaqueteDetallePresupuestoResponse paqueteDetallePresupuesto;
+			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPresupuestoDetalleTrasladoRequest=null;
+
+			ResultSet resultSetDetallePresupuesto;
+			ResultSet resultSetDetallePresupuestoTraslado;
+			rs = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPresupuestoTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+			if (rs.next()) {
+				caracteristicasPaquetePresupuestoResponse= new CaracteristicasPaquetePresupuestoResponse();
+				caracteristicasPaquetePresupuestoResponse.setIdCaracteristicasPresupuesto(rs.getInt(1));
+				caracteristicasPaquetePresupuestoResponse.setIdPaquete(rs.getInt(2));
+				caracteristicasPaquetePresupuestoResponse.setNotasServicio(rs.getString(3));
+				caracteristicasPaquetePresupuestoResponse.setObservaciones(rs.getString(4));
+				caracteristicasPaquetePresupuestoResponse.setTotalPresupuesto(rs.getString(5));
+				resultSetDetallePresupuesto = statement.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(caracteristicasPaquetePresupuestoResponse.getIdCaracteristicasPresupuesto(),ordenesServicioRequest.getIdOrdenServicio()));
+				while (resultSetDetallePresupuesto.next()) {
+					paqueteDetallePresupuesto= new CaracteristicasPaqueteDetallePresupuestoResponse();
+					paqueteDetallePresupuesto.setIdPaqueteDetallePresupuesto(resultSetDetallePresupuesto.getInt(1));
+					paqueteDetallePresupuesto.setIdCategoria(resultSetDetallePresupuesto.getInt(2)==0?null:resultSetDetallePresupuesto.getInt(2));
+					paqueteDetallePresupuesto.setIdArticulo(resultSetDetallePresupuesto.getInt(3)==0?null:resultSetDetallePresupuesto.getInt(3));
+					paqueteDetallePresupuesto.setIdInventario(resultSetDetallePresupuesto.getInt(4)==0?null:resultSetDetallePresupuesto.getInt(4));
+					paqueteDetallePresupuesto.setIdServicio(resultSetDetallePresupuesto.getInt(5)==0?null:resultSetDetallePresupuesto.getInt(5));
+					paqueteDetallePresupuesto.setGrupo(resultSetDetallePresupuesto.getString(6));
+					paqueteDetallePresupuesto.setConcepto(resultSetDetallePresupuesto.getString(7));
+					paqueteDetallePresupuesto.setCantidad(resultSetDetallePresupuesto.getInt(8));
+					paqueteDetallePresupuesto.setIdProveedor(resultSetDetallePresupuesto.getInt(9));
+					paqueteDetallePresupuesto.setNombreProveedor(resultSetDetallePresupuesto.getString(10));
+					paqueteDetallePresupuesto.setEsDonado(resultSetDetallePresupuesto.getInt(11));
+					paqueteDetallePresupuesto.setImporteMonto(resultSetDetallePresupuesto.getDouble(12));
+					resultSetDetallePresupuestoTraslado = statement.executeQuery(
+							reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto()));
+					caracteristicasPresupuestoDetalleTrasladoRequest=null;
+					if (resultSetDetallePresupuestoTraslado.next()) {
+						caracteristicasPresupuestoDetalleTrasladoRequest= new CaracteristicasPaqueteDetalleTrasladoRequest();
+						caracteristicasPresupuestoDetalleTrasladoRequest.setIdCaracteristicasPaqueteDetalleTraslado(resultSetDetallePresupuestoTraslado.getInt(1));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setOrigen(resultSetDetallePresupuestoTraslado.getString(2));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setDestino(resultSetDetallePresupuestoTraslado.getString(3));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setTotalKilometros(resultSetDetallePresupuestoTraslado.getString(4));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setLatitudInicial(resultSetDetallePresupuestoTraslado.getDouble(5));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setLatitudFinal(resultSetDetallePresupuestoTraslado.getDouble(6));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setLongitudInicial(resultSetDetallePresupuestoTraslado.getDouble(7));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setLongitudFinal(resultSetDetallePresupuestoTraslado.getDouble(8));
+						caracteristicasPresupuestoDetalleTrasladoRequest.setIdDetalleCaracteristicas(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto());
+					}
+					paqueteDetallePresupuesto.setServicioDetalleTraslado(Objects.isNull(caracteristicasPresupuestoDetalleTrasladoRequest)?null:caracteristicasPresupuestoDetalleTrasladoRequest);
+					caracteristicasPaqueteDetallePresupuestoResponse.add(paqueteDetallePresupuesto);
+				}
+				
+				caracteristicasPaquetePresupuestoResponse.setDetallePresupuesto(caracteristicasPaqueteDetallePresupuestoResponse);
+				caracteristicasPresupuestoResponse.setCaracteristicasDelPresupuesto(Objects.isNull(caracteristicasPaquetePresupuestoResponse)?null:caracteristicasPaquetePresupuestoResponse);
+			}
+			rs = statement.executeQuery(reglasNegocioRepository.consultarInformacionServicioOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+			
+			// informacion de servicio
+			
+			if (rs.next()) {
+				informacionServicioResponse= new InformacionServicioResponse();
+				informacionServicioResponse.setIdInformacionServicio(rs.getInt(1));
+				informacionServicioResponse.setFechaCortejo(rs.getString(2));
+				informacionServicioResponse.setHoraCortejo(rs.getString(3));
+				informacionServicioResponse.setFechaRecoger(rs.getString(4));
+				informacionServicioResponse.setHoraRecoger(rs.getString(5));
+				informacionServicioResponse.setIdPanteon(rs.getInt(6));
+				informacionServicioResponse.setIdSala(rs.getInt(7));
+				informacionServicioResponse.setFechaCremacion(rs.getString(8));
+				informacionServicioResponse.setHoraCremacion(rs.getString(9));
+				informacionServicioResponse.setIdPromotor(rs.getInt(10));
+				
+				InformacionServicioVelacionResponse informacionServicioVelacionResponse=null;
+				
+				
+				// informacion de servicio velacion 
+				rs = statement.executeQuery(reglasNegocioRepository.consultarInformacionServicioVelacionOrdenServicios(informacionServicioResponse.getIdInformacionServicio()));
+				if (rs.next()) {
+					domicilioRequest= new DomicilioRequest();
+					informacionServicioVelacionResponse= new InformacionServicioVelacionResponse();
+					informacionServicioVelacionResponse.setIdInformacionServicioVelacion(rs.getInt(1));
+					informacionServicioVelacionResponse.setFechaInstalacion(rs.getString(2));
+					informacionServicioVelacionResponse.setHoraInstalacion(rs.getString(3));
+					informacionServicioVelacionResponse.setFechaVelacion(rs.getString(4));
+					informacionServicioVelacionResponse.setHoraVelacion(rs.getString(5));
+					informacionServicioVelacionResponse.setIdCapilla(rs.getInt(6));
+					domicilioRequest.setIdDomicilio(rs.getInt(7));
+					domicilioRequest.setDesCalle(rs.getString(8));
+					domicilioRequest.setNumExterior(rs.getString(9));
+					domicilioRequest.setNumInterior(rs.getString(10));
+					domicilioRequest.setCodigoPostal(rs.getString(11));
+					domicilioRequest.setDesColonia(rs.getString(12));
+					domicilioRequest.setDesMunicipio(rs.getString(13));
+					domicilioRequest.setDesEstado(rs.getString(14));
+					informacionServicioVelacionResponse.setCp(domicilioRequest.getIdDomicilio()==0 || domicilioRequest.getIdDomicilio()==null?null:domicilioRequest);
+				}
+				informacionServicioResponse.setInformacionServicioVelacion(Objects.isNull(informacionServicioVelacionResponse)?null:informacionServicioVelacionResponse);
+			  }
+			
+
+			}
+			servicioResponse.setContratante(contratanteResponse);
+			servicioResponse.setFinado(Objects.isNull(finadoResponse)?null:finadoResponse);
+			servicioResponse.setCaracteristicasPresupuesto(Objects.isNull(caracteristicasPresupuestoResponse)?null:caracteristicasPresupuestoResponse);
+			servicioResponse.setInformacionServicio(Objects.isNull(informacionServicioResponse)?null:informacionServicioResponse);
+			response= new Response<>(false, 200, AppConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(servicioResponse));
+			
+			return response;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			
+			if (statement != null) {
+				statement.close();
+			}
+			if (rs != null) {
+				rs.close();
 			}
 		}
 	}
@@ -687,7 +979,7 @@ public class OrdenActualizar {
 		}
 	}
 
-	public Response<Object> consultarOrden(Integer idOrdenServicio, Connection con) throws SQLException {
+	private Response<Object> consultarOrden(Integer idOrdenServicio, Connection con) throws SQLException {
 		try {
 			OrdenServicioResponse ordenServicioResponse;
 			statement = con.createStatement();
@@ -710,5 +1002,9 @@ public class OrdenActualizar {
 			}
 		}
 	}
+	
+
+	
+	
 
 }

@@ -139,6 +139,13 @@ public class OrdenServicioController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+	
+	@PostMapping("/consultar/detalle")
+	public CompletableFuture<Object>consultarDetalleOrdenServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "detalle-preorden");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 
 	/**
 	 * fallbacks generico

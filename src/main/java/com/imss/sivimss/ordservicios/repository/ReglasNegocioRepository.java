@@ -660,7 +660,7 @@ public class ReglasNegocioRepository {
 	}
 	
 	
-	// insertar informacion servicio
+	// actualizar informacion servicio
 	public String actualizarInformacionServicio(InformacionServicioRequest informacionServicioRequest,
 			Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO ");
@@ -682,7 +682,7 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 
-	// insertar informacion servicio velacion
+	// actualizar informacion servicio velacion
 	public String actualizarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
 			Integer idInformacionServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO_VELACION ");
@@ -700,4 +700,349 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+	
+	///////////////////////consultas////////////////////////////
+	// consultar orden de servicio
+	public String consultarOrdenServicios(Integer idOrdenServicio) {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("STO.ID_ORDEN_SERVICIO AS idOrdenServicio", 
+				"STO.CVE_FOLIO AS folio",
+				"STO.ID_PARENTESCO AS idParentesco",
+				"STO.ID_VELATORIO AS idVelatorio",
+				"STO.ID_OPERADOR AS idOperador",
+				"STO.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus",
+				"STO.ID_CONTRATANTE_PF AS idContratantePf")
+		.from("SVC_ORDEN_SERVICIO STO")
+		.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
+		.and("ID_ESTATUS_ORDEN_SERVICIO = 1");
+		query = selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+	
+	// consultar contratante
+	public String consultarContratanteOrdenServicios(Integer idOrdenServicio) {
+			SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+			selectQueryUtil.select("SPC.ID_PERSONA AS idPersona",
+					"STO .ID_CONTRATANTE AS idContratante",
+					"IFNULL(SC.CVE_MATRICULA,'') AS matricula",
+					"IFNULL(SPC.CVE_RFC,'') AS rfc",
+					"IFNULL(SPC.CVE_CURP,'') AS curp",
+					"IFNULL(SPC.NOM_PERSONA,'') AS nomPersona",
+					"IFNULL(SPC.NOM_PRIMER_APELLIDO,'') AS primerApellido",
+					"IFNULL(SPC.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
+					"IFNULL(SPC.NUM_SEXO,'') AS sexo",
+					"IFNULL(SPC.DES_OTRO_SEXO,'') AS otroSexo",
+					"SPC.FEC_NAC AS fechaNac",
+					"(CASE WHEN SPC.ID_PAIS = NULL OR SPC.ID_PAIS = 119  THEN 1 ELSE 2 END) AS nacionalidad",
+					"SPC.ID_PAIS AS idPais",
+					"SPC.ID_ESTADO AS idEstado",
+					"SPC.DES_TELEFONO AS telefono",
+					"SPC.DES_CORREO AS correo",
+					"SC.ID_DOMICILIO AS idDomicilio",
+					"SCD.DES_CALLE AS desCalle",
+					"SCD.NUM_EXTERIOR AS numExterior",
+					"SCD.NUM_INTERIOR AS numInterior",
+					"SCD.DES_CP AS codigoPostal",
+					"SCD.DES_COLONIA AS desColonia",
+					"SCD.DES_MUNICIPIO AS desMunicipio",
+					"SCD.DES_ESTADO AS desEstado")
+			.from("SVC_ORDEN_SERVICIO STO")
+			.leftJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
+			.leftJoin("SVC_PERSONA SPC", "SC.ID_PERSONA = SPC.ID_PERSONA")
+			.innerJoin("SVT_DOMICILIO SCD", "SC.ID_DOMICILIO = SCD.ID_DOMICILIO")
+			.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio);
+	
+			query = selectQueryUtil.build();
+			log.info(query);
+			return query;
+	}
+	
+	// consultar contratante
+	public String consultarFinadoOrdenServicios(Integer idOrdenServicio) {
+				SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+				selectQueryUtil.select(
+						"STF.ID_FINADO AS idFinado",
+						"SPF.ID_PERSONA AS idPersona",
+						"STF.ID_TIPO_ORDEN AS idTipoOrden",
+						"STF.DES_EXTREMIDAD AS extremidad",
+						"STF.DES_OBITO AS esobito",
+						"IFNULL(STF.CVE_MATRICULA,'') AS matricula",
+						"IFNULL(SPF.CVE_RFC,'') AS rfc",
+						"IFNULL(SPF.CVE_CURP,'') AS curp",
+						"IFNULL(SPF.CVE_NSS,'') AS nss",
+						"IFNULL(SPF.NOM_PERSONA,'') AS nomPersona",
+						"IFNULL(SPF.NOM_PRIMER_APELLIDO,'') AS primerApellido",
+						"IFNULL(SPF.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
+						"SPF.NUM_SEXO AS sexo",
+						"SPF.DES_OTRO_SEXO AS otroSexo",
+						"SPF.FEC_NAC AS fechaNac",
+						"(CASE WHEN SPF.ID_PAIS = NULL OR SPF.ID_PAIS = 119 THEN 1 ELSE 2 END) AS nacionalidad",
+						"SPF.ID_PAIS AS idPais",
+						"SPF.ID_ESTADO AS idEstado",
+						"SPF.DES_TELEFONO AS telefono",
+						"SPF.DES_CORREO AS correo",
+						"SCD.ID_DOMICILIO AS idDomicilio",
+						"SCD.DES_CALLE AS desCalle",
+						"SCD.NUM_EXTERIOR AS numExterior",
+						"SCD.NUM_INTERIOR AS numInterior",
+						"SCD.DES_CP AS codigoPostal",
+						"SCD.DES_COLONIA AS desColonia",
+						"SCD.DES_MUNICIPIO AS desMunicipio",
+						"SCD.DES_ESTADO AS desEstado",
+						"DATE_FORMAT(STF.FEC_DECESO,'%Y-%m-%d') AS fechaDeceso",
+						"STF.DES_CAUSA_DECESO AS causaDeceso",
+						"STF.DES_LUGAR_DECESO AS lugarDeceso",
+						"STF.TIM_HORA AS hora",
+						"STF.ID_CLINICA_ADSCRIPCION AS idClinicaAdscripcion",
+						"STF.ID_UNIDAD_PROCEDENCIA AS idUnidadProcedencia",
+						"STF.DES_PROCEDENCIA_FINADO AS procedenciaFinado",
+						"STF.ID_TIPO_PENSION AS idTipoPension",
+						"STF.ID_CONTRATO_PREVISION AS idContratoPrevision",
+						"STF.ID_VELATORIO AS idVelatorioContratoPrevision")
+				.from("SVC_ORDEN_SERVICIO STO")
+				.leftJoin("SVC_FINADO STF ", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
+				.leftJoin("SVC_PERSONA SPF ", "STF.ID_PERSONA =SPF.ID_PERSONA ")
+				.innerJoin("SVT_DOMICILIO SCD", "STF.ID_DOMICILIO = SCD.ID_DOMICILIO")
+				.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio);
+		
+				query = selectQueryUtil.build();
+				log.info(query);
+				return query;
+	}
+	
+	// consultar CaracteristicasPresupuestoPaqueteTempOrdenServicios
+	public String consultarCaracteristicasPresupuestoPaqueteTempOrdenServicios(Integer idOrdenServicio) {
+					SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+					selectQueryUtil.select(
+							"SCP.ID_CARACTERISTICAS_PAQUETE AS idCaracteristicasPaquete",
+							"SCP.ID_PAQUETE AS idPaquete",
+							"SCP.IND_OTORGAMIENTO AS  otorgamiento")
+					.from("SVC_ORDEN_SERVICIO STO")
+					.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO ")
+					.innerJoin("SVT_PAQUETE SP", "SCP.ID_PAQUETE=SP.ID_PAQUETE")
+					.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
+					.and("SCP.IND_ACTIVO = 1");
+			
+				query = selectQueryUtil.build();
+				log.info(query);
+				return query;
+	}
+	
+	// consultar CaracteristicasPresupuestoDetallePaqueteTempOrdenServicios
+	public String consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(Integer idCaracteristicasPaquete) {
+						SelectQueryUtil selectQueryUtilServicios = new SelectQueryUtil();
+						SelectQueryUtil selectQueryUtilArticulos = new SelectQueryUtil();
+						selectQueryUtilServicios.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetalle",
+								"0 AS idArticulo",
+								"SDCPT.ID_SERVICIO AS idServicio",
+								"SS.ID_TIPO_SERVICIO AS idTipoServicio",
+								"STS.DES_TIPO_SERVICIO AS grupo",
+								"SS.DES_NOM_SERVICIO AS concepto",
+								"SDCPT.DES_MOTIVO AS desmotivo",
+								"SDCPT.IND_ACTIVO AS activo",
+								"SDCPT.CAN_CANTIDAD AS cantidad",
+								"SDCPT.ID_PROVEEDOR AS idProveedor",
+								"SP.NOM_PROVEEDOR AS nombreProveedor",
+								"SDCPT.IMP_IMPORTE AS importeMonto",
+								"SDCPT.IMP_IMPORTE AS totalPaquete")
+						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
+						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
+						.leftJoin("SVT_SERVICIO SS ", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO  ")
+						.innerJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO ")
+						.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
+						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
+						.and("SDCPT.IND_ACTIVO = 1");
+						
+						selectQueryUtilArticulos.select(
+								"SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetalle",
+								"SDCPT.ID_ARTICULO AS idArticulo",
+								"0 AS idServicio",
+								"0 AS idTipoServicio",
+								"SCA.DES_CATEGORIA_ARTICULO AS grupo",
+								"STA.DES_MODELO_ARTICULO AS concepto",
+								"SDCPT.DES_MOTIVO AS desmotivo",
+								"SDCPT.IND_ACTIVO AS activo",
+								"SDCPT.CAN_CANTIDAD AS cantidad",
+								"SDCPT.ID_PROVEEDOR AS idProveedor",
+								"SP.NOM_PROVEEDOR AS nombreProveedor",
+								"SDCPT.IMP_IMPORTE AS importeMonto",
+								"SDCPT.IMP_IMPORTE AS totalPaquete")
+						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
+						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
+						.leftJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
+						.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
+						.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
+						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
+						.and("SDCPT.IND_ACTIVO = 1");
+				
+				query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
+				log.info(query);
+				return query;
+	}
+	
+	
+	// consultar CaracteristicasPresupuestoPaqueteTrasladoTempOrdenServicios
+	public String consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(Integer idDetalleCaracteristicasPaquete) {
+							SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
+							selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARACTERISTICA_PRESUPUESTO_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
+									"SCPTT.DES_ORIGEN AS origen",
+									"SCPTT.DES_DESTINO AS destino",
+									"SCPTT.CAN_TOTAL_KILOMETROS AS totalKilometros ",
+									"SCPTT.LATITUD_INICIAL AS latitudInicial",
+									"SCPTT.LATITUD_FINAl AS latitudFinal",
+									"SCPTT.LONGITUD_INICIAL AS longitudInicial",
+									"SCPTT.LONGITUD_FINAL AS longitudFinal")
+							.from("SVC_CARACTERISTICA_PAQUETE_TRASLADO_TEMP SCPTT")
+							.where("SCPTT.ID_DETALLE_CARACTERISTICAS = " + idDetalleCaracteristicasPaquete);
+							
+						
+					
+				query = selectQueryUtilTrasladoServicio.build();
+				log.info(query);
+				return query;
+	}
+	
+	// consultar CaracteristicasPresupuestoPresupuestoTempOrdenServicios
+	public String consultarCaracteristicasPresupuestoPresupuestoTempOrdenServicios(Integer idOrdenServicio) {
+					SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+					selectQueryUtil.select("SCPT.ID_CARACTERISTICAS_PRESUPUESTO AS idCaracteristicasPresupuesto",
+							"SCPT.ID_PAQUETE AS idPaquete",
+							"SCPT.CAN_PRESUPUESTO AS  totalPresupuesto",
+							"SCPT.DES_OBSERVACIONES AS observaciones",
+							"SCPT.DES_NOTAS_SERVICIO AS notasServicio")
+					.from("SVC_ORDEN_SERVICIO STO")
+					.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCPT ", "SCPT.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO  ")
+					.innerJoin("SVT_PAQUETE SP", "SCPT.ID_PAQUETE=SP.ID_PAQUETE")
+					.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
+					.and("SCPT.IND_ACTIVO = 1");
+			
+				query = selectQueryUtil.build();
+				log.info(query);
+				return query;
+	}
+	
+	// consultar CaracteristicasPresupuestoDetallePaqueteTempOrdenServicios
+		public String consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(Integer idCaracteristicasPresupuesto, Integer idOrdenServicio) {
+							SelectQueryUtil selectQueryUtilServicios = new SelectQueryUtil();
+							SelectQueryUtil selectQueryUtilArticulos = new SelectQueryUtil();
+							selectQueryUtilServicios.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetallePresupuesto",
+									"0 AS idCategoria",
+									"0 AS idArticulo",
+									"0 AS idInventario",
+									"SDCPT.ID_SERVICIO AS idServicio",
+									"STS.DES_TIPO_SERVICIO AS grupo",
+									"SS.DES_NOM_SERVICIO AS concepto",
+									"SDCPT.CAN_CANTIDAD AS cantidad",
+									"SDCPT.ID_PROVEEDOR AS idProveedor",
+									"SP.NOM_PROVEEDOR AS nombreProveedor",
+									"0 AS esDonado",
+									"SDCPT.IMP_IMPORTE AS importeMonto")
+							.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCPT  ")
+							.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO  ")
+							.leftJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO ")
+							.innerJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO  ")
+							.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR ")
+							.where("SDCPT.ID_CARACTERISTICAS_PRESUPUESTO = " + idCaracteristicasPresupuesto)
+							.and("SDCPT.IND_ACTIVO = 1");
+							
+							selectQueryUtilArticulos.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetallePresupuesto",
+									"STA.ID_CATEGORIA_ARTICULO AS idCategoria",
+									"SDCPT.ID_ARTICULO AS idArticulo",
+									"SDCPT.ID_INVE_ARTICULO AS idInventario",
+									"0 AS idServicio",
+									"SCA.DES_CATEGORIA_ARTICULO AS grupo",
+									"STA.DES_MODELO_ARTICULO AS concepto",
+									"SDCPT.CAN_CANTIDAD AS cantidad",
+									"SDCPT.ID_PROVEEDOR AS idProveedor",
+									"SP.NOM_PROVEEDOR AS nombreProveedor",
+									"(SELECT IFNULL(SDO.ID_DONACION_ORDEN_SERVICIO,0)  FROM SVC_DONACION_ORDEN_SERVICIO_TEMP SDO "+ 
+									"WHERE SDO.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO AND SDO.ID_ORDEN_SERVICIO="+idOrdenServicio+" AND SDO.IND_ACTIVO=1)"+ 
+									"AS esDonado",
+									"SDCPT.IMP_IMPORTE AS importeMonto")
+							.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCPT  ")
+							.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCP  ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+							.leftJoin("SVT_INVENTARIO_ARTICULO STIA ", "STIA.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO ")
+							.innerJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
+							.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
+							.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR   ")
+							.where("SDCPT.ID_CARACTERISTICAS_PRESUPUESTO = " + idCaracteristicasPresupuesto)
+							.and("SDCPT.IND_ACTIVO = 1");
+					
+					query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
+					log.info(query);
+					return query;
+		}
+		
+		// consultar CaracteristicasPresupuestoPTrasladoTempOrdenServicios
+		public String consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(Integer idDetalleCaracteristicasPresupuesto) {
+								SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
+								selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARACTERISTICA_PRESUPUESTO_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
+										"SCPTT.DES_ORIGEN AS origen",
+										"SCPTT.DES_DESTINO AS destino",
+										"SCPTT.CAN_TOTAL_KILOMETROS AS totalKilometros ",
+										"SCPTT.LATITUD_INICIAL AS latitudInicial",
+										"SCPTT.LATITUD_FINAl AS latitudFinal",
+										"SCPTT.LONGITUD_INICIAL AS longitudInicial",
+										"SCPTT.LONGITUD_FINAL AS longitudFinal")
+								.from("SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO_TEMP SCPTT")
+								.where("SCPTT.ID_DETALLE_CARACTERISTICAS = " + idDetalleCaracteristicasPresupuesto);
+								
+							
+						
+					query = selectQueryUtilTrasladoServicio.build();
+					log.info(query);
+					return query;
+		}
+		
+		// consultar InformacionServicioOrdenServicios
+		public String consultarInformacionServicioOrdenServicios(Integer idOrdenServicio) {
+										SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
+										selectQueryUtilTrasladoServicio.select("SI.ID_INFORMACION_SERVICIO AS idInformacionServicio",
+												"DATE_FORMAT(SI.FEC_CORTEJO,'%Y-%m-%d') AS fechaCortejo",
+												"SI.TIM_HORA_CORTEJO AS horaCortejo",
+												"DATE_FORMAT(SI.FEC_RECOGER,'%Y-%m-%d') AS fechaRecoger",
+												"SI.TIM_HORA_RECOGER AS horaRecoger",
+												"SI.ID_PANTEON AS idPanteon",
+												"SI.ID_SALA AS idSala",
+												"DATE_FORMAT(SI.FEC_CREMACION,'%Y-%m-%d') AS fechaCremacion",
+												"SI.TIM_HORA_CREMACION AS horaCremacion",
+												"SI.ID_PROMOTORES AS idPromotor")
+										.from("SVC_INFORMACION_SERVICIO SI ")
+										.where("SI.ID_ORDEN_SERVICIO = " + idOrdenServicio);
+										
+									
+								
+					 query = selectQueryUtilTrasladoServicio.build();
+					 log.info(query);
+					 return query;
+		}
+		
+		// consultar InformacionServicioOrdenServicios
+		public String consultarInformacionServicioVelacionOrdenServicios(Integer idInformacionServicio) {
+												SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
+												selectQueryUtilTrasladoServicio.select("SISV.ID_INFORMACION_SERVICIO_VELACION AS idInformacionServicioVelacion",
+														"DATE_FORMAT(SISV.FEC_INSTALACION ,'%Y-%m-%d') AS fechaInstalacion",
+														"SISV.TIM_HORA_INSTALACION AS horaInstalacion",
+														"DATE_FORMAT(SISV.FEC_VELACION,'%Y-%m-%d') AS fechaVelacion",
+														"SISV.TIM_HORA_VELACION AS horaVelacion",
+														"SISV.ID_CAPILLA AS idCapilla",
+														"SISV.ID_DOMICILIO AS idDomicilio",
+														"SCD.DES_CALLE AS desCalle",
+														"SCD.NUM_EXTERIOR AS numExterior",
+														"SCD.NUM_INTERIOR AS numInterior",
+														"SCD.DES_CP AS codigoPostal",
+														"SCD.DES_COLONIA AS desColonia",
+														"SCD.DES_MUNICIPIO AS desMunicipio",
+														"SCD.DES_ESTADO AS desEstado")
+												.from("SVC_INFORMACION_SERVICIO_VELACION SISV ")
+												.innerJoin("SVT_DOMICILIO SCD","SCD.ID_DOMICILIO = SISV.ID_DOMICILIO")
+												.where("SISV.ID_INFORMACION_SERVICIO = " + idInformacionServicio);
+												
+											
+										
+						query = selectQueryUtilTrasladoServicio.build();
+						log.info(query);
+						return query;
+		}
 }
