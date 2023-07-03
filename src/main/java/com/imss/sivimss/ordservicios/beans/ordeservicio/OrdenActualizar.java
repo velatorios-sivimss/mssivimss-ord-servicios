@@ -327,6 +327,7 @@ public class OrdenActualizar {
 				caracteristicasPaqueteResponse.setDetallePaquete(caracteristicasPaqueteDetalleResponse);
 				caracteristicasPresupuestoResponse.setCaracteristicasPaqueteResponse(Objects.isNull(caracteristicasPaqueteResponse)?null:caracteristicasPaqueteResponse);
 			}
+			
 			// caracteristicas presupuesto presupuesto
 			CaracteristicasPaquetePresupuestoResponse caracteristicasPaquetePresupuestoResponse=null;
 			List<CaracteristicasPaqueteDetallePresupuestoResponse> caracteristicasPaqueteDetallePresupuestoResponse= new ArrayList<>();
@@ -447,8 +448,20 @@ public class OrdenActualizar {
 			if (statement != null) {
 				statement.close();
 			}
-			if (rs != null || resultSetDetalle != null || resultSetDetallePresupuesto !=null || resultSetDetallePresupuestoTraslado !=null || resultSetDetalleTraslado !=null) {
+			if (rs != null ) {
 				rs.close();
+			}
+			if (resultSetDetalle!=null) {
+				resultSetDetalle.close();
+			}
+			if (resultSetDetalleTraslado!=null) {
+				resultSetDetalleTraslado.close();
+			}
+			if (resultSetDetallePresupuesto!=null) {
+				resultSetDetallePresupuesto.close();
+			}
+			if (resultSetDetallePresupuestoTraslado!=null) {
+				resultSetDetallePresupuestoTraslado.close();
 			}
 		}
 	}
