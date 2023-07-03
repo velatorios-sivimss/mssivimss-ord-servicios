@@ -374,12 +374,8 @@ public class OrdenActualizar {
 	public CaracteristicasPaqueteResponse consultarCaracteristicasPaqueteResponse(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
 		Statement statementc=null;
 		ResultSet rsc=null;
-		ResultSet resultSetDetalle=null;
-		ResultSet resultSetDetalleTraslado=null;
 		try {
 			CaracteristicasPaqueteResponse caracteristicasPaqueteResponse=null;
-			List<CaracteristicasPaqueteDetalleResponse> caracteristicasPaqueteDetalleResponse=null;
-			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPaqueteDetalleTrasladoRequest=null;
 			log.info("consultarCaracteristicasPaqueteResponse");
 
 			statementc = conn.createStatement();
@@ -391,9 +387,40 @@ public class OrdenActualizar {
 				caracteristicasPaqueteResponse.setIdPaquete(rsc.getInt(2));
 				caracteristicasPaqueteResponse.setOtorgamiento(rsc.getString(3));
 				
-				resultSetDetalle = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(caracteristicasPaqueteResponse.getIdCaracteristicasPaquete()));
-				caracteristicasPaqueteDetalleResponse= new ArrayList<>();
-				CaracteristicasPaqueteDetalleResponse detalleResponse=null;
+				
+				caracteristicasPaqueteResponse.setDetallePaquete(consultarCaracteristicasPaqueteDetalleResponse(caracteristicasPaqueteResponse, conn));
+			}
+			
+			return caracteristicasPaqueteResponse;
+		
+		} finally {
+			if (statementc != null) {
+				statementc.close();
+			}
+			if (rsc != null) {
+				rsc.close();
+			}
+		
+		}
+	}
+	
+	public List<CaracteristicasPaqueteDetalleResponse> consultarCaracteristicasPaqueteDetalleResponse(CaracteristicasPaqueteResponse caracteristicasPaqueteResponse, Connection conn) throws SQLException {
+		Statement statementc=null;
+		ResultSet rsc=null;
+		ResultSet resultSetDetalle=null;
+		ResultSet resultSetDetalleTraslado=null;
+		try {
+			
+			List<CaracteristicasPaqueteDetalleResponse> caracteristicasPaqueteDetalleResponse=null;
+			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPaqueteDetalleTrasladoRequest=null;
+			log.info("consultarCaracteristicasPaqueteResponse");
+
+			statementc = conn.createStatement();
+				
+			resultSetDetalle = statementc.executeQuery(reglasNegocioRepository.
+					consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(caracteristicasPaqueteResponse.getIdCaracteristicasPaquete()));
+			caracteristicasPaqueteDetalleResponse= new ArrayList<>();
+			CaracteristicasPaqueteDetalleResponse detalleResponse=null;
 				
 				while (resultSetDetalle.next()) {
 					detalleResponse= new CaracteristicasPaqueteDetalleResponse();
@@ -427,10 +454,10 @@ public class OrdenActualizar {
 					detalleResponse.setServicioDetalleTraslado(Objects.isNull(caracteristicasPaqueteDetalleTrasladoRequest)?null:caracteristicasPaqueteDetalleTrasladoRequest);
 					caracteristicasPaqueteDetalleResponse.add(detalleResponse);
 				}
-				caracteristicasPaqueteResponse.setDetallePaquete(caracteristicasPaqueteDetalleResponse);
-			}
+				//caracteristicasPaqueteResponse.setDetallePaquete(caracteristicasPaqueteDetalleResponse);
 			
-			return caracteristicasPaqueteResponse;
+			
+			return caracteristicasPaqueteDetalleResponse;
 		
 		} finally {
 			if (statementc != null) {
@@ -447,7 +474,6 @@ public class OrdenActualizar {
 			}
 		}
 	}
-	
 	public CaracteristicasPaquetePresupuestoResponse consultarCaracteristicasPaquetePresupuestoResponse(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
 		Statement statementc=null;
 		ResultSet rsc=null;

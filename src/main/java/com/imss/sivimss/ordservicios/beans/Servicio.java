@@ -33,9 +33,13 @@ public class Servicio {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("DISTINCT SS.ID_SERVICIO AS idServicio","SS.DES_NOM_SERVICIO AS nombreServicio")
+		selectQueryUtil.select("DISTINCT SS.ID_SERVICIO AS idServicio",
+				"SS.DES_NOM_SERVICIO AS nombreServicio",
+				"SS.ID_TIPO_SERVICIO AS idTipoServicio",
+				"SCO.DES_TIPO_SERVICIO AS grupo")
 		.from("SVT_SERVICIO SS")
 		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SS.ID_SERVICIO = SCS.ID_SERVICIO")
+		.innerJoin("SVC_TIPO_SERVICIO SCO", "SS.ID_TIPO_SERVICIO = SCO.ID_TIPO_SERVICIO")
 		.innerJoin("SVT_CONTRATO SC", "SCS.ID_CONTRATO =SC.ID_CONTRATO")
 		.where("SS.IND_ACTIVO =1")
 		.and("SC.IND_ACTIVO=1")
@@ -56,7 +60,9 @@ public class Servicio {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SP.ID_PROVEEDOR AS idProveedor","SP.NOM_PROVEEDOR AS nombreProveedor")
+		selectQueryUtil.select("SP.ID_PROVEEDOR AS idProveedor",
+				"SP.NOM_PROVEEDOR AS nombreProveedor",
+				"SCS.MON_PRECIO AS importe")
 		.from("SVT_PROVEEDOR SP")
 		.innerJoin("SVT_CONTRATO SC", "SP.ID_PROVEEDOR = SC.ID_PROVEEDOR")
 		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SC.ID_CONTRATO = SCS.ID_CONTRATO")
