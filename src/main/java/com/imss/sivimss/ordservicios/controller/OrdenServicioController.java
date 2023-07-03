@@ -22,6 +22,9 @@ import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
 
 
@@ -67,7 +70,7 @@ public class OrdenServicioController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
-	@PostMapping("/consultar/folioODS")
+	@PostMapping("/consultar/folio-ods")
 	public CompletableFuture<Object>consultarFolioODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarFolioODS");
 		return CompletableFuture
@@ -88,33 +91,33 @@ public class OrdenServicioController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
-	@PostMapping("/consultar/tipoODS")
+	@PostMapping("/consultar/tipo-ods")
 	public CompletableFuture<Object>consultarTipoODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarTipoODS");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
-	@PostMapping("/consultar/unidad")
+	@PostMapping("/consultar/unidad-medica")
 	public CompletableFuture<Object>consultarUnidadMedica(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarUnidadMedica");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
-	@PostMapping("/consultar/contratoConvenio")
+	@PostMapping("/consultar/contrato-convenio")
 	public CompletableFuture<Object>consultarContratoConvenio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarContratoConvenio");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	@PostMapping("/consultar/estadoODS")
+	@PostMapping("/consultar/estado-ods")
 	public CompletableFuture<Object>consultarEstadoODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarEstadoODS");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	@PostMapping("/generaTarjetaIden")
+	@PostMapping("/generar/tarjeta-identificacion")
 	public CompletableFuture<Object>generaTarjetaIdentificacion(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "generaTarjetaIdentificacion");
 		return CompletableFuture
@@ -133,13 +136,30 @@ public class OrdenServicioController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
-	@PostMapping("/actualizar")
-	public CompletableFuture<Object>actualizar(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
-		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "actualizar");
+	@PostMapping("/generar/reporte-consulta-ods")
+	public CompletableFuture<Object> generaReporteConsulta(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteConsultaODS");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
+	@PostMapping("/consultar/detalle")
+	public CompletableFuture<Object>consultarDetalleOrdenServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "detalle-preorden");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
+	@PostMapping("/generar/reporte-contrato-serv-inmediato")
+	public CompletableFuture<Object> generaReporteServicioInmediato(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteServicioInmediato");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+
+	@PostMapping("/generar/reporte-orden-servicio")
+	public CompletableFuture<Object> generaReporteOrdenServicio(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteOrdenServicio");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	/**
 	 * fallbacks generico
 	 * 

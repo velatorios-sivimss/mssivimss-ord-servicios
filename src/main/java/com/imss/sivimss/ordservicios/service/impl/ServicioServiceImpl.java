@@ -63,12 +63,7 @@ public class ServicioServiceImpl implements ServicioService{
 			Gson gson= new Gson();
 			String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 			proveedorServicioRequest=gson.fromJson(datosJson, ProveedorServicioRequest.class);
-			List<ProveedorServicioResponse>proveedorResponses;
 			Response<Object>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-			if (response.getCodigo()== 200 && !response.getDatos().toString().contains("[]")) {
-				proveedorResponses=Arrays.asList(modelMapper.map(response.getDatos(), ProveedorServicioResponse[].class));
-				response.setDatos(ConvertirGenerico.convertInstanceOfObject(proveedorResponses));
-			}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio()).getDatos().get(AppConstantes.QUERY).toString();
@@ -87,13 +82,7 @@ public class ServicioServiceImpl implements ServicioService{
 		Response<Object>response;
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarServiciosVigentes", AppConstantes.CONSULTA, authentication);
-
-			List<ServicioResponse>servicioResponses;
 			response=providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication) ;
-			if (response.getCodigo()==200 && response.getDatos().toString().contains("[]")) {
-				servicioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ServicioResponse[].class));
-				response.setDatos(ConvertirGenerico.convertInstanceOfObject(servicioResponses));
-			}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 			String consulta = servicio.obtenerServiciosVigentes().getDatos().get(AppConstantes.QUERY).toString();

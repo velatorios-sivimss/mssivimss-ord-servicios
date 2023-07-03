@@ -19,6 +19,8 @@ import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
 import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
+import com.imss.sivimss.ordservicios.model.request.ReporteDto;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.request.VelatorioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioConsultaODSRepository;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
@@ -37,6 +39,18 @@ public class OrdenConsultar {
 	@Value("${endpoints.renapo}")
 	private String urlRenapo;
 
+	@Value("${reporte.orden_servicio}")
+	private String reporteOrdenServicio;
+
+	@Value("${reporte.orden_servicio_temp}")
+	private String reporteOrdenServicioTemp;
+	
+	@Value("${reporte.consulta_ODS}")
+	private String reporteConsultaODS;
+	
+	@Value("${endpoints.ms-reportes}")
+	private String urlReportes;
+	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
 	
@@ -57,7 +71,11 @@ public class OrdenConsultar {
 	
 	private static final String CURP_NO_VALIDO = "34"; // CURP no valido.
 	private static final String SERVICIO_RENAPO_NO_DISPONIBLE = "184"; // El servicio de RENAPO no esta disponible.
-	
+	private static final String ERROR_AL_DESCARGAR_DOCUMENTO= "64"; // Error en la descarga del documento.Intenta nuevamente.
+
+	private static final String CU024_NOMBRE= "Consulta Orden Servicio: ";
+	private static final String GENERAR_DOCUMENTO = "Generar Reporte: " ;
+	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 	
 	public Response<Object>buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
@@ -367,5 +385,61 @@ public class OrdenConsultar {
 		parametro.put(AppConstantes.QUERY, encoded);
 		request.setDatos(parametro);
 		return request;
+	}
+	
+
+	public Response<Object> generaReporteConsultaODS(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		Map<String, Object> envioDatos = new HashMap<>();
+		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String query = rNConsultaODSRepository.generaReporteConsultaODS(reporteDto);
+		envioDatos.put("condicion", query);
+		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
+		envioDatos.put("rutaNombreReporte", reporteConsultaODS);
+		try {
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarDocumentoOrdenServicio", GENERA_DOCUMENTO, authentication);
+			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
+	}
+
+	public Response<Object> generarDocumentoOrdenServicio(DatosRequest request, Authentication authentication) throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+
+		UsuarioDto usuarioRequest = gson.fromJson(datosJson, UsuarioDto.class);
+		
+		Map<String, Object> envioDatos = new HashMap<>();
+		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		envioDatos.put("idOds", reporteDto.getIdOrdenServicio());
+		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
+		envioDatos.put("usuarioSistema", usuarioRequest.getCveMatricula());
+		if(reporteDto.getEstatus() == 1)
+			envioDatos.put("rutaNombreReporte", reporteOrdenServicioTemp);
+		else if(reporteDto.getEstatus() == 2)
+			envioDatos.put("rutaNombreReporte", reporteOrdenServicio);
+		try {
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarDocumentoOrdenServicio", GENERA_DOCUMENTO, authentication);
+			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
 	}
 }

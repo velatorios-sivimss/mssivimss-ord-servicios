@@ -19,6 +19,7 @@ import com.imss.sivimss.ordservicios.model.request.InformacionServicioVelacionRe
 import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
 import com.imss.sivimss.ordservicios.util.QueryHelper;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
+import com.imss.sivimss.ordservicios.model.request.ReporteDto;
 
 @Service
 public class ReglasNegocioConsultaODSRepository {
@@ -73,7 +74,7 @@ public class ReglasNegocioConsultaODSRepository {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sos.ID_ORDEN_SERVICIO AS idODS","sos.CVE_FOLIO AS folioODS")
 		.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
-		.where(" so.ID_VELATORIO = :idVel")
+		.where(" sos.ID_VELATORIO = :idVel")
 		.setParameter("idVel", idVel);
 		query=selectQueryUtil.build();
 		log.info(query);
@@ -81,10 +82,20 @@ public class ReglasNegocioConsultaODSRepository {
 	}
 	public String obtenerContratante(String folio) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreContratante")
+		selectQueryUtil.select("sc.ID_CONTRATANTE AS idContratante, sc.CVE_MATRICULA AS matricula, sp.CVE_RFC AS rfc, sp.CVE_CURP AS curp"
+				+ ", sp.NOM_PERSONA AS nombreContratante, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido"
+				+ ", IFNULL(sp.NUM_SEXO,sp.DES_OTRO_SEXO) AS sexo, sp.FEC_NAC AS fechaNacimiento, sp3.DES_PAIS  AS nacionalidad, sp3.DES_PAIS  AS pais"
+				+ ", se.DES_ESTADO  AS lugarNacimiento, sp.DES_TELEFONO AS telefono, sp.DES_CORREO AS correoElectronico, sp2.DES_PARENTESCO AS  parentesco"
+				+ ", sd.DES_CALLE AS calle, sd.NUM_EXTERIOR AS numExterior, sd.NUM_INTERIOR AS numInterior, sd.DES_CP AS cp"
+				+ ", sd.DES_COLONIA AS colonia, sd.DES_MUNICIPIO AS municipio, sd.DES_ESTADO AS estado"
+				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoContratante")
 		.from(TABLA_SVC_PERSONA_SP)
 		.join(TABLA_SVC_CONTRATANTE_SC, "sc.ID_PERSONA  = sp.ID_PERSONA")
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS , "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
+		.join("SVC_PARENTESCO sp2","sos.ID_PARENTESCO = sp2.ID_PARENTESCO") 
+		.join("SVT_DOMICILIO sd","sd.ID_DOMICILIO = sc.ID_DOMICILIO") 
+		.join("SVC_PAIS sp3","sp3.ID_PAIS = sp.ID_PAIS")
+		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO")
 		.where(WHERE_CVE_FOLIO_FOLIO)
 		.setParameter(PARAM_FOLIO, folio);		
 		query=selectQueryUtil.build();
@@ -94,11 +105,28 @@ public class ReglasNegocioConsultaODSRepository {
 
 	public String obtenerFinado(String folio) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("sf.id_finado AS idFinado"
-				,"CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreFinado")
+		selectQueryUtil.select("sf.id_finado AS idFinado, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoFinado"
+				+ ", stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden, sf.DES_EXTREMIDAD AS servicioExtremidad, sf.DES_OBITO AS esObito, sf.CVE_MATRICULA AS matricula"
+				+ ", scp.DES_FOLIO AS contratoConvenio, sv.DES_VELATORIO AS velatorioPrevisionsp, sp.CVE_CURP AS curp, sp.CVE_NSS AS nss, sp.NOM_PERSONA AS nombres"
+				+ ", sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido, IFNULL(sp.NUM_SEXO,sp.DES_OTRO_SEXO) AS sexo"
+				+ ", sp.FEC_NAC AS fechaNacimiento, YEAR (CURDATE()) - YEAR(sp.FEC_NAC) as edad, sp3.DES_PAIS AS nacionalidad"
+				+ ", sp3.DES_PAIS AS paisNacimiento, se.DES_ESTADO  AS lugarNacimiento, sd.DES_CALLE AS calle, sd.NUM_EXTERIOR AS numExterior"
+				+ ", sd.NUM_INTERIOR AS numInterior, sd.DES_CP AS cp, sd.DES_COLONIA AS colonia, sd.DES_MUNICIPIO AS municipio"
+				+ ", sd.DES_ESTADO AS estado, sf.FEC_DECESO AS fechaDefuncion, sf.DES_CAUSA_DECESO AS causaDeceso"
+				+ ", sf.DES_LUGAR_DECESO AS lugarDeceso, sf.TIM_HORA AS horaDeceso, sum2.DES_UNIDAD_MEDICA AS clinicaAdscripcion"
+				+ ", sum3.DES_UNIDAD_MEDICA AS unidadProcedencia, sf.DES_PROCEDENCIA_FINADO AS procedenciaFinado, stp.DES_PENSION AS pension ")
 		.from(TABLA_SVC_PERSONA_SP)
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_PERSONA = sp.ID_PERSONA")
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
+		.join("SVC_TIPO_ORDEN_SERVICIO stos","stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN")
+		.join("SVT_CONVENIO_PF scp","scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION") 
+		.join("SVC_VELATORIO sv","sv.ID_VELATORIO = sf.ID_VELATORIO") 
+		.join("SVT_DOMICILIO sd","sd.ID_DOMICILIO = sf.ID_DOMICILIO") 
+		.join("SVC_PAIS sp3 ","sp3.ID_PAIS = sp.ID_PAIS")
+		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO")
+		.join("SVC_UNIDAD_MEDICA sum2","sum2.ID_UNIDAD_MEDICA = sf.ID_CLINICA_ADSCRIPCION")  
+		.join("SVC_UNIDAD_MEDICA sum3","sum3.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA") 
+		.join("SVC_TIPO_PENSION stp","stp.ID_TIPO_PENSION = sf.ID_TIPO_PENSION") 
 		.where(WHERE_CVE_FOLIO_FOLIO)
 		.setParameter(PARAM_FOLIO, folio);		
 		query=selectQueryUtil.build();
@@ -117,7 +145,7 @@ public class ReglasNegocioConsultaODSRepository {
 
 	public String obtenerUnidadMedica(Integer idFinado) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("sum2.ID_UNIDAD_MEDICA AS idUnidad","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
+		selectQueryUtil.select("sum2.ID_UNIDAD_MEDICA AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
 		.from(TABLA_SVC_UNIDAD_MEDICA_SUM2)
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_UNIDAD_PROCEDENCIA = sum2.ID_UNIDAD_MEDICA")
 		.where("sf.ID_FINADO = :idFinado")
@@ -178,7 +206,7 @@ public class ReglasNegocioConsultaODSRepository {
 
 	public String obtenerODS(String folio) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("sv.DES_VELATORIO AS velatorio","sos.CVE_FOLIO AS numeroFolio"
+		selectQueryUtil.select("sos.ID_ORDEN_SERVICIO AS idOrdenServicio","sv.DES_VELATORIO AS velatorio","sos.CVE_FOLIO AS numeroFolio"
 				,"CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreContratante"
 				,"CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
 				,"stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden"
@@ -204,8 +232,114 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String obtenerCancelarODS(Integer idVelatorio) {
+	public String cancelarODS(Integer idVelatorio) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+	public String generaReporteConsultaODS(ReporteDto reporteDto) {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		if (reporteDto.getIdVelatorio() != null) {
+			selectQueryUtil.where("sv.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio",
+					reporteDto.getIdVelatorio());
+			if (reporteDto.getIdOds() != null) {
+				selectQueryUtil.and("sos.ID_ORDEN_SERVICIo = :idODS").setParameter("idODS", reporteDto.getIdOds());
+			}
+			if (reporteDto.getIdContratante() != null) {
+				selectQueryUtil.where("sc.ID_CONTRATANTE = :idContratante").setParameter("idContratante",
+						reporteDto.getIdContratante());
+			}
+			if (reporteDto.getIdFinado() != null) {
+				selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+			}
+			if (reporteDto.getIdTipoODS() != null) {
+				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
+						reporteDto.getIdTipoODS());
+			}
+			if (reporteDto.getIdUnidadMedica() != null) {
+				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
+						reporteDto.getIdUnidadMedica());
+			}
+			if (reporteDto.getIdConvenio() != null) {
+				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
+						reporteDto.getIdConvenio());
+			}
+		} else if (reporteDto.getIdOds() != null) {
+			selectQueryUtil.where("sos.ID_ORDEN_SERVICIo = :idODS").setParameter("idODS", reporteDto.getIdOds());
+			if (reporteDto.getIdContratante() != null) {
+				selectQueryUtil.where("sc.ID_CONTRATANTE = :idContratante").setParameter("idContratante",
+						reporteDto.getIdContratante());
+			}
+			if (reporteDto.getIdFinado() != null) {
+				selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+			}
+			if (reporteDto.getIdTipoODS() != null) {
+				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
+						reporteDto.getIdTipoODS());
+			}
+			if (reporteDto.getIdUnidadMedica() != null) {
+				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
+						reporteDto.getIdUnidadMedica());
+			}
+			if (reporteDto.getIdConvenio() != null) {
+				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
+						reporteDto.getIdConvenio());
+			}
+		} else if (reporteDto.getIdContratante() != null) {
+			selectQueryUtil.where("sc.ID_CONTRATANTE = :idContratante").setParameter("idContratante",
+					reporteDto.getIdContratante());
+			if (reporteDto.getIdFinado() != null) {
+				selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+			}
+			if (reporteDto.getIdTipoODS() != null) {
+				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
+						reporteDto.getIdTipoODS());
+			}
+			if (reporteDto.getIdUnidadMedica() != null) {
+				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
+						reporteDto.getIdUnidadMedica());
+			}
+			if (reporteDto.getIdConvenio() != null) {
+				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
+						reporteDto.getIdConvenio());
+			}
+		} else if (reporteDto.getIdFinado() != null) {
+			selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+			if (reporteDto.getIdTipoODS() != null) {
+				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
+						reporteDto.getIdTipoODS());
+			}
+			if (reporteDto.getIdUnidadMedica() != null) {
+				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
+						reporteDto.getIdUnidadMedica());
+			}
+			if (reporteDto.getIdConvenio() != null) {
+				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
+						reporteDto.getIdConvenio());
+			}
+		} else if (reporteDto.getIdTipoODS() != null) {
+			selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
+					reporteDto.getIdTipoODS());
+			if (reporteDto.getIdUnidadMedica() != null) {
+				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
+						reporteDto.getIdUnidadMedica());
+			}
+			if (reporteDto.getIdConvenio() != null) {
+				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
+						reporteDto.getIdConvenio());
+			}
+		} else if (reporteDto.getIdUnidadMedica() != null) {
+			selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
+					reporteDto.getIdUnidadMedica());
+
+			if (reporteDto.getIdConvenio() != null) {
+				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
+						reporteDto.getIdConvenio());
+			}
+		} else if (reporteDto.getIdConvenio() != null) {
+			selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio");
+		}
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;

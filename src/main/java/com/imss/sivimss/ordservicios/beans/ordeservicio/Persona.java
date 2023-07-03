@@ -21,6 +21,7 @@ public class Persona {
 	private String sexo;
 	private String otroSexo;
 	private String fechaNac;
+	private String nacionalidad;
 	private String idPais;
 	private String idEstado;
 	private String telefono;
