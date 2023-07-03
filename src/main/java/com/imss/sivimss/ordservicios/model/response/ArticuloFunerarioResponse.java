@@ -11,8 +11,14 @@ import lombok.Setter;
 public class ArticuloFunerarioResponse {
 
 	private Integer idArticulo;
+
+	private Integer idInventario;
 	
 	private String nombreArticulo;
 	
 	private Double precio;
+
+	private Integer idCategoria;
+	
+	private String grupo;
 }
