@@ -170,10 +170,17 @@ public class ArticuloServiceImpl implements ArticuloService{
             articuloComplementarioRequest=gson.fromJson(datosJson, ArticuloComplementarioRequest.class);
 			List<ArticuloComplementarioResponse>articuloFunerarioResponses;
 			Response<Object>response=providerServiceRestTemplate.consumirServicio(articuloComplementario.obtenerArticulosComplementarios(articuloComplementarioRequest.getIdVelatorio()).getDatos(), urlConsultar.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
-				articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
-				response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
-			}
+			
+			if (response.getCodigo()==200) {
+				if (!response.getDatos().toString().contains("[]")) {
+					articuloFunerarioResponses=Arrays.asList(modelMapper.map(response.getDatos(), ArticuloComplementarioResponse[].class));
+					response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
+            		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
+
+					} else {
+						return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA, AppConstantes.ERROR_CONSULTAR);
+						}
+				}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 			String consulta = articuloComplementario.obtenerArticulosComplementarios(articuloComplementarioRequest.getIdVelatorio()).getDatos().get(AppConstantes.QUERY).toString();
