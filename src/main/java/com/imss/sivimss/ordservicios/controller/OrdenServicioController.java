@@ -123,7 +123,7 @@ public class OrdenServicioController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	@PostMapping("/cancelarODS")
+	@PostMapping("/cancelar/ods")
 	public CompletableFuture<Object>consultarCancelarODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "cancelarODS");
 		return CompletableFuture

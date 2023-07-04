@@ -105,7 +105,7 @@ public class OrdenesDAO {
 	public Response<Object> buscarODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.buscarODS(datos, auth);
 	}	
-	public Response<Object> cancelarODS(DatosRequest datos, Authentication auth) throws IOException{
+	public Response<Object> cancelarODS(DatosRequest datos, Authentication auth) throws IOException, SQLException{
 		return ordenConsultar.cancelarODS(datos, auth);
 	}
 

@@ -6,16 +6,15 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 
 @Service
 public class ReglasNegocioConsultaODSRepository {
 
 
-	private static final String PARAM_FOLIO="folio";
 	private static final String JOIN = " JOIN ";
 	private static final String LEFT_JOIN= " LEFT JOIN ";
 	
-	private static final String WHERE_CVE_FOLIO_FOLIO="sos.CVE_FOLIO = :folio";
 
 	private static final String TABLA_SVC_VELATORIO_SV = "SVC_VELATORIO sv";
 	private static final String TABLA_SVC_DELEGACION = "SVC_DELEGACION";
@@ -199,13 +198,59 @@ public class ReglasNegocioConsultaODSRepository {
 		log.info(str);
 		return str;
 	}
-
-	public String cancelarODS(Integer idVelatorio) {
-		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		query=selectQueryUtil.build();
-		log.info(query);
-		return query;
+	// Bloque Cancelacion ODS
+	public String cancelarODS(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_ESTATUS_ORDEN_SERVICIO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		log.info(str);
+		return str;
 	}
+	public String cancelarCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		log.info(str);
+		return str;
+	}
+	public String cancelarDetalleCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() "
+		+ " WHERE ID_CARACTERISTICAS_PAQUETE = (SELECT ID_CARACTERISTICAS_PAQUETE FROM SVC_CARACTERISTICAS_PAQUETE WHERE ID_ORDEN_SERVICIO = " + idODS + ")";
+		log.info(str);
+		return str;
+	}
+	public String cancelarCaracteristicasPresupuesto(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		log.info(str);
+		return str;
+	}
+	public String cancelarDetalleCaracteristicasPresupuesto(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() "
+		+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO = (SELECT ID_CARACTERISTICAS_PRESUPUESTO  FROM SVC_CARACTERISTICAS_PRESUPUESTO WHERE ID_ORDEN_SERVICIO = " + idODS + ") ";
+		log.info(str);
+		return str;
+	}
+	public String cancelarDonacion(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_DONACION SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS ;
+		log.info(str);
+		return str;
+	}
+	public String cancelarInventarioArticulo(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET  IND_ESTATUS = 0, ID_TIPO_ASIGNACION_ART = 1"
+				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", FEC_BAJA = CURRENT_TIMESTAMP() "
+				+ " WHERE ID_INVE_ARTICULO = (" + queryIdInvArticulo(idODS) +")";
+		log.info(str);
+		return str;
+	}
+	private String queryIdInvArticulo(Integer idODS) {
+		return " SELECT sdcp.ID_INVE_ARTICULO FROM SVC_CARACTERISTICAS_PRESUPUESTO scp "
+		+ " JOIN SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO sdcp ON sdcp.ID_CARACTERISTICAS_PRESUPUESTO = scp.ID_CARACTERISTICAS_PRESUPUESTO"
+		+ " JOIN SVC_ORDEN_SERVICIO sos ON sos.ID_ORDEN_SERVICIO = scp.ID_ORDEN_SERVICIO "
+		+ " WHERE sos.ID_ORDEN_SERVICIO  = " + idODS ;
+	}
+	// Bloque Generacion Reportes
 	public String generaReporteConsultaODS(ReporteDto reporteDto) {
 		String  condicion = "";
 		if (reporteDto.getIdVelatorio() != null) {
