@@ -29,16 +29,17 @@ public class ProviderServiceRestTemplate {
 	private JwtTokenProvider jwtTokenProvider;
 
 	private static Logger log = LogManager.getLogger(ProviderServiceRestTemplate.class);
+	
+	private static final String ERROR_RECUPERAR_INFORMACION = "Ha ocurrido un error al recuperar la informacion";
 
 	public Response<Object> consumirServicio(Map<String, Object> dato, String url, Authentication authentication)
 			throws IOException {
 		try {
-			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayToken(url,
+			return restTemplateUtil.sendPostRequestByteArrayToken(url,
 					new EnviarDatosRequest(dato), jwtTokenProvider.createToken((String) authentication.getPrincipal()),
 					Response.class);
-			return respuestaGenerado;
 		} catch (IOException exception) {
-			log.error("Ha ocurrido un error al recuperar la informacion");
+			log.error(ERROR_RECUPERAR_INFORMACION);
 			throw exception;
 		}
 	}
@@ -46,12 +47,11 @@ public class ProviderServiceRestTemplate {
 	public Response<Object> consumirServicioReportes(Map<String, Object> dato,
 												String url, Authentication authentication) throws IOException {
 		try {
-			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
+			return (Response<Object>) restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
 					new DatosReporteDTO(dato),
 					jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
-			return respuestaGenerado;
 		} catch (IOException exception) {
-			log.error("Ha ocurrido un error al recuperar la informacion");
+			log.error(ERROR_RECUPERAR_INFORMACION);
 			throw exception;
 		}
 	}
@@ -61,7 +61,7 @@ public class ProviderServiceRestTemplate {
 		try {
 			return restTemplateUtil.sendGetRequest(url);
 		} catch (IOException exception) {
-			log.error("Ha ocurrido un error al recuperar la informacion");
+			log.error(ERROR_RECUPERAR_INFORMACION);
 			throw exception;
 		}
 	}
@@ -70,13 +70,12 @@ public class ProviderServiceRestTemplate {
 			throws IOException {
 		try {
 			
-			Response respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayTokenProcesos(url,
+			return (Response<Object>) restTemplateUtil.sendPostRequestByteArrayTokenProcesos(url,
 					new TareasDTO(body.getTipoHoraMinuto(), body.getCveTarea(), body.getTotalHoraMinuto(), body.getTipoEjecucion(), body.getValidacion(), body.getDatos()), 
 					jwtTokenProvider.createToken((String) authentication.getPrincipal()),
 					Response.class);
-			return respuestaGenerado;
 		} catch (IOException exception) {
-			log.error("Ha ocurrido un error al recuperar la informacion");
+			log.error(ERROR_RECUPERAR_INFORMACION);
 			throw exception;
 		}
 	}

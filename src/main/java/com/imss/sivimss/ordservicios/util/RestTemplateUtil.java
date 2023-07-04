@@ -72,9 +72,9 @@ public class RestTemplateUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public Response<?> sendPostRequestByteArrayToken(String url, EnviarDatosRequest body, String subject,
+	public Response<Object> sendPostRequestByteArrayToken(String url, EnviarDatosRequest body, String subject,
 			Class<?> clazz) throws IOException {
-		Response<?> responseBody = new Response<>();
+		Response<Object> responseBody = new Response<>();
 		HttpHeaders headers = RestTemplateUtil.createHttpHeadersToken(subject);
 
 		HttpEntity<Object> request = new HttpEntity<>(body, headers);
@@ -83,7 +83,7 @@ public class RestTemplateUtil {
 			responseEntity = restTemplate.postForEntity(url, request, clazz);
 			if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
 				// noinspection unchecked
-				responseBody = (Response<List<String>>) responseEntity.getBody();
+				responseBody = (Response<Object>) responseEntity.getBody();
 			} else {
 				throw new IOException("Ha ocurrido un error al enviar");
 			}

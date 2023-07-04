@@ -4,33 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.imss.sivimss.ordservicios.beans.ordeservicio.Persona;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetallePresupuestoRequest;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleRequest;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleTrasladoRequest;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaquetePresupuestoRequest;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteRequest;
-import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
-import com.imss.sivimss.ordservicios.model.request.ContratanteRequest;
-import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
-import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
-import com.imss.sivimss.ordservicios.model.request.InformacionServicioRequest;
-import com.imss.sivimss.ordservicios.model.request.InformacionServicioVelacionRequest;
-import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
-import com.imss.sivimss.ordservicios.util.QueryHelper;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
 
 @Service
 public class ReglasNegocioConsultaODSRepository {
 
-	private static final String ID_USUARIO_ALTA="ID_USUARIO_ALTA";
-	
-	private static final String FEC_ALTA="FEC_ALTA";
-	
-	private static final String ID_DOMICILIO="ID_DOMICILIO";
-
-	private static final String IND_ACTIVO="IND_ACTIVO";
 
 	private static final String PARAM_FOLIO="folio";
 	
@@ -58,7 +37,7 @@ public class ReglasNegocioConsultaODSRepository {
 
 	String query;
 	
-	public String obtenerVelatorios(String idDel) {
+	public String obtenerVelatorios(Integer idDel) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sv.ID_VELATORIO AS idVelatorio","sv.DES_VELATORIO")
 		.from(TABLA_SVC_VELATORIO_SV)
@@ -70,17 +49,15 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String obtenerFolioODS(Integer idVel) {
+	public String obtenerFolioODS() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sos.ID_ORDEN_SERVICIO AS idODS","sos.CVE_FOLIO AS folioODS")
-		.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
-		.where(" sos.ID_VELATORIO = :idVel")
-		.setParameter("idVel", idVel);
+		.from(TABLA_SVC_ORDEN_SERVICIO_SOS);
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
 	}
-	public String obtenerContratante(String folio) {
+	public String obtenerContratante() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sc.ID_CONTRATANTE AS idContratante, sc.CVE_MATRICULA AS matricula, sp.CVE_RFC AS rfc, sp.CVE_CURP AS curp"
 				+ ", sp.NOM_PERSONA AS nombreContratante, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido"
@@ -95,15 +72,13 @@ public class ReglasNegocioConsultaODSRepository {
 		.join("SVC_PARENTESCO sp2","sos.ID_PARENTESCO = sp2.ID_PARENTESCO") 
 		.join("SVT_DOMICILIO sd","sd.ID_DOMICILIO = sc.ID_DOMICILIO") 
 		.join("SVC_PAIS sp3","sp3.ID_PAIS = sp.ID_PAIS")
-		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO")
-		.where(WHERE_CVE_FOLIO_FOLIO)
-		.setParameter(PARAM_FOLIO, folio);		
+		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
 	}
 
-	public String obtenerFinado(String folio) {
+	public String obtenerFinado() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sf.id_finado AS idFinado, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoFinado"
 				+ ", stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden, sf.DES_EXTREMIDAD AS servicioExtremidad, sf.DES_OBITO AS esObito, sf.CVE_MATRICULA AS matricula"
@@ -126,9 +101,7 @@ public class ReglasNegocioConsultaODSRepository {
 		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO")
 		.join("SVC_UNIDAD_MEDICA sum2","sum2.ID_UNIDAD_MEDICA = sf.ID_CLINICA_ADSCRIPCION")  
 		.join("SVC_UNIDAD_MEDICA sum3","sum3.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA") 
-		.join("SVC_TIPO_PENSION stp","stp.ID_TIPO_PENSION = sf.ID_TIPO_PENSION") 
-		.where(WHERE_CVE_FOLIO_FOLIO)
-		.setParameter(PARAM_FOLIO, folio);		
+		.join("SVC_TIPO_PENSION stp","stp.ID_TIPO_PENSION = sf.ID_TIPO_PENSION");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -143,31 +116,31 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String obtenerUnidadMedica(Integer idFinado) {
+	public String obtenerUnidadMedica(Integer idDel) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("sum2.ID_UNIDAD_MEDICA AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
+		selectQueryUtil.select("DISTINCT(sum2.ID_UNIDAD_MEDICA) AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
 		.from(TABLA_SVC_UNIDAD_MEDICA_SUM2)
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_UNIDAD_PROCEDENCIA = sum2.ID_UNIDAD_MEDICA")
-		.where("sf.ID_FINADO = :idFinado")
-		.setParameter("idFinado", idFinado);		
+		.join("SVC_VELATORIO sv","sv.ID_VELATORIO  = sf.ID_VELATORIO")
+		.where("sum2.IND_ACTIVO = 1")
+		.and("sv.ID_DELEGACION = :idDel")
+		.setParameter("idDel", idDel);		
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
 	}
 
-	public String obtenerContratoConvenio(Integer idFinado){
+	public String obtenerContratoConvenio(){
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("scp.ID_CONVENIO_PF AS idConvenio","scp.DES_FOLIO AS convenio")
 		.from(TABLA_SVT_CONVENIO_PF_SCP)
-		.join(TABLA_SVC_FINADO_SF, "sf.ID_CONTRATO_PREVISION  = scp.ID_CONVENIO_PF ")
-		.where("sf.ID_FINADO = :idFinado")
-		.setParameter("idFinado", idFinado);				
+		.join(TABLA_SVC_FINADO_SF, "sf.ID_CONTRATO_PREVISION  = scp.ID_CONVENIO_PF ");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
 	}
 
-	public String obtenerEstadoODS(String folio) {
+	public String obtenerEstadoODS() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("seos.ID_ESTATUS_ORDEN_SERVICIO AS idODS"," seos.DES_ESTATUS AS estatus")
 		.from(TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS) ;
@@ -239,110 +212,88 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 	public String generaReporteConsultaODS(ReporteDto reporteDto) {
-		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		String  condicion = "";
 		if (reporteDto.getIdVelatorio() != null) {
-			selectQueryUtil.where("sv.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio",
-					reporteDto.getIdVelatorio());
+			condicion = "WHERE sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
 			if (reporteDto.getIdOds() != null) {
-				selectQueryUtil.and("sos.ID_ORDEN_SERVICIo = :idODS").setParameter("idODS", reporteDto.getIdOds());
+				condicion = condicion + " AND sos.ID_ORDEN_SERVICIo = " + reporteDto.getIdOds();
 			}
 			if (reporteDto.getIdContratante() != null) {
-				selectQueryUtil.where("sc.ID_CONTRATANTE = :idContratante").setParameter("idContratante",
-						reporteDto.getIdContratante());
+				condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
 			}
 			if (reporteDto.getIdFinado() != null) {
-				selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+				condicion = condicion + " AND sf.ID_FINADO = " + reporteDto.getIdFinado();
 			}
 			if (reporteDto.getIdTipoODS() != null) {
-				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
-						reporteDto.getIdTipoODS());
+				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
-						reporteDto.getIdUnidadMedica());
+				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
-						reporteDto.getIdConvenio());
+				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 			}
-		} else if (reporteDto.getIdOds() != null) {
-			selectQueryUtil.where("sos.ID_ORDEN_SERVICIo = :idODS").setParameter("idODS", reporteDto.getIdOds());
+		} else if (reporteDto.getIdOds() != null || reporteDto.getIdOrdenServicio() != null) {
+			condicion = "WHERE sos.ID_ORDEN_SERVICIO = " + ((reporteDto.getIdOds()!=null) ? reporteDto.getIdOds(): reporteDto.getIdOrdenServicio()) ;
 			if (reporteDto.getIdContratante() != null) {
-				selectQueryUtil.where("sc.ID_CONTRATANTE = :idContratante").setParameter("idContratante",
-						reporteDto.getIdContratante());
+				condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
 			}
 			if (reporteDto.getIdFinado() != null) {
-				selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+				condicion = condicion + " AND sf.ID_FINADO = " + reporteDto.getIdFinado();
 			}
 			if (reporteDto.getIdTipoODS() != null) {
-				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
-						reporteDto.getIdTipoODS());
+				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
-						reporteDto.getIdUnidadMedica());
+				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
-						reporteDto.getIdConvenio());
+				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdContratante() != null) {
-			selectQueryUtil.where("sc.ID_CONTRATANTE = :idContratante").setParameter("idContratante",
-					reporteDto.getIdContratante());
+			condicion = "WHERE sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
 			if (reporteDto.getIdFinado() != null) {
-				selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+				condicion = condicion + " AND sf.ID_FINADO = " + reporteDto.getIdFinado();
 			}
 			if (reporteDto.getIdTipoODS() != null) {
-				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
-						reporteDto.getIdTipoODS());
+				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
-						reporteDto.getIdUnidadMedica());
+				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
-						reporteDto.getIdConvenio());
+				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdFinado() != null) {
-			selectQueryUtil.where("sf.ID_FINADO = :idFinado").setParameter("idFinado", reporteDto.getIdFinado());
+			condicion = "WHERE sf.ID_FINADO = " + reporteDto.getIdFinado();
 			if (reporteDto.getIdTipoODS() != null) {
-				selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
-						reporteDto.getIdTipoODS());
+				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
-						reporteDto.getIdUnidadMedica());
+				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
-						reporteDto.getIdConvenio());
+				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdTipoODS() != null) {
-			selectQueryUtil.where("stos.ID_TIPO_ORDEN_SERVICIO = :idTipoODS").setParameter("idTipoODS",
-					reporteDto.getIdTipoODS());
+			condicion = "WHERE stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 			if (reporteDto.getIdUnidadMedica() != null) {
-				selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
-						reporteDto.getIdUnidadMedica());
+				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
-						reporteDto.getIdConvenio());
+				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdUnidadMedica() != null) {
-			selectQueryUtil.where("sum2.ID_UNIDAD_MEDICA = :idUnidadMedica").setParameter("idUnidadMedica",
-					reporteDto.getIdUnidadMedica());
+			condicion = "WHERE sum2.ID_UNIDAD_MEDICA = " +	reporteDto.getIdUnidadMedica();
 
 			if (reporteDto.getIdConvenio() != null) {
-				selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio").setParameter("idConvenio",
-						reporteDto.getIdConvenio());
+				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdConvenio() != null) {
-			selectQueryUtil.where("scp.ID_CONVENIO_PF = :idConvenio");
+			condicion = "WHERE scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
 		}
-		query=selectQueryUtil.build();
-		log.info(query);
-		return query;
+		log.info(condicion);
+		return condicion;
 	}
 
 }
