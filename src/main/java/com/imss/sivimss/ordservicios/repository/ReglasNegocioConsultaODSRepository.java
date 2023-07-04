@@ -12,6 +12,8 @@ public class ReglasNegocioConsultaODSRepository {
 
 
 	private static final String PARAM_FOLIO="folio";
+	private static final String JOIN = " JOIN ";
+	private static final String LEFT_JOIN= " LEFT JOIN ";
 	
 	private static final String WHERE_CVE_FOLIO_FOLIO="sos.CVE_FOLIO = :folio";
 
@@ -177,32 +179,25 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String obtenerODS(String folio) {
-		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("sos.ID_ORDEN_SERVICIO AS idOrdenServicio","sv.DES_VELATORIO AS velatorio","sos.CVE_FOLIO AS numeroFolio"
-				,"CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreContratante"
-				,"CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
-				,"stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden"
-				,"sum2.DES_UNIDAD_MEDICA AS unidadProcedencia"
-				,"scp.DES_FOLIO AS contratoConvenio"
-				,"seos.DES_ESTATUS AS estatus")
-		.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
-		.join(TABLA_SVC_VELATORIO_SV, "sv.ID_VELATORIO = sos.ID_VELATORIO")
-		.join(TABLA_SVC_CONTRATANTE_SC,"sc.ID_CONTRATANTE = sos.ID_CONTRATANTE")
-		.leftJoin(TABLA_SVC_PERSONA_SP,"sp.ID_PERSONA = sc.ID_PERSONA") 
-		.join(TABLA_SVC_FINADO_SF ,"sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
-		.leftJoin(TABLA_SVC_PERSONA_SP2 ,"sp2.ID_PERSONA = sf.ID_PERSONA")
-		.join(TABLA_SVC_TIPO_ORDEN_SERVICIO_STOS ,"stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN") 
-		.join(TABLA_SVC_UNIDAD_MEDICA_SUM2 ,"sum2.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA")
-		.join(TABLA_SVT_CONVENIO_PF_SCP ,"scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION")
-		.join(TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS ,"seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO")  
-		.where(WHERE_CVE_FOLIO_FOLIO)
-		.setParameter(PARAM_FOLIO, folio);
-
-		
-		query=selectQueryUtil.build();
-		log.info(query);
-		return query;
+	public String obtenerODS(ReporteDto reporteDto) {
+		String str= "SELECT sos.ID_ORDEN_SERVICIO AS idOrdenServicio , sv.DES_VELATORIO AS velatorio , sos.CVE_FOLIO AS numeroFolio "
+				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreContratante"
+				+ ", CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
+				+ ", stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden, sum2.DES_UNIDAD_MEDICA AS unidadProcedencia"
+				+ ", scp.DES_FOLIO AS contratoConvenio, seos.DES_ESTATUS AS estatus"
+				+ " FROM " + TABLA_SVC_ORDEN_SERVICIO_SOS 
+				+ JOIN + TABLA_SVC_VELATORIO_SV + " ON sv.ID_VELATORIO = sos.ID_VELATORIO"
+				+ JOIN + TABLA_SVC_CONTRATANTE_SC +" ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE"
+				+ LEFT_JOIN + TABLA_SVC_PERSONA_SP + " ON sp.ID_PERSONA = sc.ID_PERSONA"
+				+ JOIN + TABLA_SVC_FINADO_SF + " ON sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO"
+				+ LEFT_JOIN + TABLA_SVC_PERSONA_SP2 + " ON sp2.ID_PERSONA = sf.ID_PERSONA"
+				+ JOIN + TABLA_SVC_TIPO_ORDEN_SERVICIO_STOS + " ON stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN" 
+				+ JOIN + TABLA_SVC_UNIDAD_MEDICA_SUM2 + " ON sum2.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA"
+				+ JOIN + TABLA_SVT_CONVENIO_PF_SCP + " ON scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION"
+				+ JOIN + TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS + " ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO ";
+		str = str + generaReporteConsultaODS(reporteDto);
+		log.info(str);
+		return str;
 	}
 
 	public String cancelarODS(Integer idVelatorio) {

@@ -336,8 +336,8 @@ public class OrdenConsultar {
 
 			Gson gson= new Gson();
 			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			OrdenesServicioRequest ordenesServicioRequest = gson.fromJson(datosJson, OrdenesServicioRequest.class);
-			query = rNConsultaODSRepository.obtenerODS(ordenesServicioRequest.getFolio());
+			ReporteDto filtroODS= gson.fromJson(datosJson, ReporteDto.class);
+			query = rNConsultaODSRepository.obtenerODS(filtroODS);
 			DatosRequest request= encodeQuery(query, datosRequest);
 			response = providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTA_PAGINADO), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
