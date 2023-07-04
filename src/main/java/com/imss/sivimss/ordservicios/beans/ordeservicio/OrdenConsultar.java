@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
-import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
 import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
@@ -179,15 +178,8 @@ public class OrdenConsultar {
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarFolioODS", AppConstantes.CONSULTA, authentication);
 
-			Gson gson= new Gson();
-			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
-			DatosRequest request= new DatosRequest();
-			Map<String, Object>parametro=new HashMap<>();
-			query = rNConsultaODSRepository.obtenerFolioODS(ordenesServicioRequest.getIdVelatorio());
-			String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-			parametro.put(AppConstantes.QUERY, encoded);
-			request.setDatos(parametro);
+			query = rNConsultaODSRepository.obtenerFolioODS();
+			DatosRequest request= encodeQuery(query, datosRequest);
 			
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			
@@ -207,16 +199,9 @@ public class OrdenConsultar {
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString()
             		, "buscarContratante", AppConstantes.CONSULTA, authentication);
-
-			Gson gson= new Gson();
-			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
-			DatosRequest request= new DatosRequest();
-			Map<String, Object>parametro=new HashMap<>();
-			query = rNConsultaODSRepository.obtenerContratante(ordenesServicioRequest.getFolio());
-			String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-			parametro.put(AppConstantes.QUERY, encoded);
-			request.setDatos(parametro);
+            
+			query = rNConsultaODSRepository.obtenerContratante();
+			DatosRequest request= encodeQuery(query, datosRequest);
 			
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			
@@ -235,12 +220,8 @@ public class OrdenConsultar {
 		String query="";
 	try {
         logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarFinado", AppConstantes.CONSULTA, authentication);
-
-		Gson gson= new Gson();
-		String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-		OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
-		query = rNConsultaODSRepository.obtenerFinado(ordenesServicioRequest.getFolio());
-		DatosRequest request= encodeQuery(query);
+        query = rNConsultaODSRepository.obtenerFinado();
+		DatosRequest request= encodeQuery(query, datosRequest);
 		response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 		response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
@@ -258,7 +239,7 @@ public class OrdenConsultar {
 	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarTipoOrden", AppConstantes.CONSULTA, authentication);
 
 			query = rNConsultaODSRepository.obtenerTipoOrden();
-			DatosRequest request= encodeQuery(query);
+			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
@@ -277,9 +258,9 @@ public class OrdenConsultar {
 
 			Gson gson= new Gson();
 			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			FinadoRequest finadoRequest=gson.fromJson(datosJson, FinadoRequest.class);
-			query = rNConsultaODSRepository.obtenerUnidadMedica(finadoRequest.getIdFinado());
-			DatosRequest request= encodeQuery(query);
+			VelatorioRequest finadoRequest=gson.fromJson(datosJson, VelatorioRequest.class);
+			query = rNConsultaODSRepository.obtenerUnidadMedica(finadoRequest.getIdDelegacion());
+			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
@@ -296,11 +277,8 @@ public class OrdenConsultar {
 		try {
 	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarContratoConvenio", AppConstantes.CONSULTA, authentication);
 
-			Gson gson= new Gson();
-			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			FinadoRequest finadoRequest=gson.fromJson(datosJson, FinadoRequest.class);
-			query = rNConsultaODSRepository.obtenerContratoConvenio(finadoRequest.getIdFinado());
-			DatosRequest request= encodeQuery(query);
+			query = rNConsultaODSRepository.obtenerContratoConvenio();
+			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
@@ -317,11 +295,8 @@ public class OrdenConsultar {
 		try {
 	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarEstadoODS", AppConstantes.CONSULTA, authentication);
 
-			Gson gson= new Gson();
-			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			OrdenesServicioRequest ordenesServicioRequest = gson.fromJson(datosJson, OrdenesServicioRequest.class);
-			query = rNConsultaODSRepository.obtenerEstadoODS(ordenesServicioRequest.getFolio());
-			DatosRequest request= encodeQuery(query);
+			query = rNConsultaODSRepository.obtenerEstadoODS();
+			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
@@ -342,7 +317,7 @@ public class OrdenConsultar {
 			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
 			OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);
 			query = rNConsultaODSRepository.generaTarjetaIden(operadorRequest.getIdOperador());
-			DatosRequest request= encodeQuery(query);
+			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
@@ -361,10 +336,10 @@ public class OrdenConsultar {
 
 			Gson gson= new Gson();
 			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			OrdenesServicioRequest ordenesServicioRequest = gson.fromJson(datosJson, OrdenesServicioRequest.class);
-			query = rNConsultaODSRepository.obtenerODS(ordenesServicioRequest.getFolio());
-			DatosRequest request= encodeQuery(query);
-			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			ReporteDto filtroODS= gson.fromJson(datosJson, ReporteDto.class);
+			query = rNConsultaODSRepository.obtenerODS(filtroODS);
+			DatosRequest request= encodeQuery(query, datosRequest);
+			response = providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTA_PAGINADO), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 
 			return response;
@@ -378,12 +353,9 @@ public class OrdenConsultar {
 	public Response<Object> cancelarODS(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		return null;
 	}
-	private DatosRequest encodeQuery(String query) {
-		DatosRequest request= new DatosRequest();
-		Map<String, Object>parametro=new HashMap<>();
+	private DatosRequest encodeQuery(String query, DatosRequest request) {
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-		parametro.put(AppConstantes.QUERY, encoded);
-		request.setDatos(parametro);
+		request.getDatos().put(AppConstantes.QUERY, encoded);
 		return request;
 	}
 	

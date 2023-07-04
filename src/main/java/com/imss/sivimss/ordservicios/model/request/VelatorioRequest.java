@@ -10,5 +10,5 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VelatorioRequest {
 
-	private String idDelegacion;
+	private Integer idDelegacion;
 }
