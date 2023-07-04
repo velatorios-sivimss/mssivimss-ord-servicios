@@ -63,10 +63,11 @@ endpoints:
    ms-procesos: ${msit_PROCESOS}
 
 reporte:
-  contrato_servicio_inmediato: "reportes/generales/ANEXO3_CONTRATO _SER INMEDIATOS.jrxml"
-  orden_servicio_temp: "reportes/plantilla/ANEXO01_ODS_TEMP.jrxml"
-  orden_servicio: "reportes/plantilla/ANEXO01_ODS.jrxml"
-  consulta_ODS: "reportes/generales/ReporteConsultaODS.jrxml"
+  contrato_servicio_inmediato: ${msit_CONTRATO_SERVICIO_INMEDIATO}
+  orden_servicio_temp: ${msit_ORDEN_SERVICIO_TEMP}
+  orden_servicio: ${msit_ORDEN_SERVICIO}
+  consulta_ODS: ${msit_CONSULTA_ODS}
+  genera_Tarjeta_Iden: ${msit_GENERA_TARJETA_IDEN}
 
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
