@@ -57,11 +57,14 @@ public class InformacionServicio {
 	private void insertarInformacionVelacion(InformacionServicioVelacionRequest informacionServicioVelacionRequest,Integer idInformacionServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
 		try {
 			statement=connection.createStatement();
-			statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(informacionServicioVelacionRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-			rs=statement.getGeneratedKeys();
-			if (rs.next()) {
+			if (informacionServicioVelacionRequest.getCp()!=null) {
+				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(informacionServicioVelacionRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+				rs=statement.getGeneratedKeys();
+				if (rs.next()) {
 				informacionServicioVelacionRequest.getCp().setIdDomicilio(rs.getInt(1));
+				}
 			}
+			
 
 			statement.executeUpdate(reglasNegocioRepository.insertarInformacionServicioVelacion(informacionServicioVelacionRequest, idInformacionServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
