@@ -406,7 +406,6 @@ public class OrdenActualizar {
 	
 	public List<CaracteristicasPaqueteDetalleResponse> consultarCaracteristicasPaqueteDetalleResponse(CaracteristicasPaqueteResponse caracteristicasPaqueteResponse, Connection conn) throws SQLException {
 		Statement statementc=null;
-		ResultSet rsc=null;
 		ResultSet resultSetDetalle=null;
 		ResultSet resultSetDetalleTraslado=null;
 		try {
@@ -454,17 +453,12 @@ public class OrdenActualizar {
 					detalleResponse.setServicioDetalleTraslado(Objects.isNull(caracteristicasPaqueteDetalleTrasladoRequest)?null:caracteristicasPaqueteDetalleTrasladoRequest);
 					caracteristicasPaqueteDetalleResponse.add(detalleResponse);
 				}
-				//caracteristicasPaqueteResponse.setDetallePaquete(caracteristicasPaqueteDetalleResponse);
-			
 			
 			return caracteristicasPaqueteDetalleResponse;
 		
 		} finally {
 			if (statementc != null) {
 				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
 			}
 			if (resultSetDetalle!=null) {
 				resultSetDetalle.close();
@@ -474,16 +468,14 @@ public class OrdenActualizar {
 			}
 		}
 	}
+	
 	public CaracteristicasPaquetePresupuestoResponse consultarCaracteristicasPaquetePresupuestoResponse(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
 		Statement statementc=null;
 		ResultSet rsc=null;
-		ResultSet resultSetDetallePresupuesto =null;
-		ResultSet resultSetDetallePresupuestoTraslado=null;
+		
 		try {
 			CaracteristicasPaquetePresupuestoResponse caracteristicasPaquetePresupuestoResponse=null;
-			List<CaracteristicasPaqueteDetallePresupuestoResponse> caracteristicasPaqueteDetallePresupuestoResponse= new ArrayList<>();
-			CaracteristicasPaqueteDetallePresupuestoResponse paqueteDetallePresupuesto;
-			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPresupuestoDetalleTrasladoRequest=null;
+		
 			log.info("consultarCaracteristicasPaquetePresupuestoResponse");
 
 			statementc = conn.createStatement();
@@ -496,8 +488,35 @@ public class OrdenActualizar {
 				caracteristicasPaquetePresupuestoResponse.setNotasServicio(rsc.getString(3));
 				caracteristicasPaquetePresupuestoResponse.setObservaciones(rsc.getString(4));
 				caracteristicasPaquetePresupuestoResponse.setTotalPresupuesto(rsc.getString(5));
-				resultSetDetallePresupuesto = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(caracteristicasPaquetePresupuestoResponse.getIdCaracteristicasPresupuesto(),ordenesServicioRequest.getIdOrdenServicio()));
-				while (resultSetDetallePresupuesto.next()) {
+				caracteristicasPaquetePresupuestoResponse.setDetallePresupuesto(consultarCaracteristicasPaqueteDetallePresupuestoResponse(caracteristicasPaquetePresupuestoResponse, ordenesServicioRequest, conn));
+			}
+			return caracteristicasPaquetePresupuestoResponse;
+		
+		} finally {
+			if (statementc != null) {
+				statementc.close();
+			}
+			if (rsc != null) {
+				rsc.close();
+			}
+			
+		}
+	}
+	
+	public List<CaracteristicasPaqueteDetallePresupuestoResponse> consultarCaracteristicasPaqueteDetallePresupuestoResponse(CaracteristicasPaquetePresupuestoResponse caracteristicasPaquetePresupuestoResponse,OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
+		Statement statementc=null;
+		ResultSet resultSetDetallePresupuesto =null;
+		ResultSet resultSetDetallePresupuestoTraslado=null;
+		try {
+			List<CaracteristicasPaqueteDetallePresupuestoResponse> caracteristicasPaqueteDetallePresupuestoResponse= new ArrayList<>();
+			CaracteristicasPaqueteDetallePresupuestoResponse paqueteDetallePresupuesto;
+			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPresupuestoDetalleTrasladoRequest=null;
+			log.info("consultarCaracteristicasPaquetePresupuestoResponse");
+
+			statementc = conn.createStatement();
+
+			resultSetDetallePresupuesto = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(caracteristicasPaquetePresupuestoResponse.getIdCaracteristicasPresupuesto(),ordenesServicioRequest.getIdOrdenServicio()));
+			while (resultSetDetallePresupuesto.next()) {
 					paqueteDetallePresupuesto= new CaracteristicasPaqueteDetallePresupuestoResponse();
 					paqueteDetallePresupuesto.setIdPaqueteDetallePresupuesto(resultSetDetallePresupuesto.getInt(1));
 					paqueteDetallePresupuesto.setIdCategoria(resultSetDetallePresupuesto.getInt(2)==0?null:resultSetDetallePresupuesto.getInt(2));
@@ -528,18 +547,13 @@ public class OrdenActualizar {
 					}
 					paqueteDetallePresupuesto.setServicioDetalleTraslado(Objects.isNull(caracteristicasPresupuestoDetalleTrasladoRequest)?null:caracteristicasPresupuestoDetalleTrasladoRequest);
 					caracteristicasPaqueteDetallePresupuestoResponse.add(paqueteDetallePresupuesto);
-				}
-				
-				caracteristicasPaquetePresupuestoResponse.setDetallePresupuesto(caracteristicasPaqueteDetallePresupuestoResponse);
-			}
-			return caracteristicasPaquetePresupuestoResponse;
+			}	
+			
+			return caracteristicasPaqueteDetallePresupuestoResponse;
 		
 		} finally {
 			if (statementc != null) {
 				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
 			}
 			if (resultSetDetallePresupuesto!=null) {
 				resultSetDetallePresupuesto.close();
