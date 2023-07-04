@@ -6,16 +6,15 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 
 @Service
 public class ReglasNegocioConsultaODSRepository {
 
 
-	private static final String PARAM_FOLIO="folio";
 	private static final String JOIN = " JOIN ";
 	private static final String LEFT_JOIN= " LEFT JOIN ";
 	
-	private static final String WHERE_CVE_FOLIO_FOLIO="sos.CVE_FOLIO = :folio";
 
 	private static final String TABLA_SVC_VELATORIO_SV = "SVC_VELATORIO sv";
 	private static final String TABLA_SVC_DELEGACION = "SVC_DELEGACION";
@@ -32,6 +31,7 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVT_DOMICILIO_SD = "SVT_DOMICILIO sd";
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = "SVC_INFORMACION_SERVICIO sis";
 	private static final String TABLA_SVT_USUARIOS_SU = "SVT_USUARIOS su";
+	private static final String TABLA_SVC_CARACTERISTICAS_PRESUPUESTO_SCP2 = "SVC_CARACTERISTICAS_PRESUPUESTO scp2";
 
 
 
@@ -150,6 +150,15 @@ public class ReglasNegocioConsultaODSRepository {
 		log.info(query);
 		return query;
 	}
+	public String obtenerOperadores() {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("so.ID_OPERADOR as idOperador","concat(su.NOM_USUARIO, ' ', su.NOM_APELLIDO_PATERNO, ' ', su.NOM_APELLIDO_MATERNO) as nombreOperador")
+		.from(TABLA_SVT_OPERADORES_SO)
+		.join(TABLA_SVT_USUARIOS_SU,"su.ID_USUARIO = so.ID_USUARIO");
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
 
 	public String generaTarjetaIden(String idOper) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
@@ -179,12 +188,18 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
+	public String obtenerCostoCancelacionODS() {
+		String str= "SELECT TIP_PARAMETRO AS costoCancelacion FROM SVC_PARAMETRO_SISTEMA WHERE ID_FUNCIONALIDAD = 24 AND DES_PARAMETRO = 'COSTO POR CANCELACION'";
+		log.info(str);
+		return str;
+	}
 	public String obtenerODS(ReporteDto reporteDto) {
 		String str= "SELECT sos.ID_ORDEN_SERVICIO AS idOrdenServicio , sv.DES_VELATORIO AS velatorio , sos.CVE_FOLIO AS numeroFolio "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreContratante"
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
 				+ ", stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden, sum2.DES_UNIDAD_MEDICA AS unidadProcedencia"
-				+ ", scp.DES_FOLIO AS contratoConvenio, seos.DES_ESTATUS AS estatus"
+				+ ", scp.DES_FOLIO AS contratoConvenio, seos.DES_ESTATUS AS estatus, scp2.DES_NOTAS_SERVICIO AS notasServicio "
+				+ ", TIMESTAMPDIFF(hour  , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs"
 				+ " FROM " + TABLA_SVC_ORDEN_SERVICIO_SOS 
 				+ JOIN + TABLA_SVC_VELATORIO_SV + " ON sv.ID_VELATORIO = sos.ID_VELATORIO"
 				+ JOIN + TABLA_SVC_CONTRATANTE_SC +" ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE"
@@ -194,18 +209,66 @@ public class ReglasNegocioConsultaODSRepository {
 				+ JOIN + TABLA_SVC_TIPO_ORDEN_SERVICIO_STOS + " ON stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN" 
 				+ JOIN + TABLA_SVC_UNIDAD_MEDICA_SUM2 + " ON sum2.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA"
 				+ JOIN + TABLA_SVT_CONVENIO_PF_SCP + " ON scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION"
-				+ JOIN + TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS + " ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO ";
+				+ JOIN + TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS + " ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO "
+				+ JOIN + TABLA_SVC_CARACTERISTICAS_PRESUPUESTO_SCP2 + " ON scp2.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		log.info(str);
 		return str;
 	}
-
-	public String cancelarODS(Integer idVelatorio) {
-		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		query=selectQueryUtil.build();
-		log.info(query);
-		return query;
+	// Bloque Cancelacion ODS
+	public String cancelarODS(ReporteDto idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_ESTATUS_ORDEN_SERVICIO = 0, DES_MOTIVO_CANCELACION ='" +idODS.getMotivoCancelacion() + "'"
+				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+				+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS.getIdOrdenServicio();
+		log.info(str);
+		return str;
 	}
+	public String cancelarCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		log.info(str);
+		return str;
+	}
+	public String cancelarDetalleCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() "
+		+ " WHERE ID_CARACTERISTICAS_PAQUETE = (SELECT ID_CARACTERISTICAS_PAQUETE FROM SVC_CARACTERISTICAS_PAQUETE WHERE ID_ORDEN_SERVICIO = " + idODS + ")";
+		log.info(str);
+		return str;
+	}
+	public String cancelarCaracteristicasPresupuesto(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		log.info(str);
+		return str;
+	}
+	public String cancelarDetalleCaracteristicasPresupuesto(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() "
+		+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO = (SELECT ID_CARACTERISTICAS_PRESUPUESTO  FROM SVC_CARACTERISTICAS_PRESUPUESTO WHERE ID_ORDEN_SERVICIO = " + idODS + ") ";
+		log.info(str);
+		return str;
+	}
+	public String cancelarDonacion(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_DONACION SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
+		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS ;
+		log.info(str);
+		return str;
+	}
+	public String cancelarInventarioArticulo(Integer idODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET  IND_ESTATUS = 0, ID_TIPO_ASIGNACION_ART = 1"
+				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", FEC_BAJA = CURRENT_TIMESTAMP() "
+				+ " WHERE ID_INVE_ARTICULO = (" + queryIdInvArticulo(idODS) +")";
+		log.info(str);
+		return str;
+	}
+	private String queryIdInvArticulo(Integer idODS) {
+		return " SELECT sdcp.ID_INVE_ARTICULO FROM SVC_CARACTERISTICAS_PRESUPUESTO scp "
+		+ " JOIN SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO sdcp ON sdcp.ID_CARACTERISTICAS_PRESUPUESTO = scp.ID_CARACTERISTICAS_PRESUPUESTO"
+		+ " JOIN SVC_ORDEN_SERVICIO sos ON sos.ID_ORDEN_SERVICIO = scp.ID_ORDEN_SERVICIO "
+		+ " WHERE sos.ID_ORDEN_SERVICIO  = " + idODS ;
+	}
+	// Bloque Generacion Reportes
 	public String generaReporteConsultaODS(ReporteDto reporteDto) {
 		String  condicion = "";
 		if (reporteDto.getIdVelatorio() != null) {

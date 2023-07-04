@@ -21,6 +21,7 @@ public class ReporteDto {
 	private Integer idOrdenServicio;
 	private String tipoReporte;
 	private String rutaNombreReporte;
+	private String motivoCancelacion;
 	
 
 }
