@@ -322,6 +322,24 @@ public class OrdenConsultar {
 
 		}
 	}
+	public Response<Object> buscarOperadores(DatosRequest datosRequest, Authentication authentication) throws IOException{
+		String query="";
+		try {
+	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarOperadores", AppConstantes.CONSULTA, authentication);
+
+			query = rNConsultaODSRepository.obtenerOperadores();
+			DatosRequest request= encodeQuery(query, datosRequest);
+			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		}
+	}
 	public Response<Object> generaTarjetaIden(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
 		try {
@@ -364,6 +382,25 @@ public class OrdenConsultar {
 
 		}
 	}
+
+	public Response<Object> buscarCostoCancelarODS(DatosRequest datosRequest, Authentication authentication) throws IOException{
+		String query="";
+		try {
+	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarCostoCancelarODS", AppConstantes.CONSULTA, authentication);
+
+			query = rNConsultaODSRepository.obtenerCostoCancelacionODS();
+			DatosRequest request= encodeQuery(query, datosRequest);
+			response = providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		}
+	}
 	public Response<Object> cancelarODS(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		String query="";
 	try {
@@ -375,7 +412,8 @@ public class OrdenConsultar {
 
 		connection = database.getConnection();
 		statement = connection.createStatement();
-		query = rNConsultaODSRepository.cancelarODS(idOrdenServicio.getIdOrdenServicio(), usuario);
+		connection.setAutoCommit(false);
+		query = rNConsultaODSRepository.cancelarODS(idOrdenServicio, usuario);
 		statement.executeUpdate(query);
 		query = rNConsultaODSRepository.cancelarCaracteristicasPaquete(idOrdenServicio.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
@@ -390,6 +428,7 @@ public class OrdenConsultar {
 		query = rNConsultaODSRepository.cancelarInventarioArticulo(idOrdenServicio.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
 
+		connection.commit();
 		response= new Response<>(false, 200, ODS_CANCELADA,"[]");
 		return MensajeResponseUtil.mensajeConsultaResponseObject(response, ODS_CANCELADA);
 		
