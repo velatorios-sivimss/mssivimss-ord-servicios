@@ -98,6 +98,9 @@ public class OrdenesDAO {
 	}	
 	public Response<Object> buscarEstadoODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.buscarEstadoODS(datos, auth);
+	}
+	public Response<Object> buscarOperadores(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.buscarOperadores(datos, auth);
 	}	
 	public Response<Object> generaTarjetaIden(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.generaTarjetaIden(datos, auth);
@@ -105,7 +108,10 @@ public class OrdenesDAO {
 	public Response<Object> buscarODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.buscarODS(datos, auth);
 	}	
-	public Response<Object> cancelarODS(DatosRequest datos, Authentication auth) throws IOException{
+	public Response<Object> buscarCostoCancelarODS(DatosRequest datos, Authentication auth) throws IOException, SQLException{
+		return ordenConsultar.buscarCostoCancelarODS(datos, auth);
+	}	
+	public Response<Object> cancelarODS(DatosRequest datos, Authentication auth) throws IOException, SQLException{
 		return ordenConsultar.cancelarODS(datos, auth);
 	}
 

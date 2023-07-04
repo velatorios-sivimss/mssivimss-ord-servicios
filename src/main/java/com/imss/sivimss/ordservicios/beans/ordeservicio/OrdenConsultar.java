@@ -1,6 +1,10 @@
 package com.imss.sivimss.ordservicios.beans.ordeservicio;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
-import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
@@ -24,6 +27,7 @@ import com.imss.sivimss.ordservicios.model.request.VelatorioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioConsultaODSRepository;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
+import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
@@ -64,6 +68,15 @@ public class OrdenConsultar {
 
 	private Response<Object> response;
 	
+	@Autowired
+	private Database database;
+
+	private Connection connection;
+
+	private ResultSet rs;
+
+	private Statement statement;
+
 	
 	private static final Logger log = LoggerFactory.getLogger(OrdenConsultar.class);
 
@@ -71,6 +84,7 @@ public class OrdenConsultar {
 	private static final String CURP_NO_VALIDO = "34"; // CURP no valido.
 	private static final String SERVICIO_RENAPO_NO_DISPONIBLE = "184"; // El servicio de RENAPO no esta disponible.
 	private static final String ERROR_AL_DESCARGAR_DOCUMENTO= "64"; // Error en la descarga del documento.Intenta nuevamente.
+	private static final String ODS_CANCELADA= "74"; // La Orden de Servicio ha sido cancelada correctamente. 
 
 	private static final String CU024_NOMBRE= "Consulta Orden Servicio: ";
 	private static final String GENERAR_DOCUMENTO = "Generar Reporte: " ;
@@ -308,6 +322,24 @@ public class OrdenConsultar {
 
 		}
 	}
+	public Response<Object> buscarOperadores(DatosRequest datosRequest, Authentication authentication) throws IOException{
+		String query="";
+		try {
+	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarOperadores", AppConstantes.CONSULTA, authentication);
+
+			query = rNConsultaODSRepository.obtenerOperadores();
+			DatosRequest request= encodeQuery(query, datosRequest);
+			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		}
+	}
 	public Response<Object> generaTarjetaIden(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
 		try {
@@ -350,8 +382,69 @@ public class OrdenConsultar {
 
 		}
 	}
-	public Response<Object> cancelarODS(DatosRequest datosRequest, Authentication authentication) throws IOException{
-		return null;
+
+	public Response<Object> buscarCostoCancelarODS(DatosRequest datosRequest, Authentication authentication) throws IOException{
+		String query="";
+		try {
+	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarCostoCancelarODS", AppConstantes.CONSULTA, authentication);
+
+			query = rNConsultaODSRepository.obtenerCostoCancelacionODS();
+			DatosRequest request= encodeQuery(query, datosRequest);
+			response = providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		}
+	}
+	public Response<Object> cancelarODS(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
+		String query="";
+	try {
+        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "cancelarODS", AppConstantes.BAJA, authentication);
+		Gson gson= new Gson();
+		String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
+		ReporteDto idOrdenServicio= gson.fromJson(datosJson, ReporteDto.class);
+		UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+
+		connection = database.getConnection();
+		statement = connection.createStatement();
+		connection.setAutoCommit(false);
+		query = rNConsultaODSRepository.cancelarODS(idOrdenServicio, usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarCaracteristicasPaquete(idOrdenServicio.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarDetalleCaracteristicasPaquete(idOrdenServicio.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarCaracteristicasPresupuesto(idOrdenServicio.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarDetalleCaracteristicasPresupuesto(idOrdenServicio.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarDonacion(idOrdenServicio.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarInventarioArticulo(idOrdenServicio.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+
+		connection.commit();
+		response= new Response<>(false, 200, ODS_CANCELADA,"[]");
+		return MensajeResponseUtil.mensajeConsultaResponseObject(response, ODS_CANCELADA);
+		
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.BAJA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (rs != null) {
+				rs.close();
+			}
+		}
 	}
 	private DatosRequest encodeQuery(String query, DatosRequest request) {
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -396,10 +489,13 @@ public class OrdenConsultar {
 		envioDatos.put("idOds", reporteDto.getIdOrdenServicio());
 		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
 		envioDatos.put("usuarioSistema", usuarioRequest.getCveMatricula());
-		if(reporteDto.getEstatus() == 1)
-			envioDatos.put("rutaNombreReporte", reporteOrdenServicioTemp);
-		else if(reporteDto.getEstatus() == 2)
-			envioDatos.put("rutaNombreReporte", reporteOrdenServicio);
+		String nombreReporte="";
+		if(reporteDto.getEstatus() == 1) {
+			nombreReporte = reporteOrdenServicioTemp;
+		}else if(reporteDto.getEstatus() == 2) {
+			nombreReporte = reporteOrdenServicio;
+		}
+			envioDatos.put("rutaNombreReporte", nombreReporte);
 		try {
 			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
@@ -414,4 +510,5 @@ public class OrdenConsultar {
 			throw new IOException("52", e.getCause());
 		}	
 	}
+	
 }

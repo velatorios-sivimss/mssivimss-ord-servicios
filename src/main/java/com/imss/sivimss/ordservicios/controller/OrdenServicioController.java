@@ -117,13 +117,25 @@ public class OrdenServicioController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+	@PostMapping("/consultar/operadores")
+	public CompletableFuture<Object>consultarOperadores(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarOperadores");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	@PostMapping("/generar/tarjeta-identificacion")
 	public CompletableFuture<Object>generaTarjetaIdentificacion(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "generaTarjetaIdentificacion");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	@PostMapping("/cancelarODS")
+	@PostMapping("/consultar/costo-cancelar-ods")
+	public CompletableFuture<Object>consultarCostoCancelarODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarCostoCancelarODS");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	@PostMapping("/cancelar/ods")
 	public CompletableFuture<Object>consultarCancelarODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "cancelarODS");
 		return CompletableFuture

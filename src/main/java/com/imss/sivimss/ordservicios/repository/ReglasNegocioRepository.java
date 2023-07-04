@@ -388,7 +388,13 @@ public class ReglasNegocioRepository {
 	public String insertarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
 			Integer idInformacionServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_INFORMACION_SERVICIO_VELACION");
-		q.agregarParametroValues(ID_DOMICILIO, "" + informacionServicioRequest.getCp().getIdDomicilio() + "");
+		
+		if (informacionServicioRequest.getCp()==null) {
+			q.agregarParametroValues(ID_DOMICILIO, "NULL");
+		}else {
+			q.agregarParametroValues(ID_DOMICILIO, "" + informacionServicioRequest.getCp().getIdDomicilio() + "");
+		}
+		
 		q.agregarParametroValues("FEC_INSTALACION", "'" + informacionServicioRequest.getFechaInstalacion() + "'");
 		q.agregarParametroValues("TIM_HORA_INSTALACION", "'" + informacionServicioRequest.getHoraInstalacion() + "'");
 		q.agregarParametroValues("FEC_VELACION", "'" + informacionServicioRequest.getFechaVelacion() + "'");

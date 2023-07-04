@@ -70,10 +70,14 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 			return ordenesDAO.buscarContratoConvenio(request, authentication);
 		case "consultarEstadoODS":
 			return ordenesDAO.buscarEstadoODS(request, authentication);
+		case "consultarOperadores":
+			return ordenesDAO.buscarOperadores(request, authentication);
 		case "generaTarjetaIdentificacion":
 			return ordenesDAO.generaTarjetaIden(request, authentication);
 		case "consultarODS":
 			return ordenesDAO.buscarODS(request, authentication);
+		case "consultarCostoCancelarODS":
+			return ordenesDAO.buscarCostoCancelarODS(request, authentication);
 		case "cancelarODS":
 			return ordenesDAO.cancelarODS(request, authentication);
 		case "generaReporteConsultaODS":
