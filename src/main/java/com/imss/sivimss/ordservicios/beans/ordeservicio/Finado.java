@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,22 +28,31 @@ public class Finado {
 		try {
 			statement = connection.createStatement();
 			
-    		if (finadoRequest.getIdPersona()==null && (ordenServcio.getFinado().getExtremidad()!=null || !ordenServcio.getFinado().getExtremidad().equals(""))) {
+    		if (finadoRequest.getIdPersona()==null && 
+    				((finadoRequest.getNomPersona()!=null || finadoRequest.getNomPersona().equals("")) &&
+    				(finadoRequest.getSegundoApellido()!=null || finadoRequest.getSegundoApellido().equals("")))) {
         		statement.executeUpdate(reglasNegocioRepository.insertarPersona(finadoRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
     			rs=statement.getGeneratedKeys();
     			if (rs.next()) {
     				finadoRequest.setIdPersona(rs.getInt(1));
     			} 
             }else {
-            	statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
+            	if (finadoRequest.getIdPersona()!=null || finadoRequest.getIdPersona()>0) {
+					statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
+				}
+            	
+            	
             }
     	
-    		statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-    		rs=statement.getGeneratedKeys();
-    		if (rs.next()) {
+    		if (Objects.nonNull(finadoRequest.getCp())) {
+				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+				rs=statement.getGeneratedKeys();
+				if (rs.next()) {
     		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
-    		}
+				}
+			}
+    		
     	
 			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,ordenServcio.getIdOrdenServicio(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
