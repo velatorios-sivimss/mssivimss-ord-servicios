@@ -80,6 +80,8 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 			return ordenesDAO.buscarCostoCancelarODS(request, authentication);
 		case "cancelarODS":
 			return ordenesDAO.cancelarODS(request, authentication);
+		case "generaReporteTarjetaIdentificacion":
+			return ordenesDAO.generaReporteTarjetaIdentificacion(request, authentication);
 		case "generaReporteConsultaODS":
 			return ordenesDAO.generaReporteConsultaODS(request, authentication);
 		case "generaReporteServicioInmediato":

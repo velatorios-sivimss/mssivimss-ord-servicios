@@ -25,6 +25,7 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVC_FINADO_SF = "SVC_FINADO sf";
 	private static final String TABLA_SVC_TIPO_ORDEN_SERVICIO_STOS = "SVC_TIPO_ORDEN_SERVICIO stos";
 	private static final String TABLA_SVC_UNIDAD_MEDICA_SUM2 = "SVC_UNIDAD_MEDICA sum2";
+	private static final String TABLA_SVC_UNIDAD_MEDICA_SUM3 = "SVC_UNIDAD_MEDICA sum3";
 	private static final String TABLA_SVT_CONVENIO_PF_SCP = "SVT_CONVENIO_PF scp";
 	private static final String TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS = "SVC_ESTATUS_ORDEN_SERVICIO seos";
 	private static final String TABLA_SVT_OPERADORES_SO = "SVT_OPERADORES so";
@@ -32,9 +33,19 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = "SVC_INFORMACION_SERVICIO sis";
 	private static final String TABLA_SVT_USUARIOS_SU = "SVT_USUARIOS su";
 	private static final String TABLA_SVC_CARACTERISTICAS_PRESUPUESTO_SCP2 = "SVC_CARACTERISTICAS_PRESUPUESTO scp2";
+	private static final String TABLA_SVC_PARENTESCO_SP2 = "SVC_PARENTESCO sp2";
+	private static final String TABLA_SVC_PAIS_SP3 = "SVC_PAIS sp3";
+	private static final String TABLA_SVC_ESTADO_SE = "SVC_ESTADO se";
+	private static final String TABLA_SVC_TIPO_PENSION_STP = "SVC_TIPO_PENSION stp";
 
-
-
+	private static final String SET_CAMPO_FEC_BAJA = " FEC_BAJA = CURRENT_TIMESTAMP() ";
+	private static final String WHERE_ID_ORDEN_SERVICIO = " WHERE ID_ORDEN_SERVICIO = ";
+	
+	private static final String AND_ID_FINADO = " AND sf.ID_FINADO = ";
+	private static final String AND_ID_TIPO_ORDEN_SERVICIO = " AND stos.ID_TIPO_ORDEN_SERVICIO = ";
+	private static final String AND_ID_UNIDAD_MEDICA = " AND sum2.ID_UNIDAD_MEDICA = ";
+	private static final String AND_ID_CONVENIO_PF = " AND scp.ID_CONVENIO_PF = "; 
+	
 	private static final Logger log = LoggerFactory.getLogger(ReglasNegocioConsultaODSRepository.class);
 
 	String query;
@@ -71,10 +82,10 @@ public class ReglasNegocioConsultaODSRepository {
 		.from(TABLA_SVC_PERSONA_SP)
 		.join(TABLA_SVC_CONTRATANTE_SC, "sc.ID_PERSONA  = sp.ID_PERSONA")
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS , "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
-		.join("SVC_PARENTESCO sp2","sos.ID_PARENTESCO = sp2.ID_PARENTESCO") 
-		.join("SVT_DOMICILIO sd","sd.ID_DOMICILIO = sc.ID_DOMICILIO") 
-		.join("SVC_PAIS sp3","sp3.ID_PAIS = sp.ID_PAIS")
-		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO");
+		.join(TABLA_SVC_PARENTESCO_SP2,"sos.ID_PARENTESCO = sp2.ID_PARENTESCO") 
+		.join(TABLA_SVT_DOMICILIO_SD,"sd.ID_DOMICILIO = sc.ID_DOMICILIO") 
+		.join(TABLA_SVC_PAIS_SP3,"sp3.ID_PAIS = sp.ID_PAIS")
+		.join(TABLA_SVC_ESTADO_SE,"se.ID_ESTADO = sp.ID_ESTADO");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -95,15 +106,15 @@ public class ReglasNegocioConsultaODSRepository {
 		.from(TABLA_SVC_PERSONA_SP)
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_PERSONA = sp.ID_PERSONA")
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
-		.join("SVC_TIPO_ORDEN_SERVICIO stos","stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN")
-		.join("SVT_CONVENIO_PF scp","scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION") 
-		.join("SVC_VELATORIO sv","sv.ID_VELATORIO = sf.ID_VELATORIO") 
-		.join("SVT_DOMICILIO sd","sd.ID_DOMICILIO = sf.ID_DOMICILIO") 
-		.join("SVC_PAIS sp3 ","sp3.ID_PAIS = sp.ID_PAIS")
-		.join("SVC_ESTADO se","se.ID_ESTADO = sp.ID_ESTADO")
-		.join("SVC_UNIDAD_MEDICA sum2","sum2.ID_UNIDAD_MEDICA = sf.ID_CLINICA_ADSCRIPCION")  
-		.join("SVC_UNIDAD_MEDICA sum3","sum3.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA") 
-		.join("SVC_TIPO_PENSION stp","stp.ID_TIPO_PENSION = sf.ID_TIPO_PENSION");
+		.join(TABLA_SVC_TIPO_ORDEN_SERVICIO_STOS,"stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN")
+		.join(TABLA_SVT_CONVENIO_PF_SCP,"scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION") 
+		.join(TABLA_SVC_VELATORIO_SV,"sv.ID_VELATORIO = sf.ID_VELATORIO") 
+		.join(TABLA_SVT_DOMICILIO_SD,"sd.ID_DOMICILIO = sf.ID_DOMICILIO") 
+		.join(TABLA_SVC_PAIS_SP3,"sp3.ID_PAIS = sp.ID_PAIS")
+		.join(TABLA_SVC_ESTADO_SE,"se.ID_ESTADO = sp.ID_ESTADO")
+		.join(TABLA_SVC_UNIDAD_MEDICA_SUM2,"sum2.ID_UNIDAD_MEDICA = sf.ID_CLINICA_ADSCRIPCION")  
+		.join(TABLA_SVC_UNIDAD_MEDICA_SUM3,"sum3.ID_UNIDAD_MEDICA = sf.ID_UNIDAD_PROCEDENCIA") 
+		.join(TABLA_SVC_TIPO_PENSION_STP,"stp.ID_TIPO_PENSION = sf.ID_TIPO_PENSION");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -123,7 +134,7 @@ public class ReglasNegocioConsultaODSRepository {
 		selectQueryUtil.select("DISTINCT(sum2.ID_UNIDAD_MEDICA) AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
 		.from(TABLA_SVC_UNIDAD_MEDICA_SUM2)
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_UNIDAD_PROCEDENCIA = sum2.ID_UNIDAD_MEDICA")
-		.join("SVC_VELATORIO sv","sv.ID_VELATORIO  = sf.ID_VELATORIO")
+		.join(TABLA_SVC_VELATORIO_SV,"sv.ID_VELATORIO  = sf.ID_VELATORIO")
 		.where("sum2.IND_ACTIVO = 1")
 		.and("sv.ID_DELEGACION = :idDel")
 		.setParameter("idDel", idDel);		
@@ -160,19 +171,18 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String generaTarjetaIden(String idOper) {
+	public String generaTarjetaIden(Integer idOper, Integer idOrdenServicio, UsuarioDto usuario) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("sos.CVE_FOLIO AS noFolioODS","DATE_FORMAT(sos.FEC_ALTA,'%d-%m-%Y') as fecha"
+		selectQueryUtil.select("DISTINCT(sos.CVE_FOLIO) AS noFolioODS","DATE_FORMAT(sos.FEC_ALTA,'%d-%m-%Y') as fecha"
 				,"CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
 				,"CONCAT(sv.DES_VELATORIO,' / ',sd.DES_CALLE,', ',sd.NUM_EXTERIOR,IFNULL(CONCAT(', INT ',sd.NUM_INTERIOR),''),IFNULL(CONCAT(', COL. ',sd.DES_COLONIA),''),IFNULL(CONCAT(', DEL. ',sd.DES_MUNICIPIO),''),IFNULL(CONCAT(', ',sd.DES_ESTADO),''))	AS velatorio"
 				, "DATE_FORMAT(sis.FEC_CORTEJO,'%d-%m-%Y') AS fechaCortejo"
 				, "TIME_FORMAT(sis.TIM_HORA_CORTEJO ,'%H:%i') AS horaCortejo"
-				//+ " -- "
-				, "'Modelo Ataud' AS modAtaud"
-				, "'Numero Folio' AS noFolioAtaud"
-				// + " -- "
+				, "sa.DES_MODELO_ARTICULO  AS modAtaud"
+				, "sia.FOLIO_ARTICULO  AS noFolioAtaud"
 				, "CONCAT(su.NOM_USUARIO, ' ', su.NOM_APELLIDO_PATERNO, ' ', su.NOM_APELLIDO_MATERNO) AS operador"
-				, "su.CVE_MATRICULA AS matriculaOperador")
+				, "su.CVE_MATRICULA AS matriculaOperador"
+				, "'" + usuario.getNombre() + "' AS nombreAdmin")
 		.from(TABLA_SVT_OPERADORES_SO)
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_OPERADOR = so.ID_OPERADOR")
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
@@ -180,9 +190,15 @@ public class ReglasNegocioConsultaODSRepository {
 		.join(TABLA_SVC_VELATORIO_SV, "sv.ID_VELATORIO = sos.ID_VELATORIO")
 		.join(TABLA_SVT_DOMICILIO_SD, "sd.ID_DOMICILIO = sv.ID_DOMICILIO ")
 		.join(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
-		.leftJoin(TABLA_SVT_USUARIOS_SU, "su.id_usuario = so.ID_USUARIO")
+		.leftJoin(TABLA_SVT_USUARIOS_SU, "su.id_usuario = so.ID_USUARIO")  
+		.join("SVT_INVENTARIO_ARTICULO sia","ID_INVE_ARTICULO  = (SELECT sdcp.ID_INVE_ARTICULO FROM SVC_CARACTERISTICAS_PRESUPUESTO scp "
+				+ " JOIN SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO sdcp ON sdcp.ID_CARACTERISTICAS_PRESUPUESTO = scp.ID_CARACTERISTICAS_PRESUPUESTO "
+				+ " JOIN SVC_ORDEN_SERVICIO sos ON sos.ID_ORDEN_SERVICIO = scp.ID_ORDEN_SERVICIO WHERE sos.ID_ORDEN_SERVICIO  = " + idOrdenServicio + ")")
+		.join("SVT_ARTICULO sa ","sa.ID_ARTICULO = sia.ID_ARTICULO") 
 		.where("so.ID_OPERADOR = :idOper")
-		.setParameter("idOper", idOper);
+		.setParameter("idOper", idOper)
+		.and("sos.ID_ORDEN_SERVICIO = :idODS")
+		.setParameter("idODS", idOrdenServicio);
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -218,47 +234,44 @@ public class ReglasNegocioConsultaODSRepository {
 	// Bloque Cancelacion ODS
 	public String cancelarODS(ReporteDto idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_ESTATUS_ORDEN_SERVICIO = 0, DES_MOTIVO_CANCELACION ='" +idODS.getMotivoCancelacion() + "'"
-				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
-				+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS.getIdOrdenServicio();
+				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA + WHERE_ID_ORDEN_SERVICIO + idODS.getIdOrdenServicio();
 		log.info(str);
 		return str;
 	}
 	public String cancelarCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
-		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		+ ", " + SET_CAMPO_FEC_BAJA + WHERE_ID_ORDEN_SERVICIO + idODS;
 		log.info(str);
 		return str;
 	}
 	public String cancelarDetalleCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
-		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
-		+ ", FEC_BAJA = CURRENT_TIMESTAMP() "
-		+ " WHERE ID_CARACTERISTICAS_PAQUETE = (SELECT ID_CARACTERISTICAS_PAQUETE FROM SVC_CARACTERISTICAS_PAQUETE WHERE ID_ORDEN_SERVICIO = " + idODS + ")";
+		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", "
+		+ SET_CAMPO_FEC_BAJA + " WHERE ID_CARACTERISTICAS_PAQUETE IN (SELECT ID_CARACTERISTICAS_PAQUETE FROM SVC_CARACTERISTICAS_PAQUETE " + WHERE_ID_ORDEN_SERVICIO + idODS + ")";
 		log.info(str);
 		return str;
 	}
 	public String cancelarCaracteristicasPresupuesto(Integer idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
-		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS;
+		+ "," + SET_CAMPO_FEC_BAJA + WHERE_ID_ORDEN_SERVICIO + idODS;
 		log.info(str);
 		return str;
 	}
 	public String cancelarDetalleCaracteristicasPresupuesto(Integer idODS, UsuarioDto usuario) {		
-		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
-		+ ", FEC_BAJA = CURRENT_TIMESTAMP() "
-		+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO = (SELECT ID_CARACTERISTICAS_PRESUPUESTO  FROM SVC_CARACTERISTICAS_PRESUPUESTO WHERE ID_ORDEN_SERVICIO = " + idODS + ") ";
+		String str = "UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", "
+		+ SET_CAMPO_FEC_BAJA
+		+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO IN (SELECT ID_CARACTERISTICAS_PRESUPUESTO  FROM SVC_CARACTERISTICAS_PRESUPUESTO " + WHERE_ID_ORDEN_SERVICIO + idODS + ") ";
 		log.info(str);
 		return str;
 	}
 	public String cancelarDonacion(Integer idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_DONACION SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() 
-		+ ", FEC_BAJA = CURRENT_TIMESTAMP() WHERE ID_ORDEN_SERVICIO = " + idODS ;
+		+ ", " + SET_CAMPO_FEC_BAJA + WHERE_ID_ORDEN_SERVICIO + idODS ;
 		log.info(str);
 		return str;
 	}
 	public String cancelarInventarioArticulo(Integer idODS, UsuarioDto usuario) {		
-		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET  IND_ESTATUS = 0, ID_TIPO_ASIGNACION_ART = 1"
-				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", FEC_BAJA = CURRENT_TIMESTAMP() "
-				+ " WHERE ID_INVE_ARTICULO = (" + queryIdInvArticulo(idODS) +")";
+		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET  IND_ESTATUS = 0, ID_TIPO_ASIGNACION_ART = 1, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA
+				+ " WHERE ID_INVE_ARTICULO IN (" + queryIdInvArticulo(idODS) +")";
 		log.info(str);
 		return str;
 	}
@@ -280,16 +293,16 @@ public class ReglasNegocioConsultaODSRepository {
 				condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
 			}
 			if (reporteDto.getIdFinado() != null) {
-				condicion = condicion + " AND sf.ID_FINADO = " + reporteDto.getIdFinado();
+				condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
 			}
 			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
+				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
+				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdOds() != null || reporteDto.getIdOrdenServicio() != null) {
 			condicion = "WHERE sos.ID_ORDEN_SERVICIO = " + ((reporteDto.getIdOds()!=null) ? reporteDto.getIdOds(): reporteDto.getIdOrdenServicio()) ;
@@ -297,55 +310,55 @@ public class ReglasNegocioConsultaODSRepository {
 				condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
 			}
 			if (reporteDto.getIdFinado() != null) {
-				condicion = condicion + " AND sf.ID_FINADO = " + reporteDto.getIdFinado();
+				condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
 			}
 			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
+				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
+				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdContratante() != null) {
 			condicion = "WHERE sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
 			if (reporteDto.getIdFinado() != null) {
-				condicion = condicion + " AND sf.ID_FINADO = " + reporteDto.getIdFinado();
+				condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
 			}
 			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
+				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
+				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdFinado() != null) {
 			condicion = "WHERE sf.ID_FINADO = " + reporteDto.getIdFinado();
 			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
+				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
 			}
 			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
+				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdTipoODS() != null) {
 			condicion = "WHERE stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + " AND sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
 			}
 			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
+				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdUnidadMedica() != null) {
 			condicion = "WHERE sum2.ID_UNIDAD_MEDICA = " +	reporteDto.getIdUnidadMedica();
 
 			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + " AND scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
+				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 			}
 		} else if (reporteDto.getIdConvenio() != null) {
 			condicion = "WHERE scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
