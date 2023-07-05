@@ -13,4 +13,5 @@ public interface ContratoPFService {
 	Response<Object>obtenerContratoPF(DatosRequest request,Authentication authentication)throws IOException, SQLException;
 	Response<Object>obtenerContratantes (DatosRequest request,Authentication authentication)throws IOException, SQLException;
 	Response<Object>obtenerContratanteBeneficiarios (DatosRequest request,Authentication authentication)throws IOException, SQLException;
+	Response<Object> obtenerPersona(DatosRequest request, Authentication authentication)throws IOException, SQLException;
 }

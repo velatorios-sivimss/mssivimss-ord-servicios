@@ -16,4 +16,6 @@ public class ContratoPfRequest {
 
 	private Integer idContratante;
 
+	private Integer idPersona;
+
 }
