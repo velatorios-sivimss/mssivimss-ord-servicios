@@ -10,6 +10,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OperadorRequest {
 
-	private String idOperador;
+	private Integer idOperador;
 	private Integer idOrdenServicio;
 }

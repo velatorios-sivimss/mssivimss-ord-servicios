@@ -171,7 +171,7 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String generaTarjetaIden(String idOper, Integer idOrdenServicio) {
+	public String generaTarjetaIden(Integer idOper, Integer idOrdenServicio, UsuarioDto usuario) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("DISTINCT(sos.CVE_FOLIO) AS noFolioODS","DATE_FORMAT(sos.FEC_ALTA,'%d-%m-%Y') as fecha"
 				,"CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
@@ -181,7 +181,8 @@ public class ReglasNegocioConsultaODSRepository {
 				, "sa.DES_MODELO_ARTICULO  AS modAtaud"
 				, "sia.FOLIO_ARTICULO  AS noFolioAtaud"
 				, "CONCAT(su.NOM_USUARIO, ' ', su.NOM_APELLIDO_PATERNO, ' ', su.NOM_APELLIDO_MATERNO) AS operador"
-				, "su.CVE_MATRICULA AS matriculaOperador")
+				, "su.CVE_MATRICULA AS matriculaOperador"
+				, "'" + usuario.getNombre() + "' AS nombreAdmin")
 		.from(TABLA_SVT_OPERADORES_SO)
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_OPERADOR = so.ID_OPERADOR")
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")

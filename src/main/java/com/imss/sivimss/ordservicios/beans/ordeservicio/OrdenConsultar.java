@@ -92,6 +92,8 @@ public class OrdenConsultar {
 	private static final String CU024_NOMBRE= "Consulta Orden Servicio: ";
 	private static final String GENERAR_DOCUMENTO = "Generar Reporte: " ;
 	private static final String GENERA_DOCUMENTO = "Genera_Documento";
+	private static final String TIPO_REPORTE = "tipoReporte";
+	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
 	
 	public Response<Object>buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
@@ -351,7 +353,8 @@ public class OrdenConsultar {
 			Gson gson= new Gson();
 			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
 			OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);
-			query = rNConsultaODSRepository.generaTarjetaIden(operadorRequest.getIdOperador(),operadorRequest.getIdOrdenServicio() );
+			UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			query = rNConsultaODSRepository.generaTarjetaIden(operadorRequest.getIdOperador(),operadorRequest.getIdOrdenServicio(), usuario );
 			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
@@ -463,16 +466,18 @@ public class OrdenConsultar {
 			throws IOException {
 		Gson gson= new Gson();
 		String datosJson= request.getDatos().get(AppConstantes.DATOS).toString();
-		OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);;
+		OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);
+		UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("idODS", operadorRequest.getIdOrdenServicio());
 		envioDatos.put("idOperador", operadorRequest.getIdOperador());
-		envioDatos.put("tipoReporte", "pdf");
-		envioDatos.put("rutaNombreReporte", reporteGeneraTarjetaIden);
+		envioDatos.put("nombreAdmin", "'"+ usuario.getNombre() + "' AS nombreAdmin ");
+		envioDatos.put(TIPO_REPORTE, "pdf");
+		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteGeneraTarjetaIden);
 		try {
-			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
-			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(), "generarDocumentoOrdenServicio", GENERA_DOCUMENTO, authentication);
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Tarjeta Identificacion " );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Tarjeta Identificacion " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generaReporteTarjetaIdentificacion", GENERA_DOCUMENTO, authentication);
 			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
 		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
@@ -491,11 +496,11 @@ public class OrdenConsultar {
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		String query = rNConsultaODSRepository.generaReporteConsultaODS(reporteDto);
 		envioDatos.put("condicion", query);
-		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
-		envioDatos.put("rutaNombreReporte", reporteConsultaODS);
+		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
+		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteConsultaODS);
 		try {
-			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
-			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Consulta ODS " );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Consulta ODS  " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generarDocumentoOrdenServicio", GENERA_DOCUMENTO, authentication);
 			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
 		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
@@ -517,7 +522,7 @@ public class OrdenConsultar {
 		Map<String, Object> envioDatos = new HashMap<>();
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		envioDatos.put("idOds", reporteDto.getIdOrdenServicio());
-		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
+		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put("usuarioSistema", usuarioRequest.getCveMatricula());
 		String nombreReporte="";
 		if(reporteDto.getEstatus() == 1) {
@@ -525,7 +530,7 @@ public class OrdenConsultar {
 		}else if(reporteDto.getEstatus() == 2) {
 			nombreReporte = reporteOrdenServicio;
 		}
-			envioDatos.put("rutaNombreReporte", nombreReporte);
+			envioDatos.put(RUTA_NOMBRE_REPORTE, nombreReporte);
 		try {
 			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
