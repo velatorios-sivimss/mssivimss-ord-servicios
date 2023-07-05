@@ -29,8 +29,8 @@ public class Finado {
 			statement = connection.createStatement();
 			
     		if (finadoRequest.getIdPersona()==null && 
-    				((finadoRequest.getNomPersona()!=null || finadoRequest.getNomPersona().equals("")) &&
-    				(finadoRequest.getSegundoApellido()!=null || finadoRequest.getSegundoApellido().equals("")))) {
+    				(finadoRequest.getNomPersona()!=null &&
+    				finadoRequest.getSegundoApellido()!=null)) {
         		statement.executeUpdate(reglasNegocioRepository.insertarPersona(finadoRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
     			rs=statement.getGeneratedKeys();
     			if (rs.next()) {
@@ -42,7 +42,7 @@ public class Finado {
     		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
 				}
             }else {
-            	if (finadoRequest.getIdPersona()!=null || finadoRequest.getIdPersona()>0) {
+            	if (finadoRequest.getIdPersona()!=null) {
 					statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
 				    if (Objects.nonNull(finadoRequest.getCp())) {

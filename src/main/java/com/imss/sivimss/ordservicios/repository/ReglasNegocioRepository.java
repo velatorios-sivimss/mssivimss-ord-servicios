@@ -187,7 +187,7 @@ public class ReglasNegocioRepository {
 	// insertar finado
 	public String insertarFinado(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_FINADO");
-		if (finadoRequest.getIdPersona()!=null || finadoRequest.getIdPersona()>0) {
+		if (finadoRequest.getIdPersona()!=null) {
 			q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
 		}else {
 			q.agregarParametroValues("ID_PERSONA", "NULL");
