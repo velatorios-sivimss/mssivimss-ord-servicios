@@ -51,6 +51,8 @@ public class Contratante {
 			} else {
 				statement.executeUpdate(reglasNegocioRepository.actualizarPersona(contratanteRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
+				statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(contratanteRequest.getCp(), idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
 				
 				return contratanteRequest.getIdContratante();
 			}

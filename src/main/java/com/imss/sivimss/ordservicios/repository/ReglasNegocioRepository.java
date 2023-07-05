@@ -52,7 +52,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo", "IFNULL(SPE .FEC_NAC,'') AS fechaNac",
 						"IFNULL(SVP.ID_PAIS,'') AS idPais", "IFNULL(SVE.ID_ESTADO,'') AS idEstado",
 						"IFNULL(SPE.DES_TELEFONO,'') AS telefono", "IFNULL(SPE.DES_CORREO,'') AS correo",
-						"IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
+						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
 						"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior", "IFNULL(SVD.DES_CP,'') AS cp",
 						"IFNULL(SVD.DES_COLONIA,'') AS colonia", "IFNULL(SVD.DES_MUNICIPIO,'') AS municipio",
 						"IFNULL(SVD.DES_ESTADO,'') AS estado")
@@ -77,7 +77,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo", "IFNULL(SPE .FEC_NAC,'') AS fechaNac",
 						"IFNULL(SVP.ID_PAIS,'') AS idPais", "IFNULL(SVE.ID_ESTADO,'') AS idEstado",
 						"IFNULL(SPE.DES_TELEFONO,'') AS telefono", "IFNULL(SPE.DES_CORREO,'') AS correo",
-						"IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
+						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
 						"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior", "IFNULL(SVD.DES_CP,'') AS cp",
 						"IFNULL(SVD.DES_COLONIA,'') AS colonia", "IFNULL(SVD.DES_MUNICIPIO,'') AS municipio",
 						"IFNULL(SVD.DES_ESTADO,'') AS estado")
