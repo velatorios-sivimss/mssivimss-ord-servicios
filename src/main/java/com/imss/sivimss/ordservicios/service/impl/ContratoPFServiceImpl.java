@@ -28,6 +28,7 @@ import com.imss.sivimss.ordservicios.model.request.ContratoPfRequest;
 import com.imss.sivimss.ordservicios.model.response.ContratantesBeneficiariosContratoPfResponse;
 import com.imss.sivimss.ordservicios.model.response.ContratantesContratoPfResponse;
 import com.imss.sivimss.ordservicios.model.response.ContratoPfResponse;
+import com.imss.sivimss.ordservicios.model.response.PersonaPfResponse;
 import com.imss.sivimss.ordservicios.service.ContratoPFService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
@@ -208,6 +209,63 @@ public class ContratoPFServiceImpl implements ContratoPFService{
 			log.error(e.getMessage());
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "obtenerContratantes", AppConstantes.CONSULTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		}finally {
+			if (connection!=null) {
+				connection.close();
+			}
+			if (statement!=null) {
+				statement.close();
+			}
+			if (rs!= null) {
+				rs.close();
+			}
+		}
+	}
+	
+	@Override
+	public Response<Object> obtenerPersona(DatosRequest request, Authentication authentication)
+			throws IOException, SQLException {
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "obtenerContratanteBeneficiarios", AppConstantes.CONSULTA, authentication);
+			
+			Gson gson= new Gson();
+			String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+			ContratoPfRequest contratoPfRequest= gson.fromJson(datosJson, ContratoPfRequest.class);
+			connection = database.getConnection();
+			connection.setAutoCommit(false);
+			statement = connection.createStatement();
+			rs=statement.executeQuery(contratoPF.consultarPersona(contratoPfRequest.getIdPersona()));
+			List<PersonaPfResponse>listPersonaPfResponses= new ArrayList<>();
+			
+			while (rs.next()) {
+				listPersonaPfResponses.add(new PersonaPfResponse(
+						rs.getInt(1), 
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6),
+						rs.getString(7),
+						rs.getString(8),
+						rs.getString(9),
+						rs.getString(10),
+						rs.getString(11),
+						rs.getString(12),
+						rs.getString(13),
+						rs.getString(14),
+						rs.getString(15),
+						rs.getString(16)
+						));
+			}
+			
+			response= new Response<>(false, 200, AppConstantes.EXITO,ConvertirGenerico.convertInstanceOfObject(listPersonaPfResponses));
+			return response;
+			
+			
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "obtenerContratantes", AppConstantes.CONSULTA, authentication);
+			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}finally {
 			if (connection!=null) {
 				connection.close();

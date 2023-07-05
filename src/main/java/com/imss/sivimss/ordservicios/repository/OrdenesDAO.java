@@ -115,6 +115,9 @@ public class OrdenesDAO {
 		return ordenConsultar.cancelarODS(datos, auth);
 	}
 
+	public Response<Object> generaReporteTarjetaIdentificacion(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.generaReporteTarjetaIdentificacion(datos, auth);
+	}
 	public Response<Object> generaReporteConsultaODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.generaReporteConsultaODS(datos, auth);
 	}

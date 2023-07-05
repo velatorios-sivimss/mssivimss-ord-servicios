@@ -122,4 +122,33 @@ public class ContratoPF {
 		return query;
 	}
 	
+	public String consultarPersona(Integer idPersona){
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("SPC.ID_PERSONA AS idPersona",
+				"IFNULL(SC.CVE_MATRICULA,'') AS matricula",
+				"IFNULL(SPC.CVE_RFC,'') AS rfc",
+				"IFNULL(SPC.CVE_CURP,'') AS curp",
+				"IFNULL(SPC.CVE_NSS,'') AS nss",
+				"IFNULL(SPC.NOM_PERSONA,'') AS nomPersona",
+				"IFNULL(SPC.NOM_PRIMER_APELLIDO,'') AS primerApellido",
+				"IFNULL(SPC.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
+				"IFNULL(SPC.NUM_SEXO,'') AS sexo",
+				"IFNULL(SPC.DES_OTRO_SEXO,'') AS otroSexo",
+				"SPC.FEC_NAC AS fechaNac",
+				"(CASE WHEN SPC.ID_PAIS = NULL OR SPC.ID_PAIS = 119  THEN 1 ELSE 2 END) AS nacionalidad",
+				"SPC.ID_PAIS AS idPais",
+				"SPC.ID_ESTADO AS idEstado",
+				"SPC.DES_TELEFONO AS telefono",
+				"SPC.DES_CORREO AS correo")
+		.from("SVC_PERSONA SPC")
+		.leftJoin("SVC_CONTRATANTE SC", "SPC.ID_PERSONA =SC.ID_PERSONA")
+		.where("SPC.ID_PERSONA = " + idPersona);
+
+		query = selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+	
+	
+	
 }

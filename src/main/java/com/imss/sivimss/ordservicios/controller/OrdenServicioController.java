@@ -123,7 +123,7 @@ public class OrdenServicioController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	@PostMapping("/generar/tarjeta-identificacion")
+	@PostMapping("/consultar/tarjeta-identificacion")
 	public CompletableFuture<Object>generaTarjetaIdentificacion(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "generaTarjetaIdentificacion");
 		return CompletableFuture
@@ -148,6 +148,11 @@ public class OrdenServicioController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
+	@PostMapping("/generar/tarjeta-identificacion")
+	public CompletableFuture<Object> generaReporteTarjetaIdentificacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteTarjetaIdentificacion");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	@PostMapping("/generar/reporte-consulta-ods")
 	public CompletableFuture<Object> generaReporteConsulta(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteConsultaODS");

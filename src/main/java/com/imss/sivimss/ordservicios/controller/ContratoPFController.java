@@ -54,6 +54,13 @@ public class ContratoPFController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+
+	@PostMapping("/consultar-persona")
+	public CompletableFuture<Object> consultarPersona(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException {
+		Response<?>response=contratoPFService.obtenerPersona(request, authentication);
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	
 	/**
 	 * fallbacks generico
