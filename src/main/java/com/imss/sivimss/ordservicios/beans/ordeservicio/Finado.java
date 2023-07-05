@@ -46,14 +46,15 @@ public class Finado {
 					statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
 				    if (Objects.nonNull(finadoRequest.getCp())) {
-		    			if (finadoRequest.getCp().getIdDomicilio()!=null || finadoRequest.getCp().getIdDomicilio()>0) {
-		    				statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-						}else {
-							statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+		    			if (finadoRequest.getCp().getIdDomicilio()==null) {
+		    				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 							rs=statement.getGeneratedKeys();
 							if (rs.next()) {
 			    		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
 							}
+		    				
+						}else {
+							statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 						}		
 					}
 				}	

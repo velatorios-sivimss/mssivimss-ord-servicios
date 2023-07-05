@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,10 +50,22 @@ public class Contratante {
 					return rs.getInt(1);
 				}
 			} else {
+				
 				statement.executeUpdate(reglasNegocioRepository.actualizarPersona(contratanteRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
-				statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(contratanteRequest.getCp(), idUsuarioAlta),
-						Statement.RETURN_GENERATED_KEYS);
+				
+				if (Objects.nonNull(contratanteRequest.getCp())) {
+	    			if (contratanteRequest.getCp().getIdDomicilio()==null) {
+	    				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(contratanteRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+						rs=statement.getGeneratedKeys();
+						if (rs.next()) {
+							contratanteRequest.getCp().setIdDomicilio(rs.getInt(1));
+						}
+	    				
+					}else {
+						statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(contratanteRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+					}		
+				}
 				
 				return contratanteRequest.getIdContratante();
 			}
