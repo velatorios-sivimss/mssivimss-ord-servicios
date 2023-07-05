@@ -67,6 +67,7 @@ reporte:
   orden_servicio_temp: "reportes/plantilla/ANEXO01_ODS_TEMP.jrxml"
   orden_servicio: "reportes/plantilla/ANEXO01_ODS.jrxml"
   consulta_ODS: "reportes/generales/ReporteConsultaODS.jrxml"
+  genera_Tarjeta_Iden: "reportes/generales/TarjetaIdentificacion.jrxml"
 
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
