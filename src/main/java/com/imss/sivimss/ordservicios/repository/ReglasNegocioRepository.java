@@ -205,10 +205,10 @@ public class ReglasNegocioRepository {
 		    q.agregarParametroValues(ID_DOMICILIO, "" + finadoRequest.getCp().getIdDomicilio() + "");
 		}
 		
-		q.agregarParametroValues("FEC_DECESO", "'" + finadoRequest.getFechaDeceso() + "'");
+		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
 		q.agregarParametroValues("DES_CAUSA_DECESO", "'" + finadoRequest.getCausaDeceso() + "'");
 		q.agregarParametroValues("DES_LUGAR_DECESO", "'" + finadoRequest.getLugarDeceso() + "'");
-		q.agregarParametroValues("TIM_HORA", "'" + finadoRequest.getHora() + "'");
+		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
 		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", "'" + finadoRequest.getProcedenciaFinado() + "'");
