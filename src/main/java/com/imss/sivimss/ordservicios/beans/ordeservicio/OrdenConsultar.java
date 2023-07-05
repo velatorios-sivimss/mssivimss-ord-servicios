@@ -47,9 +47,12 @@ public class OrdenConsultar {
 
 	@Value("${reporte.orden_servicio_temp}")
 	private String reporteOrdenServicioTemp;
-	
+
 	@Value("${reporte.consulta_ODS}")
 	private String reporteConsultaODS;
+	
+	@Value("${reporte.genera_Tarjeta_Iden}")
+	private String reporteGeneraTarjetaIden;
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
@@ -348,7 +351,7 @@ public class OrdenConsultar {
 			Gson gson= new Gson();
 			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
 			OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);
-			query = rNConsultaODSRepository.generaTarjetaIden(operadorRequest.getIdOperador());
+			query = rNConsultaODSRepository.generaTarjetaIden(operadorRequest.getIdOperador(),operadorRequest.getIdOrdenServicio() );
 			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
@@ -444,6 +447,9 @@ public class OrdenConsultar {
 			if (rs != null) {
 				rs.close();
 			}
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 	private DatosRequest encodeQuery(String query, DatosRequest request) {
@@ -453,6 +459,30 @@ public class OrdenConsultar {
 	}
 	
 
+	public Response<Object> generaReporteTarjetaIdentificacion(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Gson gson= new Gson();
+		String datosJson= request.getDatos().get(AppConstantes.DATOS).toString();
+		OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);;
+		Map<String, Object> envioDatos = new HashMap<>();
+		envioDatos.put("idODS", operadorRequest.getIdOrdenServicio());
+		envioDatos.put("idOperador", operadorRequest.getIdOperador());
+		envioDatos.put("tipoReporte", "pdf");
+		envioDatos.put("rutaNombreReporte", reporteGeneraTarjetaIden);
+		try {
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarDocumentoOrdenServicio", GENERA_DOCUMENTO, authentication);
+			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
+	}
 	public Response<Object> generaReporteConsultaODS(DatosRequest request, Authentication authentication)
 			throws IOException {
 		Gson gson = new Gson();

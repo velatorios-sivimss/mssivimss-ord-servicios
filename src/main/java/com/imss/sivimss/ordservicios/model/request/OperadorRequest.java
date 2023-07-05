@@ -11,4 +11,5 @@ import lombok.Setter;
 public class OperadorRequest {
 
 	private String idOperador;
+	private Integer idOrdenServicio;
 }
