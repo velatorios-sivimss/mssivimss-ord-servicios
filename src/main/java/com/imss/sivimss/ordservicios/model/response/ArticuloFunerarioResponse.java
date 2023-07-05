@@ -20,5 +20,7 @@ public class ArticuloFunerarioResponse {
 
 	private Integer idCategoria;
 	
+	private Integer idProveedor;
+	
 	private String grupo;
 }

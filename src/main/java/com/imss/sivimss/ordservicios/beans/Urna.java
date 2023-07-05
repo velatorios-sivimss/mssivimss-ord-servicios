@@ -47,7 +47,7 @@ public class Urna {
 		.where("SDCP.IND_ACTIVO=1");
 		
 		selectQueryUtilArticulo.select("STA.ID_ARTICULO AS idArticulo","STI.ID_INVE_ARTICULO AS idInventario","CONCAT(STI.FOLIO_ARTICULO,'-',STA.DES_MODELO_ARTICULO,' $',SCA.MON_PRECIO) AS nombreArticulo","SCA.MON_PRECIO AS precio",
-				"STA.ID_CATEGORIA_ARTICULO AS idCategoria",
+				"STA.ID_CATEGORIA_ARTICULO AS idCategoria","SC.ID_PROVEEDOR AS idProveedor",
 				"STCA.DES_CATEGORIA_ARTICULO AS grupo")
 		.from("SVT_INVENTARIO_ARTICULO STI")
 		.innerJoin("SVT_ARTICULO STA", "STI.ID_ARTICULO = STA.ID_ARTICULO")
