@@ -36,22 +36,31 @@ public class Finado {
     			if (rs.next()) {
     				finadoRequest.setIdPersona(rs.getInt(1));
     			} 
-            }else {
-            	if (finadoRequest.getIdPersona()!=null || finadoRequest.getIdPersona()>0) {
-					statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
-						Statement.RETURN_GENERATED_KEYS);
-				}
-            	
-            	
-            }
-    	
-    		if (Objects.nonNull(finadoRequest.getCp())) {
-				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+    			statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 				rs=statement.getGeneratedKeys();
 				if (rs.next()) {
     		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
 				}
-			}
+            }else {
+            	if (finadoRequest.getIdPersona()!=null || finadoRequest.getIdPersona()>0) {
+					statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				    if (Objects.nonNull(finadoRequest.getCp())) {
+		    			if (finadoRequest.getCp().getIdDomicilio()==null) {
+		    				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+							rs=statement.getGeneratedKeys();
+							if (rs.next()) {
+			    		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
+							}
+		    				
+						}else {
+							statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+						}		
+					}
+				}	
+            }
+    	
+    		
     		
     	
 			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,ordenServcio.getIdOrdenServicio(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
