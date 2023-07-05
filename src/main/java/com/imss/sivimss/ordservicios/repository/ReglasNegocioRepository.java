@@ -187,14 +187,24 @@ public class ReglasNegocioRepository {
 	// insertar finado
 	public String insertarFinado(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_FINADO");
-		q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
+		if (finadoRequest.getIdPersona()!=null || finadoRequest.getIdPersona()>0) {
+			q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
+		}else {
+			q.agregarParametroValues("ID_PERSONA", "NULL");
+		}
+		
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
 		q.agregarParametroValues("DES_EXTREMIDAD", "'" + finadoRequest.getExtremidad() + "'");
 		q.agregarParametroValues("DES_OBITO", "'" + finadoRequest.getEsobito() + "'");
 		q.agregarParametroValues("CVE_MATRICULA", "'" + finadoRequest.getMatricula() + "'");
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
-		q.agregarParametroValues(ID_DOMICILIO, "" + finadoRequest.getCp().getIdDomicilio() + "");
+		if (finadoRequest.getCp()==null) {
+			q.agregarParametroValues(ID_DOMICILIO, "NULL");
+		}else {
+		    q.agregarParametroValues(ID_DOMICILIO, "" + finadoRequest.getCp().getIdDomicilio() + "");
+		}
+		
 		q.agregarParametroValues("FEC_DECESO", "'" + finadoRequest.getFechaDeceso() + "'");
 		q.agregarParametroValues("DES_CAUSA_DECESO", "'" + finadoRequest.getCausaDeceso() + "'");
 		q.agregarParametroValues("DES_LUGAR_DECESO", "'" + finadoRequest.getLugarDeceso() + "'");

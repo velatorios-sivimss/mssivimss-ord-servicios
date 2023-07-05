@@ -107,4 +107,3 @@ formato_fecha: ${msit_FORMATO_FECHA}
 ruta-log: ${msit_RUTA_LOG}
 tipoHoraMinuto:  ${msit_HORA_MINUTO}
 totalHoraMinuto: ${mist_TOTAL_HORA_MINUTO}
-
