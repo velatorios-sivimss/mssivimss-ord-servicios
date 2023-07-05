@@ -154,7 +154,7 @@ public class OrdenGuardar {
         
         //finado
         if (ordenesServicioRequest.getFinado()!=null) {
-			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
 		}
         
         //caracteristicas presupuesto
