@@ -92,6 +92,7 @@ public class OrdenGuardar {
 			UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 			String datosJson=datosRequest.getDatos().get(AppConstantes.DATOS).toString();
 			OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
+			ordenesServicioRequest.setIdVelatorio(usuario.getIdVelatorio());
 			switch (ordenesServicioRequest.getFinado().getIdTipoOrden()) {
 			case 1:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "servicioInmediato", AppConstantes.ALTA, authentication);
