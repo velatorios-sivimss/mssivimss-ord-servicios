@@ -233,8 +233,14 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_PAQUETE", "" + caracteristicasPaqueteRequest.getIdPaquete() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
-		q.agregarParametroValues("IND_OTORGAMIENTO",
+		if (caracteristicasPaqueteRequest.getOtorgamiento()==null) {
+			q.agregarParametroValues("IND_OTORGAMIENTO",
+					"NULL");
+		}else {
+			q.agregarParametroValues("IND_OTORGAMIENTO",
 				"" + Integer.parseInt(caracteristicasPaqueteRequest.getOtorgamiento()) + "");
+		}
+		
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
@@ -367,14 +373,14 @@ public class ReglasNegocioRepository {
 	public String insertarInformacionServicio(InformacionServicioRequest informacionServicioRequest,
 			Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_INFORMACION_SERVICIO");
-		q.agregarParametroValues("FEC_CORTEJO", "'" + informacionServicioRequest.getFechaCortejo() + "'");
-		q.agregarParametroValues("TIM_HORA_CORTEJO", "'" + informacionServicioRequest.getHoraCortejo() + "'");
-		q.agregarParametroValues("FEC_RECOGER", "'" + informacionServicioRequest.getFechaRecoger() + "'");
-		q.agregarParametroValues("TIM_HORA_RECOGER", "'" + informacionServicioRequest.getHoraRecoger() + "'");
+		q.agregarParametroValues("FEC_CORTEJO", setValor(informacionServicioRequest.getFechaCortejo()));
+		q.agregarParametroValues("TIM_HORA_CORTEJO", setValor(informacionServicioRequest.getHoraCortejo()));
+		q.agregarParametroValues("FEC_RECOGER", setValor(informacionServicioRequest.getFechaRecoger()));
+		q.agregarParametroValues("TIM_HORA_RECOGER", setValor(informacionServicioRequest.getHoraRecoger()));
 		q.agregarParametroValues("ID_PANTEON", "" + informacionServicioRequest.getIdPanteon() + "");
 		q.agregarParametroValues("ID_SALA", "" + informacionServicioRequest.getIdSala() + "");
-		q.agregarParametroValues("FEC_CREMACION", "'" + informacionServicioRequest.getFechaCremacion() + "'");
-		q.agregarParametroValues("TIM_HORA_CREMACION", "'" + informacionServicioRequest.getHoraCremacion() + "'");
+		q.agregarParametroValues("FEC_CREMACION", setValor(informacionServicioRequest.getFechaCremacion()) );
+		q.agregarParametroValues("TIM_HORA_CREMACION", setValor(informacionServicioRequest.getHoraCremacion()));
 		q.agregarParametroValues("ID_PROMOTORES", "" + informacionServicioRequest.getIdPromotor());
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
@@ -395,10 +401,10 @@ public class ReglasNegocioRepository {
 			q.agregarParametroValues(ID_DOMICILIO, "" + informacionServicioRequest.getCp().getIdDomicilio() + "");
 		}
 		
-		q.agregarParametroValues("FEC_INSTALACION", "'" + informacionServicioRequest.getFechaInstalacion() + "'");
-		q.agregarParametroValues("TIM_HORA_INSTALACION", "'" + informacionServicioRequest.getHoraInstalacion() + "'");
-		q.agregarParametroValues("FEC_VELACION", "'" + informacionServicioRequest.getFechaVelacion() + "'");
-		q.agregarParametroValues("TIM_HORA_VELACION", "'" + informacionServicioRequest.getHoraVelacion() + "'");
+		q.agregarParametroValues("FEC_INSTALACION", setValor(informacionServicioRequest.getFechaInstalacion()));
+		q.agregarParametroValues("TIM_HORA_INSTALACION", setValor(informacionServicioRequest.getHoraInstalacion()));
+		q.agregarParametroValues("FEC_VELACION", setValor(informacionServicioRequest.getFechaVelacion()));
+		q.agregarParametroValues("TIM_HORA_VELACION", setValor(informacionServicioRequest.getHoraVelacion()));
 		q.agregarParametroValues("ID_CAPILLA", "" + informacionServicioRequest.getIdCapilla() + "");
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", "" + idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
@@ -1050,5 +1056,13 @@ public class ReglasNegocioRepository {
 						query = selectQueryUtilTrasladoServicio.build();
 						log.info(query);
 						return query;
+		}
+		
+		private String setValor(String valor) {
+			if (valor==null || valor.equals("")) {
+				return "NULL";
+			}else {
+				return "'"+valor+"'";
+			}
 		}
 }

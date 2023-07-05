@@ -160,12 +160,14 @@ public class OrdenGuardar {
         //caracteristicas presupuesto
         if (ordenesServicioRequest.getIdEstatus()==1) {
 			// temporales
-        	caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-        	
+        	if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
+        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	}
 		}else {
 			// buenas buenas
-        	caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-
+			if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
+        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+			}
 		}
         
         
@@ -228,12 +230,16 @@ public class OrdenGuardar {
         //caracteristicas presupuesto
         if (ordenesServicioRequest.getIdEstatus()==1) {
 			// temporales
-        	caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
+				caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	
+			}
         	
 		}else {
 			// buenas buenas
-        	caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
-
+			if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
+        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+			}
 		}
 
         // pago bitacora
