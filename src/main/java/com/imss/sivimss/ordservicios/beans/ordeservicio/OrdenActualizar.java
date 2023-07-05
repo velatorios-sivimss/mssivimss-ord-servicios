@@ -741,7 +741,7 @@ public class OrdenActualizar {
 
 		// finado
 		if (ordenesServicioRequest.getFinado() != null) {
-			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
+			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
 		}
 

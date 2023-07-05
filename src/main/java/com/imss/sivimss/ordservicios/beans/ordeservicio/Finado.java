@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
+import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 
 @Service
@@ -21,12 +22,12 @@ public class Finado {
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
 	
-	public Integer insertarFinado(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
+	public Integer insertarFinado(FinadoRequest finadoRequest, OrdenesServicioRequest ordenServcio, Integer idUsuarioAlta, Connection connection) throws SQLException {
 		
 		try {
 			statement = connection.createStatement();
 			
-    		if (finadoRequest.getIdPersona()==null) {
+    		if (finadoRequest.getIdPersona()==null && (ordenServcio.getFinado().getExtremidad()!=null || !ordenServcio.getFinado().getExtremidad().equals(""))) {
         		statement.executeUpdate(reglasNegocioRepository.insertarPersona(finadoRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
     			rs=statement.getGeneratedKeys();
     			if (rs.next()) {
@@ -43,7 +44,7 @@ public class Finado {
     		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
     		}
     	
-			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,ordenServcio.getIdOrdenServicio(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
     		if (rs.next()) {
     			return rs.getInt(1);
