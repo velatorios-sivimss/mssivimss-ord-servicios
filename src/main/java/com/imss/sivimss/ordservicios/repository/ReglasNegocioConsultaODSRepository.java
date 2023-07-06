@@ -283,86 +283,21 @@ public class ReglasNegocioConsultaODSRepository {
 	}
 	// Bloque Generacion Reportes
 	public String generaReporteConsultaODS(ReporteDto reporteDto) {
-		String  condicion = "";
-		if (reporteDto.getIdVelatorio() != null) {
-			condicion = "WHERE sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
-			if (reporteDto.getIdOds() != null) {
-				condicion = condicion + " AND sos.ID_ORDEN_SERVICIo = " + reporteDto.getIdOds();
-			}
-			if (reporteDto.getIdContratante() != null) {
-				condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
-			}
-			if (reporteDto.getIdFinado() != null) {
-				condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
-			}
-			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
-			}
-			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-			}
-			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
-			}
-		} else if (reporteDto.getIdOds() != null || reporteDto.getIdOrdenServicio() != null) {
-			condicion = "WHERE sos.ID_ORDEN_SERVICIO = " + ((reporteDto.getIdOds()!=null) ? reporteDto.getIdOds(): reporteDto.getIdOrdenServicio()) ;
-			if (reporteDto.getIdContratante() != null) {
-				condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
-			}
-			if (reporteDto.getIdFinado() != null) {
-				condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
-			}
-			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
-			}
-			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-			}
-			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
-			}
-		} else if (reporteDto.getIdContratante() != null) {
-			condicion = "WHERE sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
-			if (reporteDto.getIdFinado() != null) {
-				condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
-			}
-			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
-			}
-			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-			}
-			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
-			}
-		} else if (reporteDto.getIdFinado() != null) {
-			condicion = "WHERE sf.ID_FINADO = " + reporteDto.getIdFinado();
-			if (reporteDto.getIdTipoODS() != null) {
-				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
-			}
-			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-			}
-			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
-			}
-		} else if (reporteDto.getIdTipoODS() != null) {
-			condicion = "WHERE stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
-			if (reporteDto.getIdUnidadMedica() != null) {
-				condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-			}
-			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
-			}
-		} else if (reporteDto.getIdUnidadMedica() != null) {
-			condicion = "WHERE sum2.ID_UNIDAD_MEDICA = " +	reporteDto.getIdUnidadMedica();
-
-			if (reporteDto.getIdConvenio() != null) {
-				condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
-			}
-		} else if (reporteDto.getIdConvenio() != null) {
-			condicion = "WHERE scp.ID_CONVENIO_PF = " + reporteDto.getIdConvenio();
-		}
+		String  condicion = " WHERE sos.ID_ESTATUS_ORDEN_SERVICIO IS NOT NULL ";
+		if (reporteDto.getIdVelatorio() != null)
+			condicion = condicion + " AND sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
+		if (reporteDto.getIdOds() != null) 
+			condicion = condicion + " AND sos.ID_ORDEN_SERVICIo = " + reporteDto.getIdOds();
+		if (reporteDto.getIdContratante() != null) 
+			condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
+		if (reporteDto.getIdFinado() != null) 
+			condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
+		if (reporteDto.getIdTipoODS() != null) 
+			condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
+		if (reporteDto.getIdUnidadMedica() != null) 
+			condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+		if (reporteDto.getIdConvenio() != null) 
+			condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
 		log.info(condicion);
 		return condicion;
 	}
