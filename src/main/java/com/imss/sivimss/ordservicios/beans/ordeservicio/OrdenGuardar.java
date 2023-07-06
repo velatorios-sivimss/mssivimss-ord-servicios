@@ -361,7 +361,7 @@ public class OrdenGuardar {
 			rs=statement.executeQuery(reglasNegocioRepository.consultarOrdenServicio(idOrdenServicio));
 	
 			if (rs.next()) {
-				ordenServicioResponse= new OrdenServicioResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				ordenServicioResponse= new OrdenServicioResponse(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),rs.getInt(5));
 				response= new Response<>(false, 200, EXITO, ConvertirGenerico.convertInstanceOfObject(ordenServicioResponse));
 				
 			}

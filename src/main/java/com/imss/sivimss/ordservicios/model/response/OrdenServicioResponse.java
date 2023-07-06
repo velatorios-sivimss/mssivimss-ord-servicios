@@ -22,4 +22,6 @@ public class OrdenServicioResponse {
 
 	private String finado;
 
+	private Integer idEstatus;
+
 }
