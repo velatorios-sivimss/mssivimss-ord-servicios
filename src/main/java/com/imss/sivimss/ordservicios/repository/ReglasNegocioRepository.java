@@ -737,7 +737,7 @@ public class ReglasNegocioRepository {
 				"STO.ID_CONTRATANTE_PF AS idContratantePf")
 		.from("SVC_ORDEN_SERVICIO STO")
 		.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
-		.and("ID_ESTATUS_ORDEN_SERVICIO = 1");
+		.and("ID_ESTATUS_ORDEN_SERVICIO not in (0)");
 		query = selectQueryUtil.build();
 		log.info(query);
 		return query;
