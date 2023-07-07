@@ -106,19 +106,25 @@ public class ContratoPFServiceImpl implements ContratoPFService{
 				contratoPfResponse.setVigencia(rs.getString(6)); 
 			}
 			
-			if (contratoPfResponse.getVigencia()!=null) {
-				LocalDate hoy = LocalDate.now();
-				
-				LocalDate vigenciaContrato = LocalDate.parse(contratoPfResponse.getVigencia());
-				
-				if (vigenciaContrato.isBefore(hoy)) {
-					response= new Response<>(false, 200, VIGENCIA);
+			if (contratoPfResponse.getIdTipoPrevision()!= null && contratoPfResponse.getIdTipoPrevision()==1) {
+				if (contratoPfResponse.getVigencia()!=null) {
+					LocalDate hoy = LocalDate.now();
+					
+					LocalDate vigenciaContrato = LocalDate.parse(contratoPfResponse.getVigencia());
+					
+					if (vigenciaContrato.isBefore(hoy)) {
+						response= new Response<>(false, 200, VIGENCIA);
+						return response;
+					}
+					
+					response= new Response<>(false, 200, AppConstantes.EXITO,ConvertirGenerico.convertInstanceOfObject(contratoPfResponse));
 					return response;
-				}
-				
+			    }
+			}else {
 				response= new Response<>(false, 200, AppConstantes.EXITO,ConvertirGenerico.convertInstanceOfObject(contratoPfResponse));
 				return response;
 			}
+			
 			response= new Response<>(false, 200, BUSQUEDA);
 			return response;
 		} catch (Exception e) {

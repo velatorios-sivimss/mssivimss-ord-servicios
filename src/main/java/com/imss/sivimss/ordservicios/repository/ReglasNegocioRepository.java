@@ -491,7 +491,7 @@ public class ReglasNegocioRepository {
 		selectQueryUtil.select("STO.ID_ORDEN_SERVICIO AS idOrdenServicio", "STO.CVE_FOLIO AS folio",
 				"IFNULL(CONCAT(SP.NOM_PERSONA,' ',SP.NOM_PRIMER_APELLIDO,' ',SP.NOM_SEGUNDO_APELLIDO),'') AS contratante",
 				"IFNULL(CONCAT(SP2.NOM_PERSONA,' ',SP2.NOM_PRIMER_APELLIDO,' ',SP2.NOM_SEGUNDO_APELLIDO),'') AS finado",
-				"STD.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus"
+				"STO.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus"
 				).from("SVC_ORDEN_SERVICIO STO")
 				.leftJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
 				.leftJoin("SVC_PERSONA SP", "SC.ID_PERSONA = SP.ID_PERSONA")
@@ -704,6 +704,18 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+	
+	// actualizar informacion servicio
+		public String desactivarInformacionServicio(Integer idOrdenServicio, Integer idUsuarioAlta) {
+			final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO ");
+			q.agregarParametroValues(IND_ACTIVO, "0");
+			q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
+			q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+			q.addWhere(ID_ORDEN_SERVICIO+"="+idOrdenServicio);
+			query = q.obtenerQueryActualizar();
+			log.info(query);
+			return query;
+		}
 
 	// actualizar informacion servicio velacion
 	public String actualizarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
@@ -724,6 +736,7 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 	
+	
 	///////////////////////consultas////////////////////////////
 	// consultar orden de servicio
 	public String consultarOrdenServicios(Integer idOrdenServicio) {
@@ -736,8 +749,7 @@ public class ReglasNegocioRepository {
 				"STO.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus",
 				"STO.ID_CONTRATANTE_PF AS idContratantePf")
 		.from("SVC_ORDEN_SERVICIO STO")
-		.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
-		.and("ID_ESTATUS_ORDEN_SERVICIO = 1");
+		.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio);
 		query = selectQueryUtil.build();
 		log.info(query);
 		return query;
