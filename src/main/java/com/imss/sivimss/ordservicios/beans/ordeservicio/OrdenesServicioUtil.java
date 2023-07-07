@@ -33,4 +33,12 @@ public class OrdenesServicioUtil {
 		return salida.toString();
 
 	}
+	
+	public static Integer setValor(Integer valor) {
+		if (valor==null || valor==0) {
+			return null;
+		}else {
+			return valor;
+		}
+	}
 }

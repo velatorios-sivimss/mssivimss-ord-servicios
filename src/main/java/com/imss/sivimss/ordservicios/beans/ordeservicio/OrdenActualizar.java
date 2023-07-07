@@ -195,11 +195,11 @@ public class OrdenActualizar {
 			if (rs.next()) {
 				servicioResponse.setIdOrdenServicio(rs.getInt(1));
 				servicioResponse.setFolio(rs.getString(2));
-				servicioResponse.setIdParentesco(rs.getInt(3));
+				servicioResponse.setIdParentesco(OrdenesServicioUtil.setValor(rs.getInt(3)));
 				servicioResponse.setIdVelatorio(rs.getInt(4));
-				servicioResponse.setIdOperador(rs.getInt(5));
+				servicioResponse.setIdOperador(OrdenesServicioUtil.setValor(rs.getInt(5)));
 				servicioResponse.setIdEstatus(rs.getInt(6));
-				servicioResponse.setIdContratantePf(rs.getInt(7));
+				servicioResponse.setIdContratantePf(OrdenesServicioUtil.setValor(rs.getInt(7)));
 				
 				// contratante
 				contratanteResponse=consultarContratante(ordenesServicioRequest,connection);
@@ -318,6 +318,7 @@ public class OrdenActualizar {
 			// finado
 			
 			if (rsc.next()) {
+				
 				finadoResponse= new FinadoResponse();
 				domicilioRequest= new DomicilioRequest();
 				finadoResponse.setIdFinado(rsc.getInt(1));
@@ -357,6 +358,8 @@ public class OrdenActualizar {
 				finadoResponse.setIdUnidadProcedencia(rsc.getString(34));
 				finadoResponse.setProcedenciaFinado(rsc.getString(35));
 				finadoResponse.setIdTipoPension(rsc.getInt(36));
+				finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
+				finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
 
 				
 		}
@@ -586,11 +589,11 @@ public class OrdenActualizar {
 				informacionServicioResponse.setHoraCortejo(rsc.getString(3));
 				informacionServicioResponse.setFechaRecoger(rsc.getString(4));
 				informacionServicioResponse.setHoraRecoger(rsc.getString(5));
-				informacionServicioResponse.setIdPanteon(rsc.getInt(6));
-				informacionServicioResponse.setIdSala(rsc.getInt(7));
+				informacionServicioResponse.setIdPanteon(OrdenesServicioUtil.setValor(rsc.getInt(6)));
+				informacionServicioResponse.setIdSala(OrdenesServicioUtil.setValor(rsc.getInt(7)));
 				informacionServicioResponse.setFechaCremacion(rsc.getString(8));
 				informacionServicioResponse.setHoraCremacion(rsc.getString(9));
-				informacionServicioResponse.setIdPromotor(rsc.getInt(10));
+				informacionServicioResponse.setIdPromotor(OrdenesServicioUtil.setValor(rsc.getInt(10)));
 				
 				InformacionServicioVelacionResponse informacionServicioVelacionResponse=null;
 				
@@ -605,7 +608,7 @@ public class OrdenActualizar {
 					informacionServicioVelacionResponse.setHoraInstalacion(rscs.getString(3));
 					informacionServicioVelacionResponse.setFechaVelacion(rscs.getString(4));
 					informacionServicioVelacionResponse.setHoraVelacion(rscs.getString(5));
-					informacionServicioVelacionResponse.setIdCapilla(rscs.getInt(6));
+					informacionServicioVelacionResponse.setIdCapilla(OrdenesServicioUtil.setValor(rscs.getInt(6)));
 					domicilioRequest.setIdDomicilio(rscs.getInt(7));
 					domicilioRequest.setDesCalle(rscs.getString(8));
 					domicilioRequest.setNumExterior(rscs.getString(9));

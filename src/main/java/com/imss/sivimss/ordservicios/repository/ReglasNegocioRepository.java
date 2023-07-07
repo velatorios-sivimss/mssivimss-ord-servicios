@@ -2,6 +2,7 @@ package com.imss.sivimss.ordservicios.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.beans.ordeservicio.Persona;
@@ -36,6 +37,9 @@ public class ReglasNegocioRepository {
 	private static final String ID_ORDEN_SERVICIO = "ID_ORDEN_SERVICIO";
 
 	private static final String CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP()";
+	
+	@Value("${formato_fecha}")
+	private String fecha;
 
 	private static final Logger log = LoggerFactory.getLogger(ReglasNegocioRepository.class);
 
@@ -49,7 +53,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPE.CVE_NSS,'') AS nss", "IFNULL(SPE.NOM_PERSONA,'') AS nombre",
 						"IFNULL(SPE.NOM_PRIMER_APELLIDO,'') AS primerApellido",
 						"IFNULL(SPE.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido", "IFNULL(SPE.NUM_SEXO,'') AS sexo",
-						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo", "IFNULL(SPE .FEC_NAC,'') AS fechaNac",
+						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo", "DATE_FORMAT(IFNULL(SPE .FEC_NAC,''),'"+fecha+"') AS fechaNac",
 						"IFNULL(SVP.ID_PAIS,'') AS idPais", "IFNULL(SVE.ID_ESTADO,'') AS idEstado",
 						"IFNULL(SPE.DES_TELEFONO,'') AS telefono", "IFNULL(SPE.DES_CORREO,'') AS correo",
 						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
@@ -74,7 +78,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPE.CVE_NSS,'') AS nss", "IFNULL(SPE.NOM_PERSONA,'') AS nombre",
 						"IFNULL(SPE.NOM_PRIMER_APELLIDO,'') AS primerApellido",
 						"IFNULL(SPE.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido", "IFNULL(SPE.NUM_SEXO,'') AS sexo",
-						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo", "IFNULL(SPE .FEC_NAC,'') AS fechaNac",
+						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo",  "DATE_FORMAT(IFNULL(SPE .FEC_NAC,''),'"+fecha+"') AS fechaNac",
 						"IFNULL(SVP.ID_PAIS,'') AS idPais", "IFNULL(SVE.ID_ESTADO,'') AS idEstado",
 						"IFNULL(SPE.DES_TELEFONO,'') AS telefono", "IFNULL(SPE.DES_CORREO,'') AS correo",
 						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
@@ -118,19 +122,19 @@ public class ReglasNegocioRepository {
 	// insertar persona
 	public String insertarPersona(Persona personaRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_PERSONA");
-		q.agregarParametroValues("CVE_RFC", "'" + personaRequest.getRfc() + "'");
-		q.agregarParametroValues("CVE_CURP", "'" + personaRequest.getCurp() + "'");
+		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
+		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
 		q.agregarParametroValues("CVE_NSS", "'" + personaRequest.getNss() + "'");
-		q.agregarParametroValues("NOM_PERSONA", "'" + personaRequest.getNomPersona() + "'");
-		q.agregarParametroValues("NOM_PRIMER_APELLIDO", "'" + personaRequest.getPrimerApellido() + "'");
-		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", "'" + personaRequest.getSegundoApellido() + "'");
-		q.agregarParametroValues("NUM_SEXO", "" + personaRequest.getSexo() + "");
-		q.agregarParametroValues("DES_OTRO_SEXO", "'" + personaRequest.getOtroSexo() + "'");
-		q.agregarParametroValues("FEC_NAC", "'" + personaRequest.getFechaNac() + "'");
-		q.agregarParametroValues("ID_PAIS", "" + personaRequest.getIdPais() + "");
-		q.agregarParametroValues("ID_ESTADO", "" + personaRequest.getIdEstado() + "");
-		q.agregarParametroValues("DES_TELEFONO", "'" + personaRequest.getTelefono() + "'");
-		q.agregarParametroValues("DES_CORREO", "'" + personaRequest.getCorreo() + "'");
+		q.agregarParametroValues("NOM_PERSONA", setValor(personaRequest.getNomPersona()));
+		q.agregarParametroValues("NOM_PRIMER_APELLIDO", setValor(personaRequest.getPrimerApellido()));
+		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", setValor(personaRequest.getSegundoApellido()));
+		q.agregarParametroValues("NUM_SEXO", "" + setValor(personaRequest.getSexo()));
+		q.agregarParametroValues("DES_OTRO_SEXO", setValor(personaRequest.getOtroSexo()));
+		q.agregarParametroValues("FEC_NAC", setValor(personaRequest.getFechaNac()));
+		q.agregarParametroValues("ID_PAIS", setValor(personaRequest.getIdPais()));
+		q.agregarParametroValues("ID_ESTADO", setValor(personaRequest.getIdEstado()));
+		q.agregarParametroValues("DES_TELEFONO", setValor(personaRequest.getTelefono()));
+		q.agregarParametroValues("DES_CORREO", setValor(personaRequest.getCorreo()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
@@ -142,7 +146,7 @@ public class ReglasNegocioRepository {
 	public String insertarContratante(ContratanteRequest contratanteRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_CONTRATANTE");
 		q.agregarParametroValues("ID_PERSONA", "" + contratanteRequest.getIdPersona() + "");
-		q.agregarParametroValues("CVE_MATRICULA", "'" + contratanteRequest.getMatricula() + "'");
+		q.agregarParametroValues("CVE_MATRICULA", setValor(contratanteRequest.getMatricula()));
 		q.agregarParametroValues(ID_DOMICILIO, "" + contratanteRequest.getCp().getIdDomicilio() + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
@@ -153,13 +157,13 @@ public class ReglasNegocioRepository {
 
 	public String insertarDomicilio(DomicilioRequest domicilioRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DOMICILIO");
-		q.agregarParametroValues("DES_CALLE", "'" + domicilioRequest.getDesCalle() + "'");
-		q.agregarParametroValues("NUM_EXTERIOR", "'" + domicilioRequest.getNumExterior() + "'");
-		q.agregarParametroValues("NUM_INTERIOR", "'" + domicilioRequest.getNumInterior() + "'");
-		q.agregarParametroValues("DES_CP", "'" + domicilioRequest.getCodigoPostal() + "'");
-		q.agregarParametroValues("DES_COLONIA", "'" + domicilioRequest.getDesColonia() + "'");
-		q.agregarParametroValues("DES_MUNICIPIO", "'" + domicilioRequest.getDesMunicipio() + "'");
-		q.agregarParametroValues("DES_ESTADO", "'" + domicilioRequest.getDesEstado() + "'");
+		q.agregarParametroValues("DES_CALLE", setValor(domicilioRequest.getDesCalle()));
+		q.agregarParametroValues("NUM_EXTERIOR", setValor(domicilioRequest.getNumExterior()));
+		q.agregarParametroValues("NUM_INTERIOR", setValor(domicilioRequest.getNumInterior()));
+		q.agregarParametroValues("DES_CP", setValor(domicilioRequest.getCodigoPostal()));
+		q.agregarParametroValues("DES_COLONIA", setValor( domicilioRequest.getDesColonia()));
+		q.agregarParametroValues("DES_MUNICIPIO", setValor( domicilioRequest.getDesMunicipio()));
+		q.agregarParametroValues("DES_ESTADO", setValor( domicilioRequest.getDesEstado()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
@@ -171,7 +175,7 @@ public class ReglasNegocioRepository {
 	public String insertarOrdenServicio(String folio, Integer idContratante, Integer idParentesco, Integer idVelatorio,
 			Integer idContratantePf, Integer idEstatus, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_ORDEN_SERVICIO");
-		q.agregarParametroValues("CVE_FOLIO", "'" + folio + "'");
+		q.agregarParametroValues("CVE_FOLIO", setValor( folio ));
 		q.agregarParametroValues("ID_CONTRATANTE", "" + idContratante + "");
 		q.agregarParametroValues("ID_PARENTESCO", "" + idParentesco + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + idVelatorio + "");
@@ -194,9 +198,9 @@ public class ReglasNegocioRepository {
 		}
 		
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
-		q.agregarParametroValues("DES_EXTREMIDAD", "'" + finadoRequest.getExtremidad() + "'");
-		q.agregarParametroValues("DES_OBITO", "'" + finadoRequest.getEsobito() + "'");
-		q.agregarParametroValues("CVE_MATRICULA", "'" + finadoRequest.getMatricula() + "'");
+		q.agregarParametroValues("DES_EXTREMIDAD", setValor( finadoRequest.getExtremidad()));
+		q.agregarParametroValues("DES_OBITO", setValor( finadoRequest.getEsobito()));
+		q.agregarParametroValues("CVE_MATRICULA", setValor( finadoRequest.getMatricula()));
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
 		if (finadoRequest.getCp()==null) {
@@ -206,12 +210,12 @@ public class ReglasNegocioRepository {
 		}
 		
 		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
-		q.agregarParametroValues("DES_CAUSA_DECESO", "'" + finadoRequest.getCausaDeceso() + "'");
-		q.agregarParametroValues("DES_LUGAR_DECESO", "'" + finadoRequest.getLugarDeceso() + "'");
+		q.agregarParametroValues("DES_CAUSA_DECESO", setValor( finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("DES_LUGAR_DECESO", setValor( finadoRequest.getLugarDeceso()));
 		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
-		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", "'" + finadoRequest.getProcedenciaFinado() + "'");
+		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor( finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
@@ -266,7 +270,7 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("INSERT INTO " + from);
 		q.agregarParametroValues("ID_ARTICULO", "" + detalleCaracteristicasPaqueteRequest.getIdArticulo() + "");
 		q.agregarParametroValues("ID_SERVICIO", "" + detalleCaracteristicasPaqueteRequest.getIdServicio() + "");
-		q.agregarParametroValues("DES_MOTIVO", "'" + detalleCaracteristicasPaqueteRequest.getDesmotivo() + "'");
+		q.agregarParametroValues("DES_MOTIVO", setValor( detalleCaracteristicasPaqueteRequest.getDesmotivo()));
 		q.agregarParametroValues(IND_ACTIVO, "" + detalleCaracteristicasPaqueteRequest.getActivo() + "");
 		q.agregarParametroValues("CAN_CANTIDAD", "" + detalleCaracteristicasPaqueteRequest.getCantidad() + "");
 		q.agregarParametroValues("IMP_IMPORTE", "" + detalleCaracteristicasPaqueteRequest.getImporteMonto() + "");
@@ -285,8 +289,8 @@ public class ReglasNegocioRepository {
 			CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPaqueteTrasladoRequest,
 			Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO " + from);
-		q.agregarParametroValues("DES_ORIGEN", "'" + detalleCaracteristicasPaqueteTrasladoRequest.getOrigen() + "'");
-		q.agregarParametroValues("DES_DESTINO", "'" + detalleCaracteristicasPaqueteTrasladoRequest.getDestino() + "'");
+		q.agregarParametroValues("DES_ORIGEN", setValor( detalleCaracteristicasPaqueteTrasladoRequest.getOrigen()));
+		q.agregarParametroValues("DES_DESTINO", setValor( detalleCaracteristicasPaqueteTrasladoRequest.getDestino()));
 		q.agregarParametroValues("LATITUD_INICIAL",
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getLatitudInicial() + "");
 		q.agregarParametroValues("LATITUD_FINAL",
@@ -317,9 +321,9 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
 		q.agregarParametroValues("DES_OBSERVACIONES",
-				"'" + caracteristicasPaquetePresupuestoRequest.getObservaciones() + "'");
+				setValor( caracteristicasPaquetePresupuestoRequest.getObservaciones()));
 		q.agregarParametroValues("DES_NOTAS_SERVICIO",
-				"'" + caracteristicasPaquetePresupuestoRequest.getNotasServicio() + "'");
+				setValor( caracteristicasPaquetePresupuestoRequest.getNotasServicio()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
@@ -358,9 +362,9 @@ public class ReglasNegocioRepository {
 			Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO " + from);
 		q.agregarParametroValues("DES_ORIGEN",
-				"'" + detalleCaracteristicasPresupuestoTrasladoRequest.getOrigen() + "'");
+				setValor( detalleCaracteristicasPresupuestoTrasladoRequest.getOrigen()));
 		q.agregarParametroValues("DES_DESTINO",
-				"'" + detalleCaracteristicasPresupuestoTrasladoRequest.getDestino() + "'");
+				setValor( detalleCaracteristicasPresupuestoTrasladoRequest.getDestino()));
 		q.agregarParametroValues("LATITUD_INICIAL",
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getLatitudInicial() + "");
 		q.agregarParametroValues("LATITUD_FINAL",
@@ -769,7 +773,7 @@ public class ReglasNegocioRepository {
 					"IFNULL(SPC.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
 					"IFNULL(SPC.NUM_SEXO,'') AS sexo",
 					"IFNULL(SPC.DES_OTRO_SEXO,'') AS otroSexo",
-					"SPC.FEC_NAC AS fechaNac",
+					"DATE_FORMAT(SPC.FEC_NAC,'"+fecha+"') AS fechaNac",
 					"(CASE WHEN SPC.ID_PAIS = NULL OR SPC.ID_PAIS = 119  THEN 1 ELSE 2 END) AS nacionalidad",
 					"SPC.ID_PAIS AS idPais",
 					"SPC.ID_ESTADO AS idEstado",
@@ -812,7 +816,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPF.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
 						"SPF.NUM_SEXO AS sexo",
 						"SPF.DES_OTRO_SEXO AS otroSexo",
-						"SPF.FEC_NAC AS fechaNac",
+						"DATE_FORMAT(SPF.FEC_NAC,'"+fecha+"') AS fechaNac",
 						"(CASE WHEN SPF.ID_PAIS = NULL OR SPF.ID_PAIS = 119 THEN 1 ELSE 2 END) AS nacionalidad",
 						"SPF.ID_PAIS AS idPais",
 						"SPF.ID_ESTADO AS idEstado",
@@ -826,7 +830,7 @@ public class ReglasNegocioRepository {
 						"SCD.DES_COLONIA AS desColonia",
 						"SCD.DES_MUNICIPIO AS desMunicipio",
 						"SCD.DES_ESTADO AS desEstado",
-						"DATE_FORMAT(STF.FEC_DECESO,'%Y-%m-%d') AS fechaDeceso",
+						"DATE_FORMAT(STF.FEC_DECESO,'"+fecha+"') AS fechaDeceso",
 						"STF.DES_CAUSA_DECESO AS causaDeceso",
 						"STF.DES_LUGAR_DECESO AS lugarDeceso",
 						"STF.TIM_HORA AS hora",
@@ -1035,13 +1039,13 @@ public class ReglasNegocioRepository {
 		public String consultarInformacionServicioOrdenServicios(Integer idOrdenServicio) {
 										SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
 										selectQueryUtilTrasladoServicio.select("SI.ID_INFORMACION_SERVICIO AS idInformacionServicio",
-												"DATE_FORMAT(SI.FEC_CORTEJO,'%Y-%m-%d') AS fechaCortejo",
+												"DATE_FORMAT(SI.FEC_CORTEJO,'"+fecha+"') AS fechaCortejo",
 												"SI.TIM_HORA_CORTEJO AS horaCortejo",
-												"DATE_FORMAT(SI.FEC_RECOGER,'%Y-%m-%d') AS fechaRecoger",
+												"DATE_FORMAT(SI.FEC_RECOGER,'"+fecha+"') AS fechaRecoger",
 												"SI.TIM_HORA_RECOGER AS horaRecoger",
 												"SI.ID_PANTEON AS idPanteon",
 												"SI.ID_SALA AS idSala",
-												"DATE_FORMAT(SI.FEC_CREMACION,'%Y-%m-%d') AS fechaCremacion",
+												"DATE_FORMAT(SI.FEC_CREMACION,'"+fecha+"') AS fechaCremacion",
 												"SI.TIM_HORA_CREMACION AS horaCremacion",
 												"SI.ID_PROMOTORES AS idPromotor")
 										.from("SVC_INFORMACION_SERVICIO SI ")
@@ -1059,9 +1063,9 @@ public class ReglasNegocioRepository {
 		public String consultarInformacionServicioVelacionOrdenServicios(Integer idInformacionServicio) {
 												SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
 												selectQueryUtilTrasladoServicio.select("SISV.ID_INFORMACION_SERVICIO_VELACION AS idInformacionServicioVelacion",
-														"DATE_FORMAT(SISV.FEC_INSTALACION ,'%Y-%m-%d') AS fechaInstalacion",
+														"DATE_FORMAT(SISV.FEC_INSTALACION ,'"+fecha+"') AS fechaInstalacion",
 														"SISV.TIM_HORA_INSTALACION AS horaInstalacion",
-														"DATE_FORMAT(SISV.FEC_VELACION,'%Y-%m-%d') AS fechaVelacion",
+														"DATE_FORMAT(SISV.FEC_VELACION,'"+fecha+"') AS fechaVelacion",
 														"SISV.TIM_HORA_VELACION AS horaVelacion",
 														"SISV.ID_CAPILLA AS idCapilla",
 														"SISV.ID_DOMICILIO AS idDomicilio",
@@ -1090,4 +1094,6 @@ public class ReglasNegocioRepository {
 				return "'"+valor+"'";
 			}
 		}
+		
+		
 }
