@@ -8,19 +8,14 @@ import java.sql.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.InformacionServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.InformacionServicioVelacionRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
-import com.imss.sivimss.ordservicios.util.LogUtil;
 
 
 
 @Service
 public class InformacionServicio {
-	
-	@Autowired
-	private LogUtil logUtil;
 	
 	private ResultSet rs;
 
@@ -85,11 +80,10 @@ public class InformacionServicio {
 	public void actualizarInformacionServicio(InformacionServicioRequest informacionServicioRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
 		try {
 			statement=connection.createStatement();
-			statement.executeUpdate(reglasNegocioRepository.actualizarInformacionServicio(informacionServicioRequest, idOrdenServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+
+			statement.executeUpdate(reglasNegocioRepository.desactivarInformacionServicio(idOrdenServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			
-			if (informacionServicioRequest.getInformacionServicioVelacion()!=null) {
-				actualizarInformacionVelacion(informacionServicioRequest.getInformacionServicioVelacion(), informacionServicioRequest.getIdInformacionServicio(), idUsuarioAlta, connection);
-			}
+			insertarInformacionServicio(informacionServicioRequest,idOrdenServicio,idUsuarioAlta,connection);
 			
 		} finally {
 			if (statement!=null) {
@@ -102,23 +96,4 @@ public class InformacionServicio {
 		}
 	}
 	
-	private void actualizarInformacionVelacion(InformacionServicioVelacionRequest informacionServicioVelacionRequest,Integer idInformacionServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
-		try {
-			statement=connection.createStatement();
-			statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(informacionServicioVelacionRequest.getCp(), idUsuarioAlta),
-					Statement.RETURN_GENERATED_KEYS);
-			
-			statement.executeUpdate(reglasNegocioRepository.actualizarInformacionServicioVelacion(informacionServicioVelacionRequest, idInformacionServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-			rs=statement.getGeneratedKeys();
-			
-		} finally {
-			if (statement!=null) {
-				statement.close();
-			}
-			
-			if (rs!=null) {
-				rs.close();
-			}
-		}
-	}
 }
