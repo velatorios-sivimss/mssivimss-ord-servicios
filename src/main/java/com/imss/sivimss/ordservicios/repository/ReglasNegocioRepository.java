@@ -491,7 +491,8 @@ public class ReglasNegocioRepository {
 		selectQueryUtil.select("STO.ID_ORDEN_SERVICIO AS idOrdenServicio", "STO.CVE_FOLIO AS folio",
 				"IFNULL(CONCAT(SP.NOM_PERSONA,' ',SP.NOM_PRIMER_APELLIDO,' ',SP.NOM_SEGUNDO_APELLIDO),'') AS contratante",
 				"IFNULL(CONCAT(SP2.NOM_PERSONA,' ',SP2.NOM_PRIMER_APELLIDO,' ',SP2.NOM_SEGUNDO_APELLIDO),'') AS finado",
-				"STO.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus"
+				"STO.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus",
+				"STF.ID_TIPO_ORDEN AS idTipoOrdenServicio"
 				).from("SVC_ORDEN_SERVICIO STO")
 				.leftJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
 				.leftJoin("SVC_PERSONA SP", "SC.ID_PERSONA = SP.ID_PERSONA")
@@ -1044,7 +1045,8 @@ public class ReglasNegocioRepository {
 												"SI.TIM_HORA_CREMACION AS horaCremacion",
 												"SI.ID_PROMOTORES AS idPromotor")
 										.from("SVC_INFORMACION_SERVICIO SI ")
-										.where("SI.ID_ORDEN_SERVICIO = " + idOrdenServicio);
+										.where("SI.ID_ORDEN_SERVICIO = " + idOrdenServicio)
+										.and(IND_ACTIVO+"="+1);
 										
 									
 								

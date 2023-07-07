@@ -1019,45 +1019,49 @@ public class OrdenActualizar {
 	private void desactivarRegistrosTemp(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,
 			Authentication authentication) throws SQLException {
 		consultarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio());
+		Statement statementc=null;
 		try {
-			statement = connection.createStatement();
-			statement.executeUpdate(reglasNegocioRepository
+			
+			statementc = connection.createStatement();
+			statementc.executeUpdate(reglasNegocioRepository
 					.actualizarCaracteristicasPaqueteTemporal(ordenesServicioRequest.getIdOrdenServicio()));
-			statement.executeUpdate(reglasNegocioRepository
+			statementc.executeUpdate(reglasNegocioRepository
 					.actualizarCaracteristicasPaqueteDetalleTemp(ordenesServicioRequest.getIdOrdenServicio()));
-			statement.executeUpdate(reglasNegocioRepository
+			statementc.executeUpdate(reglasNegocioRepository
 					.actualizarCaracteristicasPresupuestoTemporal(ordenesServicioRequest.getIdOrdenServicio()));
-			statement.executeUpdate(reglasNegocioRepository
+			statementc.executeUpdate(reglasNegocioRepository
 					.actualizarCaracteristicasPresuestoDetalleTemp(ordenesServicioRequest.getIdOrdenServicio()));
-			statement.executeUpdate(reglasNegocioRepository
+			statementc.executeUpdate(reglasNegocioRepository
 					.actualizarDonacionTemporal(ordenesServicioRequest.getIdOrdenServicio()));
+			statementc.executeUpdate(reglasNegocioRepository
+					.desactivarInformacionServicio(ordenesServicioRequest.getIdOrdenServicio(),usuario.getIdUsuario()));
 		} finally {
-			if (statement != null) {
-				statement.close();
+			if (statementc != null) {
+				statementc.close();
 			}
-			if (rs != null) {
-				rs.close();
-			}
+			
 		}
 
 	}
 
 	public void consultarEstatusOrden(Integer idOrdenServicio) throws SQLException {
+		Statement statementc=null;
+		ResultSet rsc=null;
 		try {
 
-			statement = connection.createStatement();
-			rs = statement.executeQuery(reglasNegocioRepository.consultarOrdenServicio(idOrdenServicio));
+			statementc = connection.createStatement();
+			rsc = statementc.executeQuery(reglasNegocioRepository.consultarOrdenServicio(idOrdenServicio));
 
-			if (rs.next()) {
-				idEstatusTipoOrden = rs.getInt("idEstatusOrdenServicio");
+			if (rsc.next()) {
+				idEstatusTipoOrden = rsc.getInt("idTipoOrdenServicio");
 			}
 		
 		} finally {
-			if (statement != null) {
-				statement.close();
+			if (statementc != null) {
+				statementc.close();
 			}
-			if (rs != null) {
-				rs.close();
+			if (rsc != null) {
+				rsc.close();
 			}
 		}
 	}
