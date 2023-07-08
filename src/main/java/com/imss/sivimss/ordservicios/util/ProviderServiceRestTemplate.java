@@ -44,12 +44,12 @@ public class ProviderServiceRestTemplate {
 		}
 	}
 
-	public Response<Object> consumirServicioReportes(Map<String, Object> dato,
-												String url, Authentication authentication) throws IOException {
+	public Response<Object> consumirServicioFlujo(Map<String, Object> dato, String url, Authentication authentication)
+			throws IOException {
 		try {
-			return (Response<Object>) restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
-					new DatosReporteDTO(dato),
-					jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
+			return restTemplateUtil.sendPostRequestByteArrayToken(url,
+					new EnviarDatosRequest(dato), jwtTokenProvider.createTokenFlujo((String) authentication.getPrincipal()),
+					Response.class);
 		} catch (IOException exception) {
 			log.error(ERROR_RECUPERAR_INFORMACION);
 			throw exception;
