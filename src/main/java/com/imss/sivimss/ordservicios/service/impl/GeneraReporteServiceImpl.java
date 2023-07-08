@@ -132,8 +132,6 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		envioDatos.put("tipoReporte", contratoServicioInmediatoRequest.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", contratoServicioInmediato);
 		
-		log.info("generaReporteContratoServicioInmediato: " + envioDatos.toString());
-		
 		log.info(" TERMINO - generaReporteContratoServicioInmediato");
 		
 		return envioDatos;
