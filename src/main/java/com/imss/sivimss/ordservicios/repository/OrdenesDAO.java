@@ -126,10 +126,4 @@ public class OrdenesDAO {
 	public Response<Object> generaReporteOrdenServicio(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.generarDocumentoOrdenServicio(datos, auth);
 	}
-	public Response<Object> generaReporteDonacionSalida(DatosRequest datos, Authentication auth) throws IOException{
-		return ordenConsultar.generarDocumentoDonacionSalida(datos, auth);
-	}
-	public Response<Object> generaReporteDonacionEntrada(DatosRequest datos, Authentication auth) throws IOException{
-		return ordenConsultar.generarDocumentoDonacionEntrada(datos, auth);
-	}
 }

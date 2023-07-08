@@ -57,7 +57,6 @@ endpoints:
    ms-reportes: ${msit_REPORTES_GENERALES}
    renapo: ${msit_RENAPO}
    ms-procesos: ${msit_PROCESOS}
-   ms-donaciones: "http://localhost:8064/mssivimss-donaciones/v1/consultar"
    
 reporte: 
   contrato_servicio_inmediato: ${msit_CONTRATO_SERVICIO_INMEDIATO}

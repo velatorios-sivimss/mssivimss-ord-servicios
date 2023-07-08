@@ -55,17 +55,6 @@ public class ProviderServiceRestTemplate {
 			throw exception;
 		}
 	}
-	public Response<Object> consumirServicioReportes(Map<String, Object> dato,
-												String url, Authentication authentication) throws IOException {
-		try {
-			return (Response<Object>) restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
-					new DatosReporteDTO(dato),
-					jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
-		} catch (IOException exception) {
-			log.error(ERROR_RECUPERAR_INFORMACION);
-			throw exception;
-		}
-	}
 	
 	public Response<Object> consumirServicioExternoGet(String url)
 			throws IOException {
