@@ -124,7 +124,7 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_PERSONA");
 		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
 		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
-		q.agregarParametroValues("CVE_NSS", "'" + personaRequest.getNss() + "'");
+		q.agregarParametroValues("CVE_NSS", setValor(personaRequest.getNss().toString()));
 		q.agregarParametroValues("NOM_PERSONA", setValor(personaRequest.getNomPersona()));
 		q.agregarParametroValues("NOM_PRIMER_APELLIDO", setValor(personaRequest.getPrimerApellido()));
 		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", setValor(personaRequest.getSegundoApellido()));
