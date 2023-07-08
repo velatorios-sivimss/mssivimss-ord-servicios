@@ -56,6 +56,9 @@ public class OrdenConsultar {
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
+
+	@Value("${endpoints.ms-donaciones}")
+	private String urlReportesDonaciones;
 	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
@@ -94,6 +97,8 @@ public class OrdenConsultar {
 	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
+	private static final String DONACION_SALIDA = "/generarDocumentoSalida";
+	private static final String DONACION_ENTRADA = "/generarDocumentoEntrada";
 	
 	public Response<Object>buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
@@ -545,5 +550,5 @@ public class OrdenConsultar {
 			throw new IOException("52", e.getCause());
 		}	
 	}
-	
+
 }

@@ -815,7 +815,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(STF.CVE_MATRICULA,'') AS matricula",
 						"IFNULL(SPF.CVE_RFC,'') AS rfc",
 						"IFNULL(SPF.CVE_CURP,'') AS curp",
-						"IFNULL(SPF.CVE_NSS,'') AS nss",
+						"IFNULL(SPF.CVE_NSS,0) AS nss",
 						"IFNULL(SPF.NOM_PERSONA,'') AS nomPersona",
 						"IFNULL(SPF.NOM_PRIMER_APELLIDO,'') AS primerApellido",
 						"IFNULL(SPF.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
