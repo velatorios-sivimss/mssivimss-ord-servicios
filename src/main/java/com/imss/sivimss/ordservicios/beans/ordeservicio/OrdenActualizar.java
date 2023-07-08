@@ -329,7 +329,7 @@ public class OrdenActualizar {
 				finadoResponse.setMatricula(rsc.getString(6));
 				finadoResponse.setRfc(rsc.getString(7));
 				finadoResponse.setCurp(rsc.getString(8));
-				finadoResponse.setNss(rsc.getInt(9));
+				finadoResponse.setNss(Integer.parseInt(rsc.getString(9).equals("null")?null:rsc.getString(9)));
 				finadoResponse.setNomPersona(rsc.getString(10));
 				finadoResponse.setPrimerApellido(rsc.getString(11));
 				finadoResponse.setSegundoApellido(rsc.getString(12));
