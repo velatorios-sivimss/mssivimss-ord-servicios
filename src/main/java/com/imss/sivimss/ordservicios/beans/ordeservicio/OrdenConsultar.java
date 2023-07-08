@@ -56,6 +56,9 @@ public class OrdenConsultar {
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
+
+	@Value("${endpoints.ms-donaciones}")
+	private String urlReportesDonaciones;
 	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
@@ -94,6 +97,8 @@ public class OrdenConsultar {
 	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
+	private static final String DONACION_SALIDA = "/generarDocumentoSalida";
+	private static final String DONACION_ENTRADA = "/generarDocumentoEntrada";
 	
 	public Response<Object>buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
@@ -536,6 +541,51 @@ public class OrdenConsultar {
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Orden servicio " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generarDocumentoOrdenServicio", GENERA_DOCUMENTO, authentication);
 			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
+	}
+
+	public Response<Object> generarDocumentoDonacionSalida(DatosRequest request, Authentication authentication) throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		Map<String, Object> envioDatos = new HashMap<>();
+		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String str = "{\"idSalidaDona\":" + reporteDto.getIdSalidaDona() + ",\"" + TIPO_REPORTE + "\":\"" + reporteDto.getTipoReporte() + "\"}";
+		envioDatos.put("datos",str);
+		try {
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + DONACION_SALIDA);
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Donacion Salida " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarDocumentoDonacionSalida", GENERA_DOCUMENTO, authentication);
+			response = providerServiceRestTemplate.consumirServicio(envioDatos, urlReportesDonaciones + DONACION_SALIDA, authentication);
+		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
+	}
+	public Response<Object> generarDocumentoDonacionEntrada(DatosRequest request, Authentication authentication) throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		Map<String, Object> envioDatos = new HashMap<>();
+		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String str = "{\"idDonacion\":" + reporteDto.getIdSalidaDona() 
+			+ ",\"idAtaudDonacion\":" +reporteDto.getIdAtaudDonacion()  
+			+ ",\"" + TIPO_REPORTE + "\":\"" + reporteDto.getTipoReporte() + "\"}";
+		envioDatos.put("datos",str);
+		try {
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + DONACION_ENTRADA );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Donacion Salida " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarDocumentoDonacionSalida", GENERA_DOCUMENTO, authentication);
+			response = providerServiceRestTemplate.consumirServicio(envioDatos, urlReportesDonaciones + DONACION_ENTRADA, authentication);
 		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
 			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);

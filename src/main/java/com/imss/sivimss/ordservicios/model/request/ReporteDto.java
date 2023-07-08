@@ -22,6 +22,9 @@ public class ReporteDto {
 	private String tipoReporte;
 	private String rutaNombreReporte;
 	private String motivoCancelacion;
+	private String idSalidaDona;
+	private Integer idDonacion;
+	private Integer idAtaudDonacion;
 	
 
 }

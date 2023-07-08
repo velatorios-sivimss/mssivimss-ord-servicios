@@ -1,7 +1,6 @@
 package com.imss.sivimss.ordservicios.repository;
 
 import java.io.IOException;
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +107,7 @@ public class OrdenesDAO {
 	public Response<Object> buscarODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.buscarODS(datos, auth);
 	}	
-	public Response<Object> buscarCostoCancelarODS(DatosRequest datos, Authentication auth) throws IOException, SQLException{
+	public Response<Object> buscarCostoCancelarODS(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.buscarCostoCancelarODS(datos, auth);
 	}	
 	public Response<Object> cancelarODS(DatosRequest datos, Authentication auth) throws IOException, SQLException{
@@ -126,5 +125,11 @@ public class OrdenesDAO {
 	}
 	public Response<Object> generaReporteOrdenServicio(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.generarDocumentoOrdenServicio(datos, auth);
+	}
+	public Response<Object> generaReporteDonacionSalida(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.generarDocumentoDonacionSalida(datos, auth);
+	}
+	public Response<Object> generaReporteDonacionEntrada(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.generarDocumentoDonacionEntrada(datos, auth);
 	}
 }

@@ -88,6 +88,10 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 			return ordenesDAO.generaReporteServicioInmediato(request, authentication);
 		case "generaReporteOrdenServicio":
 			return ordenesDAO.generaReporteOrdenServicio(request, authentication);
+		case "generaReporteDonacionSalida": 
+			return ordenesDAO.generaReporteDonacionSalida(request, authentication);
+		case "generaReporteDonacionEntrada": 
+			return ordenesDAO.generaReporteDonacionEntrada(request, authentication);
 		default:
 			throw new BadRequestException(HttpStatus.BAD_REQUEST, "La peticion no se pudo realizar");
 		}

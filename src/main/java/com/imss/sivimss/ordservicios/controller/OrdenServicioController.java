@@ -177,6 +177,17 @@ public class OrdenServicioController {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteOrdenServicio");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+	@PostMapping("/generar/reporte-donacion-salida")
+	public CompletableFuture<Object> generaReporteDonacionSalida(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteDonacionSalida");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	@PostMapping("/generar/reporte-donacion-entrada")
+	public CompletableFuture<Object> generaReporteDonacionEntrada(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteDonacionEntrada");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
 	
 	@PostMapping("/actualizar")
 	public CompletableFuture<Object>actualizarOrdenServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
@@ -184,7 +195,6 @@ public class OrdenServicioController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	
 	/**
 	 * fallbacks generico
 	 * 
