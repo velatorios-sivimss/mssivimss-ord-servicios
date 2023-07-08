@@ -56,9 +56,6 @@ public class OrdenConsultar {
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
-
-	@Value("${endpoints.ms-donaciones}")
-	private String urlReportesDonaciones;
 	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
