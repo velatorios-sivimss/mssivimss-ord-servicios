@@ -24,4 +24,5 @@ public class CaracteristicasPaqueteDetalleResponse {
 	private Double importeMonto;
 	private CaracteristicasPaqueteDetalleTrasladoRequest servicioDetalleTraslado;
 	private Double totalPaquete;
+	private Boolean agregado;
 }

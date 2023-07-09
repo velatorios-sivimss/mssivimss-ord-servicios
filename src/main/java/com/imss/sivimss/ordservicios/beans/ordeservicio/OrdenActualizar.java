@@ -439,6 +439,7 @@ public class OrdenActualizar {
 					detalleResponse.setNombreProveedor(resultSetDetalle.getString(11));
 					detalleResponse.setImporteMonto(resultSetDetalle.getDouble(12));
 					detalleResponse.setTotalPaquete(resultSetDetalle.getDouble(13));
+					detalleResponse.setAgregado(resultSetDetalle.getBoolean(14));
 					resultSetDetalleTraslado = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(detalleResponse.getIdPaqueteDetalle()));
 					caracteristicasPaqueteDetalleTrasladoRequest= null;
 					if (resultSetDetalleTraslado.next()) {

@@ -878,6 +878,18 @@ public class ReglasNegocioRepository {
 	public String consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(Integer idCaracteristicasPaquete) {
 						SelectQueryUtil selectQueryUtilServicios = new SelectQueryUtil();
 						SelectQueryUtil selectQueryUtilArticulos = new SelectQueryUtil();
+						SelectQueryUtil selectQueryAgregadoServicio = new SelectQueryUtil();
+						SelectQueryUtil selectQueryAgregadoArticulo = new SelectQueryUtil();
+						
+						selectQueryAgregadoServicio.select("COUNT(SDCP.ID_DETALLE_CARACTERISTICAS)")
+						.from("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCPT")
+						.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO =SCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+						.where("SCPT.ID_ORDEN_SERVICIO =SCP.ID_ORDEN_SERVICIO ");
+						selectQueryAgregadoArticulo.select("COUNT(SDCP.ID_DETALLE_CARACTERISTICAS)")
+						.from("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCPT")
+						.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO =SCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+						.where("SCPT.ID_ORDEN_SERVICIO =SCP.ID_ORDEN_SERVICIO ");
+						
 						selectQueryUtilServicios.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetalle",
 								"0 AS idArticulo",
 								"SDCPT.ID_SERVICIO AS idServicio",
@@ -890,7 +902,9 @@ public class ReglasNegocioRepository {
 								"SDCPT.ID_PROVEEDOR AS idProveedor",
 								"SP.NOM_PROVEEDOR AS nombreProveedor",
 								"SDCPT.IMP_IMPORTE AS importeMonto",
-								"SDCPT.IMP_IMPORTE AS totalPaquete")
+								"SDCPT.IMP_IMPORTE AS totalPaquete",
+								"CASE WHEN ("+selectQueryAgregadoServicio.and("SDCP.ID_SERVICIO = SDCPT.ID_SERVICIO ").build() + " ) > 0 THEN TRUE "+
+										" ELSE  FALSE END AS agregado ")
 						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
 						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
 						.leftJoin("SVT_SERVICIO SS ", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO  ")
@@ -912,7 +926,9 @@ public class ReglasNegocioRepository {
 								"SDCPT.ID_PROVEEDOR AS idProveedor",
 								"SP.NOM_PROVEEDOR AS nombreProveedor",
 								"SDCPT.IMP_IMPORTE AS importeMonto",
-								"SDCPT.IMP_IMPORTE AS totalPaquete")
+								"SDCPT.IMP_IMPORTE AS totalPaquete",
+								"CASE WHEN ("+selectQueryAgregadoArticulo.and("SDCP.ID_ARTICULO = SDCPT.ID_ARTICULO  ").build() + " ) > 0 THEN TRUE "+
+										" ELSE  FALSE END AS agregado ")
 						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
 						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
 						.leftJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
@@ -971,6 +987,8 @@ public class ReglasNegocioRepository {
 		public String consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(Integer idCaracteristicasPresupuesto, Integer idOrdenServicio) {
 							SelectQueryUtil selectQueryUtilServicios = new SelectQueryUtil();
 							SelectQueryUtil selectQueryUtilArticulos = new SelectQueryUtil();
+								
+							
 							selectQueryUtilServicios.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetallePresupuesto",
 									"0 AS idCategoria",
 									"0 AS idArticulo",
