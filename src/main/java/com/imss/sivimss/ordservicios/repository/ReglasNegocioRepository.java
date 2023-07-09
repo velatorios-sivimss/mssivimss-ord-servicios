@@ -838,7 +838,7 @@ public class ReglasNegocioRepository {
 						"DATE_FORMAT(STF.FEC_DECESO,'"+fecha+"') AS fechaDeceso",
 						"STF.DES_CAUSA_DECESO AS causaDeceso",
 						"STF.DES_LUGAR_DECESO AS lugarDeceso",
-						"STF.TIM_HORA AS hora",
+						"TIME_FORMAT(STF.TIM_HORA,'%H:%i') AS hora",
 						"STF.ID_CLINICA_ADSCRIPCION AS idClinicaAdscripcion",
 						"STF.ID_UNIDAD_PROCEDENCIA AS idUnidadProcedencia",
 						"STF.DES_PROCEDENCIA_FINADO AS procedenciaFinado",
