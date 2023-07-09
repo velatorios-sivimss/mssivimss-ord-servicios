@@ -795,7 +795,7 @@ public class ReglasNegocioRepository {
 			.from("SVC_ORDEN_SERVICIO STO")
 			.leftJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
 			.leftJoin("SVC_PERSONA SPC", "SC.ID_PERSONA = SPC.ID_PERSONA")
-			.innerJoin("SVT_DOMICILIO SCD", "SC.ID_DOMICILIO = SCD.ID_DOMICILIO")
+			.leftJoin("SVT_DOMICILIO SCD", "SC.ID_DOMICILIO = SCD.ID_DOMICILIO")
 			.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio);
 	
 			query = selectQueryUtil.build();
@@ -803,7 +803,7 @@ public class ReglasNegocioRepository {
 			return query;
 	}
 	
-	// consultar contratante
+	// consultar finado
 	public String consultarFinadoOrdenServicios(Integer idOrdenServicio) {
 				SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 				selectQueryUtil.select(
@@ -838,7 +838,7 @@ public class ReglasNegocioRepository {
 						"DATE_FORMAT(STF.FEC_DECESO,'"+fecha+"') AS fechaDeceso",
 						"STF.DES_CAUSA_DECESO AS causaDeceso",
 						"STF.DES_LUGAR_DECESO AS lugarDeceso",
-						"STF.TIM_HORA AS hora",
+						"TIME_FORMAT(STF.TIM_HORA,'%H:%i') AS hora",
 						"STF.ID_CLINICA_ADSCRIPCION AS idClinicaAdscripcion",
 						"STF.ID_UNIDAD_PROCEDENCIA AS idUnidadProcedencia",
 						"STF.DES_PROCEDENCIA_FINADO AS procedenciaFinado",
@@ -848,7 +848,7 @@ public class ReglasNegocioRepository {
 				.from("SVC_ORDEN_SERVICIO STO")
 				.leftJoin("SVC_FINADO STF ", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
 				.leftJoin("SVC_PERSONA SPF ", "STF.ID_PERSONA =SPF.ID_PERSONA ")
-				.innerJoin("SVT_DOMICILIO SCD", "STF.ID_DOMICILIO = SCD.ID_DOMICILIO")
+				.leftJoin("SVT_DOMICILIO SCD", "STF.ID_DOMICILIO = SCD.ID_DOMICILIO")
 				.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio);
 		
 				query = selectQueryUtil.build();
@@ -894,8 +894,8 @@ public class ReglasNegocioRepository {
 						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
 						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
 						.leftJoin("SVT_SERVICIO SS ", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO  ")
-						.innerJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO ")
-						.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
+						.leftJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO ")
+						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
 						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
 						.and("SDCPT.IND_ACTIVO = 1");
 						
@@ -916,8 +916,8 @@ public class ReglasNegocioRepository {
 						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
 						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
 						.leftJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
-						.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
-						.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
+						.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
+						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
 						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
 						.and("SDCPT.IND_ACTIVO = 1");
 				
@@ -1045,13 +1045,13 @@ public class ReglasNegocioRepository {
 										SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
 										selectQueryUtilTrasladoServicio.select("SI.ID_INFORMACION_SERVICIO AS idInformacionServicio",
 												"DATE_FORMAT(SI.FEC_CORTEJO,'"+fecha+"') AS fechaCortejo",
-												"SI.TIM_HORA_CORTEJO AS horaCortejo",
+												"TIME_FORMAT(SI.TIM_HORA_CORTEJO,'%H:%i') AS horaCortejo",
 												"DATE_FORMAT(SI.FEC_RECOGER,'"+fecha+"') AS fechaRecoger",
-												"SI.TIM_HORA_RECOGER AS horaRecoger",
+												"TIME_FORMAT(SI.TIM_HORA_RECOGER,'%H:%i') AS horaRecoger",
 												"SI.ID_PANTEON AS idPanteon",
 												"SI.ID_SALA AS idSala",
 												"DATE_FORMAT(SI.FEC_CREMACION,'"+fecha+"') AS fechaCremacion",
-												"SI.TIM_HORA_CREMACION AS horaCremacion",
+												"TIME_FORMAT(SI.TIM_HORA_CREMACION,'%H:%i') AS horaCremacion",
 												"SI.ID_PROMOTORES AS idPromotor")
 										.from("SVC_INFORMACION_SERVICIO SI ")
 										.where("SI.ID_ORDEN_SERVICIO = " + idOrdenServicio)
@@ -1069,9 +1069,9 @@ public class ReglasNegocioRepository {
 												SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
 												selectQueryUtilTrasladoServicio.select("SISV.ID_INFORMACION_SERVICIO_VELACION AS idInformacionServicioVelacion",
 														"DATE_FORMAT(SISV.FEC_INSTALACION ,'"+fecha+"') AS fechaInstalacion",
-														"SISV.TIM_HORA_INSTALACION AS horaInstalacion",
+														"TIME_FORMAT(SISV.TIM_HORA_INSTALACION,'%H:%i') AS horaInstalacion",
 														"DATE_FORMAT(SISV.FEC_VELACION,'"+fecha+"') AS fechaVelacion",
-														"SISV.TIM_HORA_VELACION AS horaVelacion",
+														"TIME_FORMAT(SISV.TIM_HORA_VELACION,'%H:%i') AS horaVelacion",
 														"SISV.ID_CAPILLA AS idCapilla",
 														"SISV.ID_DOMICILIO AS idDomicilio",
 														"SCD.DES_CALLE AS desCalle",
@@ -1082,7 +1082,7 @@ public class ReglasNegocioRepository {
 														"SCD.DES_MUNICIPIO AS desMunicipio",
 														"SCD.DES_ESTADO AS desEstado")
 												.from("SVC_INFORMACION_SERVICIO_VELACION SISV ")
-												.innerJoin("SVT_DOMICILIO SCD","SCD.ID_DOMICILIO = SISV.ID_DOMICILIO")
+												.leftJoin("SVT_DOMICILIO SCD","SCD.ID_DOMICILIO = SISV.ID_DOMICILIO")
 												.where("SISV.ID_INFORMACION_SERVICIO = " + idInformacionServicio);
 												
 											
