@@ -936,7 +936,7 @@ public class ReglasNegocioRepository {
 						.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
 						.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
 						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
-						.and("SDCPT.IND_ACTIVO = 1");
+						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_ARTICULO IS NOT NULL");
 				
 				query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
 				log.info(query);
@@ -1007,7 +1007,7 @@ public class ReglasNegocioRepository {
 							.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO  ")
 							.leftJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO ")
 							.innerJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO  ")
-							.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR ")
+							.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR ")
 							.where("SDCPT.ID_CARACTERISTICAS_PRESUPUESTO = " + idCaracteristicasPresupuesto)
 							.and("SDCPT.IND_ACTIVO = 1");
 							
@@ -1031,7 +1031,7 @@ public class ReglasNegocioRepository {
 							.leftJoin("SVT_INVENTARIO_ARTICULO STIA ", "STIA.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO ")
 							.innerJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
 							.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
-							.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR   ")
+							.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR   ")
 							.where("SDCPT.ID_CARACTERISTICAS_PRESUPUESTO = " + idCaracteristicasPresupuesto)
 							.and("SDCPT.IND_ACTIVO = 1");
 					
