@@ -534,6 +534,7 @@ public class OrdenActualizar {
 					paqueteDetallePresupuesto.setNombreProveedor(resultSetDetallePresupuesto.getString(10));
 					paqueteDetallePresupuesto.setEsDonado(resultSetDetallePresupuesto.getInt(11));
 					paqueteDetallePresupuesto.setImporteMonto(resultSetDetallePresupuesto.getDouble(12));
+					paqueteDetallePresupuesto.setProviene(resultSetDetallePresupuesto.getString(13));
 					resultSetDetallePresupuestoTraslado = statementc.executeQuery(
 							reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto()));
 					caracteristicasPresupuestoDetalleTrasladoRequest=null;

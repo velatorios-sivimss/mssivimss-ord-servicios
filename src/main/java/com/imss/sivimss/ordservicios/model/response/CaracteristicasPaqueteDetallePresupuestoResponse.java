@@ -24,4 +24,5 @@ public class CaracteristicasPaqueteDetallePresupuestoResponse {
 	private CaracteristicasPaqueteDetalleTrasladoRequest servicioDetalleTraslado;
 	private Integer esDonado;
 	private Double importeMonto;
+	private String proviene;
 }
