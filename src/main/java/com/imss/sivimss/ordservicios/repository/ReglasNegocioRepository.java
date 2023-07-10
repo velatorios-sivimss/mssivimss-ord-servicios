@@ -352,6 +352,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("IMP_IMPORTE", "" + caracteristicasPaqueteRespuestoRequest.getImporteMonto() + "");
 		q.agregarParametroValues("ID_PROVEEDOR", "" + caracteristicasPaqueteRespuestoRequest.getIdProveedor() + "");
 		q.agregarParametroValues("ID_CARACTERISTICAS_PRESUPUESTO", "" + idCaracteristicasPaquetePresupuesto + "");
+		q.agregarParametroValues("DES_PROVIENE", "'" + caracteristicasPaqueteRespuestoRequest.getProviene() + "'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
