@@ -116,6 +116,7 @@ public class ContratoPF {
 		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SCB.ID_PERSONA ")
 		.where("STC.ID_CONVENIO_PF = :idContrato")
 		.and("CPA.ID_CONTRATANTE="+contratoPfRequest.getIdContratante())
+		.and("SCB.IND_ACTIVO = 1")
 		.setParameter("idContrato", contratoPfRequest.getIdContrato());
 		query= queryUtil.build();
 		log.info(query);
