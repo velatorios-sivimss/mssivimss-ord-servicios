@@ -33,5 +33,6 @@ public class ContratoServicioInmediatoRequest {
 	private String nombrePanteon;
 	private String fechaServicio;
 	private String tipoReporte;
+	private Integer generaReporte;
 
 }

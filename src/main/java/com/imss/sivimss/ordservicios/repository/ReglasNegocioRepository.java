@@ -124,10 +124,10 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_PERSONA");
 		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
 		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
-		if ( personaRequest.getNss()==null) {
+		if (personaRequest.getNss()==null ) {
 			q.agregarParametroValues("CVE_NSS", "NULL");
 		}else {
-			q.agregarParametroValues("CVE_NSS", "'"+personaRequest.getNss()+"'");
+			q.agregarParametroValues("CVE_NSS", ""+personaRequest.getNss()+"");
 		}
 		
 		q.agregarParametroValues("NOM_PERSONA", setValor(personaRequest.getNomPersona()));
@@ -816,7 +816,7 @@ public class ReglasNegocioRepository {
 						"IFNULL(STF.CVE_MATRICULA,'') AS matricula",
 						"IFNULL(SPF.CVE_RFC,'') AS rfc",
 						"IFNULL(SPF.CVE_CURP,'') AS curp",
-						"IFNULL(SPF.CVE_NSS,0) AS nss",
+						"IFNULL(SPF.CVE_NSS,'') AS nss",
 						"IFNULL(SPF.NOM_PERSONA,'') AS nomPersona",
 						"IFNULL(SPF.NOM_PRIMER_APELLIDO,'') AS primerApellido",
 						"IFNULL(SPF.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
