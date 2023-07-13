@@ -517,15 +517,15 @@ public class OrdenConsultar {
 
 	public Response<Object> generarDocumentoOrdenServicio(DatosRequest request, Authentication authentication) throws IOException {
 		Gson gson = new Gson();
-		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
-
-		UsuarioDto usuarioRequest = gson.fromJson(datosJson, UsuarioDto.class);
+		
+		UsuarioDto usuarioRequest = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		
 		Map<String, Object> envioDatos = new HashMap<>();
-		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String datosJsonRequest = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		ReporteDto reporteDto= gson.fromJson(datosJsonRequest, ReporteDto.class);
 		envioDatos.put("idOds", reporteDto.getIdOrdenServicio());
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
-		envioDatos.put("usuarioSistema", usuarioRequest.getCveMatricula());
+		envioDatos.put("usuarioSistema", usuarioRequest.getNombre());
 		String nombreReporte="";
 		if(reporteDto.getEstatus() == 1) {
 			nombreReporte = reporteOrdenServicioTemp;
