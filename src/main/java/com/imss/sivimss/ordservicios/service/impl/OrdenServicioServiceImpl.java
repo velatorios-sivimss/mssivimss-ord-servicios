@@ -33,8 +33,6 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 		case "actualizar":
 			return ordenesDAO.actualizarOrden(request, authentication);
 
-		case "actualizar-generada":
-			return ordenesDAO.actualizarOrdenGenerada(request, authentication);
 
 		case "cambiar-estatus":
 			return null;
