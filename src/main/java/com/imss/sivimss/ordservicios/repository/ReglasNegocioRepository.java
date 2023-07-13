@@ -652,7 +652,7 @@ public class ReglasNegocioRepository {
 	public String actualizarOrdenServicio(Integer idOrdenServicio,String folio, Integer idParentesco, Integer idContratantePf,
 			Integer idEstatus, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_ORDEN_SERVICIO ");
-		q.agregarParametroValues("CVE_FOLIO", "'" + folio + "'");
+		q.agregarParametroValues("CVE_FOLIO", setValor(folio));
 		q.agregarParametroValues("ID_PARENTESCO", "" + idParentesco + "");
 		q.agregarParametroValues("ID_CONTRATANTE_PF", "" + idContratantePf + "");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO", "" + idEstatus + "");
