@@ -81,6 +81,8 @@ public class OrdenActualizar {
 	@Autowired
 	private LogUtil logUtil;
 
+	private Integer idOrden;
+	
 	private Connection connection;
 
 	private ResultSet rs;
@@ -770,8 +772,8 @@ public class OrdenActualizar {
 		desactivarRegistros(ordenesServicioRequest, usuario, authentication);
 
 		if (Boolean.TRUE.equals(desactivado)) {
-			Integer idOrden = ordenesServicioRequest.getIdOrdenServicio();
-
+			idOrden = ordenesServicioRequest.getIdOrdenServicio();
+	        desactivarRegistrosTemp(ordenesServicioRequest, usuario);	  
 			response = insertarOrdenServicios(ordenesServicioRequest, usuario);
 
 			connection.commit();
@@ -784,6 +786,7 @@ public class OrdenActualizar {
 				resTemplateProviderServiceRestTemplate
 						.consumirServicioProceso(tareas, urlProceso.concat(AppConstantes.PROCESO), authentication);
 
+			
 				return response;
 
 			}
@@ -868,6 +871,7 @@ public class OrdenActualizar {
 
 		} else {
 			// buenas buenas
+			
 			caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(),
 					usuario.getIdUsuario(), connection);
@@ -979,13 +983,14 @@ public class OrdenActualizar {
 		
 		// caracteristicas presupuesto 
 		if (ordenesServicioRequest.getIdEstatus() ==1) { // temporales
-		  desactivarRegistrosTemp(ordenesServicioRequest, usuario, authentication);
+		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
 		  connection);
 		  
 		  } else { // buenas buenas
+		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);	  
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
@@ -1063,7 +1068,7 @@ public class OrdenActualizar {
 		
 		// caracteristicas presupuesto 
 		if (ordenesServicioRequest.getIdEstatus() ==1) { // temporales
-		  desactivarRegistrosTemp(ordenesServicioRequest, usuario, authentication);
+		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
@@ -1114,7 +1119,7 @@ public class OrdenActualizar {
 		try {
 			if (!(Objects.equals(ordenesServicioRequest.getFinado().getIdTipoOrden(), idEstatusTipoOrden))) {
 				statement = connection.createStatement();
-				desactivarRegistrosTemp(ordenesServicioRequest, usuario, authentication);
+				desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 				statement.executeUpdate(
 						reglasNegocioRepository.actualizarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio()));
 				desactivado = true;
@@ -1130,8 +1135,7 @@ public class OrdenActualizar {
 
 	}
 	
-	private void desactivarRegistrosTemp(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,
-			Authentication authentication) throws SQLException {
+	private void desactivarRegistrosTemp(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException {
 		consultarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio());
 		Statement statementc=null;
 		try {
