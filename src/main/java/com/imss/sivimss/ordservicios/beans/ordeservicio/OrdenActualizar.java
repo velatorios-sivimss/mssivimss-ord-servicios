@@ -81,6 +81,8 @@ public class OrdenActualizar {
 	@Autowired
 	private LogUtil logUtil;
 
+	private Integer idOrden;
+	
 	private Connection connection;
 
 	private ResultSet rs;
@@ -169,6 +171,9 @@ public class OrdenActualizar {
 		}
 	}
 	
+    
+	
+
 	public Response<Object> consultarDetallePreOrden(DatosRequest datosRequest,
 			Authentication authentication) throws SQLException, IOException {
 	
@@ -441,11 +446,12 @@ public class OrdenActualizar {
 					detalleResponse.setDesmotivo(resultSetDetalle.getString(7));
 					detalleResponse.setActivo(resultSetDetalle.getInt(8));
 					detalleResponse.setCantidad(resultSetDetalle.getInt(9));
-					detalleResponse.setIdProveedor(resultSetDetalle.getInt(10));
+					detalleResponse.setIdProveedor(resultSetDetalle.getInt(10)==0?null:resultSetDetalle.getInt(10));
 					detalleResponse.setNombreProveedor(resultSetDetalle.getString(11));
 					detalleResponse.setImporteMonto(resultSetDetalle.getDouble(12));
 					detalleResponse.setTotalPaquete(resultSetDetalle.getDouble(13));
 					detalleResponse.setAgregado(resultSetDetalle.getBoolean(14));
+					detalleResponse.setIdCategoriaPaquete(resultSetDetalle.getInt(15)==0?null:resultSetDetalle.getInt(15));
 					resultSetDetalleTraslado = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(detalleResponse.getIdPaqueteDetalle()));
 					caracteristicasPaqueteDetalleTrasladoRequest= null;
 					if (resultSetDetalleTraslado.next()) {
@@ -655,19 +661,12 @@ public class OrdenActualizar {
 		desactivarRegistros(ordenesServicioRequest, usuario, authentication);
 
 		if (Boolean.TRUE.equals(desactivado)) {
-			Integer idOrden = ordenesServicioRequest.getIdOrdenServicio();
-
+			idOrden = ordenesServicioRequest.getIdOrdenServicio();
+	        desactivarRegistrosTemp(ordenesServicioRequest, usuario);	  
 			response = insertarOrdenServicios(ordenesServicioRequest, usuario);
 
 			connection.commit();
 
-			// mandar a llamar el job con el id de la orden para cancelarlo
-			Object datosDesactivar = "{\"idODS\":" + idOrden + "}";
-			TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
-					"CANCELAR", datosDesactivar);
-			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
-					urlProceso.concat(AppConstantes.PROCESO), authentication);
-			
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
@@ -676,6 +675,7 @@ public class OrdenActualizar {
 				resTemplateProviderServiceRestTemplate
 						.consumirServicioProceso(tareas, urlProceso.concat(AppConstantes.PROCESO), authentication);
 
+			
 				return response;
 
 			}
@@ -698,12 +698,7 @@ public class OrdenActualizar {
 			response = insertarVentaArticulo(ordenesServicioRequest, usuario);
 			connection.commit();
 
-			// mandar a llamar el job de desactivar
-			Object datosDesactivar = "{\"idODS\":" + idOrden + "}";
-			TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
-					"CANCELAR", datosDesactivar);
-			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
-					urlProceso.concat(AppConstantes.PROCESO), authentication);
+			
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
@@ -765,6 +760,7 @@ public class OrdenActualizar {
 
 		} else {
 			// buenas buenas
+			
 			caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(),
 					usuario.getIdUsuario(), connection);
@@ -876,13 +872,14 @@ public class OrdenActualizar {
 		
 		// caracteristicas presupuesto 
 		if (ordenesServicioRequest.getIdEstatus() ==1) { // temporales
-		  desactivarRegistrosTemp(ordenesServicioRequest, usuario, authentication);
+		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
 		  connection);
 		  
 		  } else { // buenas buenas
+		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);	  
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
@@ -960,7 +957,7 @@ public class OrdenActualizar {
 		
 		// caracteristicas presupuesto 
 		if (ordenesServicioRequest.getIdEstatus() ==1) { // temporales
-		  desactivarRegistrosTemp(ordenesServicioRequest, usuario, authentication);
+		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
 		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
@@ -1011,7 +1008,7 @@ public class OrdenActualizar {
 		try {
 			if (!(Objects.equals(ordenesServicioRequest.getFinado().getIdTipoOrden(), idEstatusTipoOrden))) {
 				statement = connection.createStatement();
-				desactivarRegistrosTemp(ordenesServicioRequest, usuario, authentication);
+				desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 				statement.executeUpdate(
 						reglasNegocioRepository.actualizarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio()));
 				desactivado = true;
@@ -1027,8 +1024,7 @@ public class OrdenActualizar {
 
 	}
 	
-	private void desactivarRegistrosTemp(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,
-			Authentication authentication) throws SQLException {
+	private void desactivarRegistrosTemp(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario) throws SQLException {
 		consultarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio());
 		Statement statementc=null;
 		try {

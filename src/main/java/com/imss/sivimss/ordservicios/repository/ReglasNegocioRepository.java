@@ -281,6 +281,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("IMP_IMPORTE", "" + detalleCaracteristicasPaqueteRequest.getImporteMonto() + "");
 		q.agregarParametroValues("ID_PROVEEDOR", "" + detalleCaracteristicasPaqueteRequest.getIdProveedor() + "");
 		q.agregarParametroValues("ID_CARACTERISTICAS_PAQUETE", "" + idCaracteristicasPaquete + "");
+		q.agregarParametroValues("ID_CATEGORIA_PAQUETE", "" + detalleCaracteristicasPaqueteRequest.getIdCategoriaPaquete() + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
@@ -652,7 +653,7 @@ public class ReglasNegocioRepository {
 	public String actualizarOrdenServicio(Integer idOrdenServicio,String folio, Integer idParentesco, Integer idContratantePf,
 			Integer idEstatus, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_ORDEN_SERVICIO ");
-		q.agregarParametroValues("CVE_FOLIO", "'" + folio + "'");
+		q.agregarParametroValues("CVE_FOLIO", setValor(folio));
 		q.agregarParametroValues("ID_PARENTESCO", "" + idParentesco + "");
 		q.agregarParametroValues("ID_CONTRATANTE_PF", "" + idContratantePf + "");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO", "" + idEstatus + "");
@@ -905,7 +906,9 @@ public class ReglasNegocioRepository {
 								"SDCPT.IMP_IMPORTE AS importeMonto",
 								"SDCPT.IMP_IMPORTE AS totalPaquete",
 								"CASE WHEN ("+selectQueryAgregadoServicio.and("SDCP.ID_SERVICIO = SDCPT.ID_SERVICIO ").build() + " ) > 0 THEN TRUE "+
-										" ELSE  FALSE END AS agregado ")
+										" ELSE  FALSE END AS agregado ",
+										"0 AS idCategoriaPaquete "		
+								)
 						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
 						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
 						.leftJoin("SVT_SERVICIO SS ", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO  ")
@@ -929,14 +932,15 @@ public class ReglasNegocioRepository {
 								"SDCPT.IMP_IMPORTE AS importeMonto",
 								"SDCPT.IMP_IMPORTE AS totalPaquete",
 								"CASE WHEN ("+selectQueryAgregadoArticulo.and("SDCP.ID_ARTICULO = SDCPT.ID_ARTICULO  ").build() + " ) > 0 THEN TRUE "+
-										" ELSE  FALSE END AS agregado ")
+										" ELSE  FALSE END AS agregado ",
+										"SDCPT.ID_CATEGORIA_PAQUETE AS idCategoriaPaquete ")
 						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
 						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
 						.leftJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
-						.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
-						.innerJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
+						.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = SDCPT.ID_CATEGORIA_PAQUETE ")
+						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
 						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
-						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_ARTICULO IS NOT NULL");
+						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_CATEGORIA_PAQUETE IS NOT NULL");
 				
 				query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
 				log.info(query);
