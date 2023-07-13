@@ -661,13 +661,6 @@ public class OrdenActualizar {
 
 			connection.commit();
 
-			// mandar a llamar el job con el id de la orden para cancelarlo
-			Object datosDesactivar = "{\"idODS\":" + idOrden + "}";
-			TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
-					"CANCELAR", datosDesactivar);
-			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
-					urlProceso.concat(AppConstantes.PROCESO), authentication);
-			
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
@@ -698,12 +691,6 @@ public class OrdenActualizar {
 			response = insertarVentaArticulo(ordenesServicioRequest, usuario);
 			connection.commit();
 
-			// mandar a llamar el job de desactivar
-			Object datosDesactivar = "{\"idODS\":" + idOrden + "}";
-			TareasDTO tareasDesactivar = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
-					"CANCELAR", datosDesactivar);
-			resTemplateProviderServiceRestTemplate.consumirServicioProceso(tareasDesactivar,
-					urlProceso.concat(AppConstantes.PROCESO), authentication);
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
