@@ -446,7 +446,7 @@ public class OrdenActualizar {
 					detalleResponse.setDesmotivo(resultSetDetalle.getString(7));
 					detalleResponse.setActivo(resultSetDetalle.getInt(8));
 					detalleResponse.setCantidad(resultSetDetalle.getInt(9));
-					detalleResponse.setIdProveedor(resultSetDetalle.getInt(10));
+					detalleResponse.setIdProveedor(resultSetDetalle.getInt(10)==0?null:resultSetDetalle.getInt(10));
 					detalleResponse.setNombreProveedor(resultSetDetalle.getString(11));
 					detalleResponse.setImporteMonto(resultSetDetalle.getDouble(12));
 					detalleResponse.setTotalPaquete(resultSetDetalle.getDouble(13));
