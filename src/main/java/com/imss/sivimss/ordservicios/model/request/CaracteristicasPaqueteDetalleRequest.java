@@ -10,6 +10,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaracteristicasPaqueteDetalleRequest {
 	private Integer idPaqueteDetalle;
+	private Integer idCategoriaPaquete;
 	private Integer idArticulo;
 	private Integer idServicio;
 	private Integer idTipoServicio;

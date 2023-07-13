@@ -169,6 +169,120 @@ public class OrdenActualizar {
 		}
 	}
 	
+    public Response<Object> agregarOrdenGenerada(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
+		
+		try {
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "agregarOrden", AppConstantes.ALTA, authentication);
+
+			Gson gson= new Gson();
+			UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			String datosJson=datosRequest.getDatos().get(AppConstantes.DATOS).toString();
+			OrdenesServicioRequest ordenesServicioRequest=gson.fromJson(datosJson, OrdenesServicioRequest.class);
+			ordenesServicioRequest.setIdVelatorio(usuario.getIdVelatorio());
+			switch (ordenesServicioRequest.getFinado().getIdTipoOrden()) {
+			case 1:
+	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "servicioInmediatoGenerada", AppConstantes.ALTA, authentication);
+	            response=guardarOrdenServicioGenerada(ordenesServicioRequest, usuario,authentication);
+				break;
+			case 2:
+	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "contratoPFGenerada", AppConstantes.ALTA, authentication);
+
+				response=guardarOrdenServicioGenerada(ordenesServicioRequest, usuario,authentication);
+				break;
+			case 3:
+	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "articulosComplementariosGenerada", AppConstantes.ALTA, authentication);
+
+				response=ventaArticulosGenerada(ordenesServicioRequest, usuario,authentication);
+				break;
+			case 4:
+	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "convenioPF", AppConstantes.ALTA, authentication);
+
+				break;
+			default:
+				throw new BadRequestException(HttpStatus.BAD_REQUEST, AppConstantes.ERROR_GUARDAR);
+			}
+			
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
+			log.error(e.getMessage());
+		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
+		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
+		}finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
+		
+	}
+	
+    private Response<Object> guardarOrdenServicioGenerada(OrdenesServicioRequest ordenesServicioRequest,
+			UsuarioDto usuario, Authentication authentication) throws SQLException, IOException {
+    	connection = database.getConnection();
+		connection.setAutoCommit(false);
+		
+		//contratante
+		if (ordenesServicioRequest.getContratante()==null || ordenesServicioRequest.getIdOrdenServicio()==null) {
+					throw new BadRequestException(HttpStatus.BAD_REQUEST,AppConstantes.ERROR_GUARDAR);
+		}
+		
+		//valida el tipo de orden si es igual a la que se tiene originalmente
+		if (true) {
+			//desactivar el proceso de desactivar
+			// desactivar temprales manualmente
+			
+			//actualizar 
+			//contratante
+			//finado
+			//insertar en buenas buenas presupuesto
+			// actualizar
+			// informacion servicio
+		} else {
+			//desactivar el proceso de desactivar
+			//desactivar temprales manualmente
+			//insert nuevo
+
+		}
+		
+		
+		// desactiva registros si tipo de orden es diferente
+		desactivarRegistros(ordenesServicioRequest, usuario, authentication);
+
+		if (Boolean.TRUE.equals(desactivado)) {
+			Integer idOrden = ordenesServicioRequest.getIdOrdenServicio();
+
+			response = insertarOrdenServicios(ordenesServicioRequest, usuario);
+
+			connection.commit();
+
+			// mandar a llamar el job con la clave tarea
+			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
+				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
+				TareasDTO tareas = new TareasDTO(tipoHoraMinuto, cveTarea, Integer.parseInt(totalHoraMinuto), "ODS",
+						"INSERT", datos);
+				resTemplateProviderServiceRestTemplate
+						.consumirServicioProceso(tareas, urlProceso.concat(AppConstantes.PROCESO), authentication);
+
+				return response;
+
+			}
+		} else {
+			// actualizar registro actual
+			actualizarOrdenServicios(ordenesServicioRequest, usuario,authentication);
+			connection.commit();
+		}
+		return response;
+		
+	}
+	
+    private Response<Object> ventaArticulosGenerada(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,
+			Authentication authentication) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
 	public Response<Object> consultarDetallePreOrden(DatosRequest datosRequest,
 			Authentication authentication) throws SQLException, IOException {
 	
@@ -446,6 +560,7 @@ public class OrdenActualizar {
 					detalleResponse.setImporteMonto(resultSetDetalle.getDouble(12));
 					detalleResponse.setTotalPaquete(resultSetDetalle.getDouble(13));
 					detalleResponse.setAgregado(resultSetDetalle.getBoolean(14));
+					detalleResponse.setIdCategoriaPaquete(resultSetDetalle.getInt(15)==0?null:resultSetDetalle.getInt(15));
 					resultSetDetalleTraslado = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(detalleResponse.getIdPaqueteDetalle()));
 					caracteristicasPaqueteDetalleTrasladoRequest= null;
 					if (resultSetDetalleTraslado.next()) {
@@ -691,6 +806,7 @@ public class OrdenActualizar {
 			response = insertarVentaArticulo(ordenesServicioRequest, usuario);
 			connection.commit();
 
+			
 			// mandar a llamar el job con la clave tarea
 			if (ordenesServicioRequest.getIdEstatus() == 1 && ordenesServicioRequest.getIdOrdenServicio() != null) {
 				Object datos = "{\"idODS\":" + ordenesServicioRequest.getIdOrdenServicio() + "}";
