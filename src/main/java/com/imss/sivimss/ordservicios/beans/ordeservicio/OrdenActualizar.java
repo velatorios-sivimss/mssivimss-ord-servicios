@@ -365,10 +365,10 @@ public class OrdenActualizar {
 				finadoResponse.setCausaDeceso(rsc.getString(30));
 				finadoResponse.setLugarDeceso(rsc.getString(31));
 				finadoResponse.setHora(rsc.getString(32));
-				finadoResponse.setIdClinicaAdscripcion(rsc.getString(33));
-				finadoResponse.setIdUnidadProcedencia(rsc.getString(34));
+				finadoResponse.setIdClinicaAdscripcion(rsc.getString(33)==null?null:rsc.getString(33));
+				finadoResponse.setIdUnidadProcedencia(rsc.getString(34)==null?null:rsc.getString(34));
 				finadoResponse.setProcedenciaFinado(rsc.getString(35));
-				finadoResponse.setIdTipoPension(rsc.getInt(36));
+				finadoResponse.setIdTipoPension(rsc.getInt(36)==0?null:rsc.getInt(36));
 				finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
 				finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
 
