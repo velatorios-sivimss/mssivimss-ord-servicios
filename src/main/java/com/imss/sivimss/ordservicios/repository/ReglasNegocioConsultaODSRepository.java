@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
+import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 
@@ -39,6 +40,7 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVC_TIPO_PENSION_STP = "SVC_TIPO_PENSION stp";
 
 	private static final String SET_CAMPO_FEC_BAJA = " FEC_BAJA = CURRENT_TIMESTAMP() ";
+	private static final String SET_CAMPO_FEC_MODIFICA = " FEC_ACTUALIZACION = CURRENT_TIMESTAMP() ";
 	private static final String WHERE_ID_ORDEN_SERVICIO = " WHERE ID_ORDEN_SERVICIO = ";
 	
 	private static final String AND_ID_FINADO = " AND sf.ID_FINADO = ";
@@ -252,6 +254,15 @@ public class ReglasNegocioConsultaODSRepository {
 		log.info(str);
 		return str;
 	}
+	
+	//Genera reporte tarjeta identificacion
+	public String ActualizaOperadorODS(OperadorRequest operadorRequest, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_OPERADOR = " + operadorRequest.getIdOperador()
+				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_MODIFICA + WHERE_ID_ORDEN_SERVICIO + operadorRequest.getIdOrdenServicio();
+		log.info(str);
+		return str;
+	}
+	
 	// Bloque Cancelacion ODS
 	public String cancelarODS(ReporteDto idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_ESTATUS_ORDEN_SERVICIO = 0, DES_MOTIVO_CANCELACION ='" +idODS.getMotivoCancelacion() + "'"
