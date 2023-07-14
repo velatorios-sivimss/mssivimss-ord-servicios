@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
+import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 
@@ -39,6 +40,7 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVC_TIPO_PENSION_STP = "SVC_TIPO_PENSION stp";
 
 	private static final String SET_CAMPO_FEC_BAJA = " FEC_BAJA = CURRENT_TIMESTAMP() ";
+	private static final String SET_CAMPO_FEC_MODIFICA = " FEC_ACTUALIZACION = CURRENT_TIMESTAMP() ";
 	private static final String WHERE_ID_ORDEN_SERVICIO = " WHERE ID_ORDEN_SERVICIO = ";
 	
 	private static final String AND_ID_FINADO = " AND sf.ID_FINADO = ";
@@ -211,19 +213,22 @@ public class ReglasNegocioConsultaODSRepository {
 	}
 	public String obtenerODS(ReporteDto reporteDto) {
 		String str= "SELECT DISTINCT (sos.ID_ORDEN_SERVICIO ) as idOrdenServicio ,"
-				+ "CASE WHEN sad.ID_INVE_ARTICULO is not null then 1 else 0 end as EntradaDonacion,"
-				+ "CASE WHEN ssda.ID_INVE_ARTICULO is not null then 1 else 0 end as SalidaDonacion,"
-				+ "sv.DES_VELATORIO as velatorio ,"
-				+ "sos.CVE_FOLIO as numeroFolio ,"
-				+ "CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) as nombreContratante,"
-				+ "CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO) as nombreFinado,"
-				+ "stos.DES_TIPO_ORDEN_SERVICIO as tipoOrden,"
-				+ "IFNULL(sum2.DES_UNIDAD_MEDICA, '') as unidadProcedencia,"
-				+ "IFNULL(scp.DES_FOLIO, '') as contratoConvenio,"
+				+ " CASE WHEN sad2.ID_INVE_ARTICULO is not null then 1 else 0 end as EntradaDonacion,"
+				+ " CASE WHEN ssda.ID_INVE_ARTICULO is not null then 1 else 0 end as SalidaDonacion,"
+				+ " sv.DES_VELATORIO as velatorio ,"
+				+ " sos.CVE_FOLIO as numeroFolio ,"
+				+ " CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) as nombreContratante,"
+				+ " CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO) as nombreFinado,"
+				+ " stos.DES_TIPO_ORDEN_SERVICIO as tipoOrden,"
+				+ " IFNULL(sum2.DES_UNIDAD_MEDICA, '') as unidadProcedencia,"
+				+ " IFNULL(scp.DES_FOLIO, '') as contratoConvenio,"
 				+ " seos.ID_ESTATUS_ORDEN_SERVICIO as idEstatus, "
 				+ " seos.DES_ESTATUS as estatus, "
-				+ "IFNULL(scp2.DES_NOTAS_SERVICIO, scpt.DES_NOTAS_SERVICIO) as notasServicio ,"
-				+ "TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) as tiempoGeneracionODSHrs "
+				+ " IFNULL(scp2.DES_NOTAS_SERVICIO, scpt.DES_NOTAS_SERVICIO) as notasServicio ,"
+				+ " TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) as tiempoGeneracionODSHrs, "
+				+ " ssd.ID_SALIDA_DONACION AS idSalidaDona,"
+				+ " sd.ID_DONACION AS idDonacion,"
+				+ " sad2.ID_ATAUD_DONACION AS idAtaudDonacion "
 				+ " FROM SVC_ORDEN_SERVICIO sos "
 				+ JOIN + TABLA_SVC_VELATORIO_SV + " on sv.ID_VELATORIO = sos.ID_VELATORIO "
 				+ JOIN + TABLA_SVC_CONTRATANTE_SC + " on sc.ID_CONTRATANTE = sos.ID_CONTRATANTE "
@@ -235,18 +240,29 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN + TABLA_SVT_CONVENIO_PF_SCP + " on scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION "
 				+ JOIN + TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS + " on seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO "
 				+ LEFT_JOIN + TABLA_SVC_CARACTERISTICAS_PRESUPUESTO_SCP2 + " on scp2.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
-				+ LEFT_JOIN + "SVC_CARACTERISTICAS_PRESUPUESTO_TEMP scpt on scpt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND scpt.IND_ACTIVO = 1 "
-				+ LEFT_JOIN + "SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO sdcp on scp2.ID_CARACTERISTICAS_PRESUPUESTO = sdcp.ID_CARACTERISTICAS_PRESUPUESTO "
-				+ LEFT_JOIN + "SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP sdcpt on sdcpt.ID_CARACTERISTICAS_PRESUPUESTO = scpt.ID_CARACTERISTICAS_PRESUPUESTO "
-				+ LEFT_JOIN + "SVT_INVENTARIO_ARTICULO sia on sdcp.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO "
-				+ LEFT_JOIN + "SVT_INVENTARIO_ARTICULO sia2 on sia2.ID_INVE_ARTICULO = sdcpt.ID_INVE_ARTICULO "
-				+ LEFT_JOIN + "SVC_ATAUDES_DONADOS sad on sad.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO OR sad.ID_INVE_ARTICULO = sia2.ID_INVE_ARTICULO "
+				+ LEFT_JOIN + " SVC_CARACTERISTICAS_PRESUPUESTO_TEMP scpt on scpt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND scpt.IND_ACTIVO = 1 "
+				+ LEFT_JOIN + " SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO sdcp on scp2.ID_CARACTERISTICAS_PRESUPUESTO = sdcp.ID_CARACTERISTICAS_PRESUPUESTO AND sdcp.IND_ACTIVO = 1 "
+				+ LEFT_JOIN + " SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP sdcpt on sdcpt.ID_CARACTERISTICAS_PRESUPUESTO = scpt.ID_CARACTERISTICAS_PRESUPUESTO AND sdcpt.IND_ACTIVO = 1 "
+				+ LEFT_JOIN + " SVT_INVENTARIO_ARTICULO sia on sdcp.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO "
+				+ LEFT_JOIN + " SVT_INVENTARIO_ARTICULO sia2 on sia2.ID_INVE_ARTICULO = sdcpt.ID_INVE_ARTICULO "
+				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad on sad.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO OR sad.ID_INVE_ARTICULO = sia2.ID_INVE_ARTICULO "
+				+ LEFT_JOIN + " SVC_DONACION sd on sd.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "  
+				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad2 on sad2.ID_DONACION = sd.ID_DONACION "
 				+ LEFT_JOIN + "SVC_SALIDA_DONACION_ATAUDES ssda on sia.ID_INVE_ARTICULO = ssda.ID_INVE_ARTICULO OR ssda.ID_INVE_ARTICULO = sia2.ID_INVE_ARTICULO "
 				+ LEFT_JOIN + "SVC_SALIDA_DONACION ssd on ssd.ID_SALIDA_DONACION = ssda.ID_SALIDA_DONACION ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		log.info(str);
 		return str;
 	}
+	
+	//Genera reporte tarjeta identificacion
+	public String ActualizaOperadorODS(OperadorRequest operadorRequest, UsuarioDto usuario) {		
+		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_OPERADOR = " + operadorRequest.getIdOperador()
+				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_MODIFICA + WHERE_ID_ORDEN_SERVICIO + operadorRequest.getIdOrdenServicio();
+		log.info(str);
+		return str;
+	}
+	
 	// Bloque Cancelacion ODS
 	public String cancelarODS(ReporteDto idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_ESTATUS_ORDEN_SERVICIO = 0, DES_MOTIVO_CANCELACION ='" +idODS.getMotivoCancelacion() + "'"

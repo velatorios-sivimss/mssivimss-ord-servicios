@@ -76,7 +76,6 @@ public class OrdenConsultar {
 
 	private Connection connection;
 
-	private ResultSet rs;
 
 	private Statement statement;
 
@@ -94,8 +93,6 @@ public class OrdenConsultar {
 	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
-	private static final String DONACION_SALIDA = "/generarDocumentoSalida";
-	private static final String DONACION_ENTRADA = "/generarDocumentoEntrada";
 	
 	public Response<Object>buscarRfc(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
@@ -449,9 +446,6 @@ public class OrdenConsultar {
 			if (statement != null) {
 				statement.close();
 			}
-			if (rs != null) {
-				rs.close();
-			}
 			if (connection != null) {
 				connection.close();
 			}
@@ -465,11 +459,16 @@ public class OrdenConsultar {
 	
 
 	public Response<Object> generaReporteTarjetaIdentificacion(DatosRequest request, Authentication authentication)
-			throws IOException {
+			throws IOException, SQLException {
 		Gson gson= new Gson();
 		String datosJson= request.getDatos().get(AppConstantes.DATOS).toString();
 		OperadorRequest operadorRequest = gson.fromJson(datosJson, OperadorRequest.class);
 		UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+		connection = database.getConnection();
+		statement = connection.createStatement();
+		connection.setAutoCommit(false);
+		String query = rNConsultaODSRepository.ActualizaOperadorODS(operadorRequest, usuario);
+		statement.executeUpdate(query);
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("idODS", operadorRequest.getIdOrdenServicio());
 		envioDatos.put("idOperador", operadorRequest.getIdOperador());
@@ -481,6 +480,7 @@ public class OrdenConsultar {
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Tarjeta Identificacion " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generaReporteTarjetaIdentificacion", GENERA_DOCUMENTO, authentication);
 			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+			connection.commit();
 		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
 			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
@@ -488,7 +488,14 @@ public class OrdenConsultar {
 					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
 					authentication);
 			throw new IOException("52", e.getCause());
-		}	
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
 	}
 	public Response<Object> generaReporteConsultaODS(DatosRequest request, Authentication authentication)
 			throws IOException {
@@ -517,15 +524,15 @@ public class OrdenConsultar {
 
 	public Response<Object> generarDocumentoOrdenServicio(DatosRequest request, Authentication authentication) throws IOException {
 		Gson gson = new Gson();
-		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
-
-		UsuarioDto usuarioRequest = gson.fromJson(datosJson, UsuarioDto.class);
+		
+		UsuarioDto usuarioRequest = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		
 		Map<String, Object> envioDatos = new HashMap<>();
-		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String datosJsonRequest = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		ReporteDto reporteDto= gson.fromJson(datosJsonRequest, ReporteDto.class);
 		envioDatos.put("idOds", reporteDto.getIdOrdenServicio());
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
-		envioDatos.put("usuarioSistema", usuarioRequest.getCveMatricula());
+		envioDatos.put("usuarioSistema", usuarioRequest.getNombre());
 		String nombreReporte="";
 		if(reporteDto.getEstatus() == 1) {
 			nombreReporte = reporteOrdenServicioTemp;
