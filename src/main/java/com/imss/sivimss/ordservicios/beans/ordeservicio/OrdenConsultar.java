@@ -503,8 +503,8 @@ public class OrdenConsultar {
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		Map<String, Object> envioDatos = new HashMap<>();
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
-		String query = rNConsultaODSRepository.generaReporteConsultaODS(reporteDto);
-		envioDatos.put("condicion", query);
+		String query = rNConsultaODSRepository.obtenerODS(reporteDto);
+		envioDatos.put("query", query);
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteConsultaODS);
 		try {
