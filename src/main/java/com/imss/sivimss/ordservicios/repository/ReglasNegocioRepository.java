@@ -610,14 +610,18 @@ public class ReglasNegocioRepository {
     // actualizar persona
 	public String actualizarPersona(Persona personaRequest, Integer idUsuario) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_PERSONA ");
-		q.agregarParametroValues("CVE_RFC", "'" + personaRequest.getRfc() + "'");
-		q.agregarParametroValues("CVE_CURP", "'" + personaRequest.getCurp() + "'");
-		q.agregarParametroValues("CVE_NSS", "'" + personaRequest.getNss() + "'");
+		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
+		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
+		if (personaRequest.getNss()==null ) {
+			q.agregarParametroValues("CVE_NSS", "NULL");
+		}else {
+			q.agregarParametroValues("CVE_NSS", ""+personaRequest.getNss()+"");
+		}
 		q.agregarParametroValues("NOM_PERSONA", "'" + personaRequest.getNomPersona() + "'");
 		q.agregarParametroValues("NOM_PRIMER_APELLIDO", "'" + personaRequest.getPrimerApellido() + "'");
 		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", "'" + personaRequest.getSegundoApellido() + "'");
 		q.agregarParametroValues("NUM_SEXO", "" + personaRequest.getSexo() + "");
-		q.agregarParametroValues("DES_OTRO_SEXO", "'" + personaRequest.getOtroSexo() + "'");
+		q.agregarParametroValues("DES_OTRO_SEXO", setValor(personaRequest.getOtroSexo()));
 		q.agregarParametroValues("FEC_NAC", "'" + personaRequest.getFechaNac() + "'");
 		q.agregarParametroValues("ID_PAIS", "" + personaRequest.getIdPais() + "");
 		q.agregarParametroValues("ID_ESTADO", "" + personaRequest.getIdEstado() + "");
