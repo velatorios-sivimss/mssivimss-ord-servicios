@@ -777,7 +777,7 @@ public class OrdenActualizar {
 		}
 
 		// pago bitacora
-		if (ordenesServicioRequest.getIdEstatus() == 2) {
+		if (ordenesServicioRequest.getIdEstatus() == 2 && ordenesServicioRequest.getFinado().getIdTipoOrden() == 1) {
 			insertarPagoBitacora(ordenesServicioRequest, usuario.getIdUsuario(), connection);
 
 		}
@@ -897,7 +897,7 @@ public class OrdenActualizar {
 		}
 
 		// pago bitacora
-		if (ordenesServicioRequest.getIdEstatus() == 2) {
+		if (ordenesServicioRequest.getIdEstatus() == 2 && ordenesServicioRequest.getFinado().getIdTipoOrden() == 1) {
 			insertarPagoBitacora(ordenesServicioRequest, usuario.getIdUsuario(), connection);
 
 		}
