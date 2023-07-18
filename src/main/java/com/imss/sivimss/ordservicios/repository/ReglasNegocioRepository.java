@@ -103,11 +103,11 @@ public class ReglasNegocioRepository {
 
 		SelectQueryUtil ordenServicio = new SelectQueryUtil();
 		ordenServicio.select("COUNT(*)").from("SVC_ORDEN_SERVICIO").where("ID_VELATORIO = :idVelatorio")
-				.and("ID_ESTATUS_ORDEN_SERVICIO not in (0,1)").setParameter("idVelatorio", idVelatorio);
+				.and("ID_ESTATUS_ORDEN_SERVICIO not in (1)").and("CVE_FOLIO IS NOT NULL ").setParameter("idVelatorio", idVelatorio);
 
 		SelectQueryUtil ordenServicioCount = new SelectQueryUtil();
 		ordenServicioCount.select("COUNT(*)+1").from("SVC_ORDEN_SERVICIO").where("ID_VELATORIO = :idVelatorio")
-				.and("ID_ESTATUS_ORDEN_SERVICIO not in (0,1)").setParameter("idVelatorio", idVelatorio);
+				.and("ID_ESTATUS_ORDEN_SERVICIO not in (1)").and("CVE_FOLIO IS NOT NULL ").setParameter("idVelatorio", idVelatorio);
 
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil
