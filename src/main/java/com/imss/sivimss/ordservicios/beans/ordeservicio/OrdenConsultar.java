@@ -469,6 +469,7 @@ public class OrdenConsultar {
 		connection.setAutoCommit(false);
 		String query = rNConsultaODSRepository.ActualizaOperadorODS(operadorRequest, usuario);
 		statement.executeUpdate(query);
+		connection.commit();
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("idODS", operadorRequest.getIdOrdenServicio());
 		envioDatos.put("idOperador", operadorRequest.getIdOperador());
@@ -480,7 +481,7 @@ public class OrdenConsultar {
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Tarjeta Identificacion " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generaReporteTarjetaIdentificacion", GENERA_DOCUMENTO, authentication);
 			response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
-			connection.commit();
+			
 		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
 			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
