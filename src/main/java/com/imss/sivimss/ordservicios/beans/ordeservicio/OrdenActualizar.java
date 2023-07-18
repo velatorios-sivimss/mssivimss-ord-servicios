@@ -301,14 +301,17 @@ public class OrdenActualizar {
 				
 				
 			}
+	
 			return contratanteResponse;
 		} finally {
+			
 			if (statementc != null) {
 				statementc.close();
 			}
 			if (rsc != null) {
 				rsc.close();
 			}
+			
 		}
 	}
 	
