@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.ordservicios.model.request.CancelacionODSDto;
 import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
 import com.imss.sivimss.ordservicios.model.request.PersonaRequest;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
@@ -412,25 +413,27 @@ public class OrdenConsultar {
         logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "cancelarODS", AppConstantes.BAJA, authentication);
 		Gson gson= new Gson();
 		String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-		ReporteDto idOrdenServicio= gson.fromJson(datosJson, ReporteDto.class);
+		CancelacionODSDto cancelacionODS= gson.fromJson(datosJson, CancelacionODSDto.class);
 		UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 
 		connection = database.getConnection();
 		statement = connection.createStatement();
 		connection.setAutoCommit(false);
-		query = rNConsultaODSRepository.cancelarODS(idOrdenServicio, usuario);
+		query = rNConsultaODSRepository.cancelarODS(cancelacionODS, usuario);
 		statement.executeUpdate(query);
-		query = rNConsultaODSRepository.cancelarCaracteristicasPaquete(idOrdenServicio.getIdOrdenServicio(), usuario);
+		query = rNConsultaODSRepository.cancelarCaracteristicasPaquete(cancelacionODS.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
-		query = rNConsultaODSRepository.cancelarDetalleCaracteristicasPaquete(idOrdenServicio.getIdOrdenServicio(), usuario);
+		query = rNConsultaODSRepository.cancelarDetalleCaracteristicasPaquete(cancelacionODS.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
-		query = rNConsultaODSRepository.cancelarCaracteristicasPresupuesto(idOrdenServicio.getIdOrdenServicio(), usuario);
+		query = rNConsultaODSRepository.cancelarCaracteristicasPresupuesto(cancelacionODS.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
-		query = rNConsultaODSRepository.cancelarDetalleCaracteristicasPresupuesto(idOrdenServicio.getIdOrdenServicio(), usuario);
+		query = rNConsultaODSRepository.cancelarDetalleCaracteristicasPresupuesto(cancelacionODS.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
-		query = rNConsultaODSRepository.cancelarDonacion(idOrdenServicio.getIdOrdenServicio(), usuario);
+		query = rNConsultaODSRepository.cancelarDonacion(cancelacionODS.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
-		query = rNConsultaODSRepository.cancelarInventarioArticulo(idOrdenServicio.getIdOrdenServicio(), usuario);
+		query = rNConsultaODSRepository.cancelarInventarioArticulo(cancelacionODS.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.actualizaCostoCancelacionPagoBitacora(cancelacionODS, usuario);
 		statement.executeUpdate(query);
 
 		connection.commit();

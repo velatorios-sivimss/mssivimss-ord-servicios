@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
+import com.imss.sivimss.ordservicios.model.request.CancelacionODSDto;
 import com.imss.sivimss.ordservicios.model.request.OperadorRequest;
 import com.imss.sivimss.ordservicios.model.request.ReporteDto;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
@@ -133,13 +134,9 @@ public class ReglasNegocioConsultaODSRepository {
 
 	public String obtenerUnidadMedica(Integer idDel) {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-		selectQueryUtil.select("DISTINCT(sum2.ID_UNIDAD_MEDICA) AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
+		selectQueryUtil.select("sum2.ID_UNIDAD_MEDICA AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
 		.from(TABLA_SVC_UNIDAD_MEDICA_SUM2)
-		.join(TABLA_SVC_FINADO_SF, "sf.ID_UNIDAD_PROCEDENCIA = sum2.ID_UNIDAD_MEDICA")
-		.join(TABLA_SVC_VELATORIO_SV,"sv.ID_VELATORIO  = sf.ID_VELATORIO")
-		.where("sum2.IND_ACTIVO = 1")
-		.and("sv.ID_DELEGACION = :idDel")
-		.setParameter("idDel", idDel);		
+		.where("sum2.IND_ACTIVO = 1");		
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -283,7 +280,7 @@ public class ReglasNegocioConsultaODSRepository {
 	}
 	
 	// Bloque Cancelacion ODS
-	public String cancelarODS(ReporteDto idODS, UsuarioDto usuario) {		
+	public String cancelarODS(CancelacionODSDto idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_ESTATUS_ORDEN_SERVICIO = 0, DES_MOTIVO_CANCELACION ='" +idODS.getMotivoCancelacion() + "'"
 				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA + WHERE_ID_ORDEN_SERVICIO + idODS.getIdOrdenServicio();
 		log.info(str);
@@ -323,6 +320,12 @@ public class ReglasNegocioConsultaODSRepository {
 	public String cancelarInventarioArticulo(Integer idODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET  IND_ESTATUS = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA
 				+ " WHERE ID_INVE_ARTICULO IN (" + queryIdInvArticulo(idODS) +")";
+		log.info(str);
+		return str;
+	}
+	public String actualizaCostoCancelacionPagoBitacora(CancelacionODSDto cancelacionODS, UsuarioDto usuario) {		
+		String str = "UPDATE SVT_PAGO_BITACORA SET DESC_VALOR = " + cancelacionODS.getCostoCancelacion() + ", CVE_ESTATUS_PAGO = 2, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() +", " + SET_CAMPO_FEC_MODIFICA
+				+ " WHERE ID_FLUJO_PAGOS = 1 AND ID_REGISTRO = " + cancelacionODS.getIdOrdenServicio() + " AND CVE_FOLIO = '" + cancelacionODS.getNumeroFolio() + "'" ;
 		log.info(str);
 		return str;
 	}
