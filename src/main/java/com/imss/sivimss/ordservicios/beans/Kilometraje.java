@@ -38,9 +38,9 @@ public class Kilometraje {
 		.innerJoin("SVT_PROVEEDOR SP", "SC.ID_PROVEEDOR = SP.ID_PROVEEDOR")
 		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SC.ID_CONTRATO = SCS.ID_CONTRATO")
 		.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
-		.where("SC.ID_PROVEEDOR ="+idProveedor);
+		.where("SC.ID_PROVEEDOR ="+idProveedor).and("SS.ID_TIPO_SERVICIO = 4");
 		
-		selectQueryUtil.select("SCT.NUM_KILOMETRO AS numKilometraje","("+selectQueryUtilCosto.build()+") AS costoPorKilometraje")
+		selectQueryUtil.select("DISTINCT SCT.NUM_KILOMETRO AS numKilometraje","("+selectQueryUtilCosto.build()+") AS costoPorKilometraje")
 		.from("SVT_PAQUETE SPA")
 		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SPA.ID_PAQUETE = SPS.ID_PAQUETE")
 		.innerJoin("SVT_CONF_TRASLADO SCT", "SCT.ID_PAQUETE = SPA.ID_PAQUETE")
