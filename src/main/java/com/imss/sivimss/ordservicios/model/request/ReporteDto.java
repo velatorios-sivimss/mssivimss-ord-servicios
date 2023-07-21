@@ -25,6 +25,10 @@ public class ReporteDto {
 	private String idSalidaDona;
 	private Integer idDonacion;
 	private Integer idAtaudDonacion;
+	private Integer idEstatusODS;
+	private Integer idDelegacion;
+	private String fechaIni;
+	private String fechaFin;
 	
 
 }
