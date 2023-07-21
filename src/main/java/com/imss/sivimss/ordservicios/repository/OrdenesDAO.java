@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.imss.sivimss.ordservicios.beans.ordeservicio.GeneraReporte;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenActualizar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenConsultar;
 import com.imss.sivimss.ordservicios.beans.ordeservicio.OrdenGuardar;
@@ -20,6 +21,9 @@ public class OrdenesDAO {
 
 	@Autowired
 	private OrdenConsultar ordenConsultar;
+	
+	@Autowired
+	private GeneraReporte generarReporte;
 	
 	@Autowired
 	private OrdenGuardar ordenGuardar;
@@ -125,5 +129,8 @@ public class OrdenesDAO {
 	}
 	public Response<Object> generaReporteOrdenServicio(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.generarDocumentoOrdenServicio(datos, auth);
+	}
+	public Response<Object> generaReporteODS(DatosRequest datos, Authentication auth) throws IOException{
+		return generarReporte.generarReporteODS(datos, auth);
 	}
 }

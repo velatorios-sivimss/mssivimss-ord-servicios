@@ -64,6 +64,7 @@ reporte:
   orden_servicio: ${msit_ORDEN_SERVICIO}
   consulta_ODS: ${msit_CONSULTA_ODS}
   genera_Tarjeta_Iden: ${msit_GENERA_TARJETA_IDEN}
+  genera_Reporte_ODS: "reportes/generales/GenerarReporteODS.jrxml"
 
 
 jwt:
