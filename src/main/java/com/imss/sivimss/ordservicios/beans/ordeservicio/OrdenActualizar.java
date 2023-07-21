@@ -758,14 +758,14 @@ public class OrdenActualizar {
 		if (ordenesServicioRequest.getIdEstatus() == 1) {
 			// temporales
 			caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
-					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(),
+					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
 
 		} else {
 			// buenas buenas
 			
 			caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
-					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(),
+					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
 
 		}
@@ -819,13 +819,13 @@ public class OrdenActualizar {
 		if (ordenesServicioRequest.getIdEstatus() == 1) {
 			// temporales
 			caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
-					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(),
+					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
 
 		} else {
 			// buenas buenas
 			caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
-					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(),
+					ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
 
 		}
@@ -878,14 +878,14 @@ public class OrdenActualizar {
 		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
-		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
+		  ordenesServicioRequest, usuario.getIdUsuario(),
 		  connection);
 		  
 		  } else { // buenas buenas
 		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);	  
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
-		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
+		  ordenesServicioRequest, usuario.getIdUsuario(),
 		  connection);
 		  
 		  }
@@ -963,13 +963,13 @@ public class OrdenActualizar {
 		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
-		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
+		  ordenesServicioRequest, usuario.getIdUsuario(),
 		  connection);
 		  
 		  } else { // buenas buenas
 		  caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(
 		  ordenesServicioRequest.getCaracteristicasPresupuesto(),
-		  ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(),
+		  ordenesServicioRequest, usuario.getIdUsuario(),
 		  connection);  
 		}
 		 
@@ -1045,6 +1045,8 @@ public class OrdenActualizar {
 					.actualizarDonacionTemporal(ordenesServicioRequest.getIdOrdenServicio()));
 			statementc.executeUpdate(reglasNegocioRepository
 					.desactivarInformacionServicio(ordenesServicioRequest.getIdOrdenServicio(),usuario.getIdUsuario()));
+			statementc.executeUpdate(reglasNegocioRepository
+					.desactivarSalidaDonacionTemp(ordenesServicioRequest.getIdOrdenServicio(),usuario.getIdUsuario()));
 		} finally {
 			if (statementc != null) {
 				statementc.close();

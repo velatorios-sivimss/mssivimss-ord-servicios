@@ -161,12 +161,12 @@ public class OrdenGuardar {
         if (ordenesServicioRequest.getIdEstatus()==1) {
 			// temporales
         	if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
-        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
         	}
 		}else {
 			// buenas buenas
 			if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
-        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
 			}
 		}
         
@@ -231,14 +231,14 @@ public class OrdenGuardar {
         if (ordenesServicioRequest.getIdEstatus()==1) {
 			// temporales
         	if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
-				caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+				caracteristicasPresupuesto.insertarCaracteristicasPresupuestoTemp(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
         	
 			}
         	
 		}else {
 			// buenas buenas
 			if (ordenesServicioRequest.getCaracteristicasPresupuesto()!=null) {
-        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        	   caracteristicasPresupuesto.insertarCaracteristicasPresupuesto(ordenesServicioRequest.getCaracteristicasPresupuesto(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
 			}
 		}
 
