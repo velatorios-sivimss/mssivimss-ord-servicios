@@ -2,7 +2,6 @@ package com.imss.sivimss.ordservicios.beans.ordeservicio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -493,12 +492,8 @@ public class OrdenConsultar {
 					authentication);
 			throw new IOException("52", e.getCause());
 		} finally {
-			if (statement != null) {
 				statement.close();
-			}
-			if (connection != null) {
 				connection.close();
-			}
 		}
 	}
 	public Response<Object> generaReporteConsultaODS(DatosRequest request, Authentication authentication)
