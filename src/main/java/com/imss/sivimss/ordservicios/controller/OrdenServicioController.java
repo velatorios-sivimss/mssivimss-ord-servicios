@@ -179,6 +179,12 @@ public class OrdenServicioController {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteODS");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+
+	@PostMapping("/consulta/reporte-ods")
+	public CompletableFuture<Object> consultaReporteODS(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "consultaReporteODS");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	
 	@PostMapping("/actualizar")
 	public CompletableFuture<Object>actualizarOrdenServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
