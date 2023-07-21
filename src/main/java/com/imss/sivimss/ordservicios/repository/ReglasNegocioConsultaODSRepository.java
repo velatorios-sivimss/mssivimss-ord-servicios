@@ -352,6 +352,7 @@ public class ReglasNegocioConsultaODSRepository {
 			condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
 		if (reporteDto.getIdConvenio() != null) 
 			condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
+		condicion = condicion + " GROUP BY 1";
 		log.info(condicion);
 		return condicion;
 	}
