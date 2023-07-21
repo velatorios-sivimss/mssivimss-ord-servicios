@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ import com.imss.sivimss.ordservicios.util.Response;
 @Service
 public class GeneraReporte {
 
+	@Value("${endpoints.mod-catalogos}")
+	private String urlDominio;
+	
 	@Value("${reporte.genera_Reporte_ODS}")
 	private String generaReporteODS;
 	
@@ -76,4 +80,31 @@ public class GeneraReporte {
 		}	
 	}
 
+	public Response<Object> consultaReporteODS(DatosRequest datosRequest, Authentication authentication) throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(datosRequest.getDatos().get(AppConstantes.DATOS));
+		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String query = reporteODSRepository.generaReporteODSCU025(reporteDto);
+		try {
+			log.info(CU025_NOMBRE);
+			log.info(query );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU025_NOMBRE + GENERAR_DOCUMENTO + " Genera Reporte ODS " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarReporteODS", GENERA_DOCUMENTO, authentication);
+			DatosRequest request= encodeQuery(query, datosRequest);
+			Response<Object>  response = providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTA_PAGINADO), authentication);
+			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+			return response;
+		} catch (Exception e) {
+			log.error( CU025_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU025_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
+	}
+	private DatosRequest encodeQuery(String query, DatosRequest request) {
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		request.getDatos().put(AppConstantes.QUERY, encoded);
+		return request;
+	}
 }
