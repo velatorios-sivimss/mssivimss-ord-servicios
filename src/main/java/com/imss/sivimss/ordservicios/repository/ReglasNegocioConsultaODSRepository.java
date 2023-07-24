@@ -34,7 +34,6 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVT_DOMICILIO_SD = "SVT_DOMICILIO sd";
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = "SVC_INFORMACION_SERVICIO sis";
 	private static final String TABLA_SVT_USUARIOS_SU = "SVT_USUARIOS su";
-	private static final String TABLA_SVC_CARACTERISTICAS_PRESUPUESTO_SCP2 = "SVC_CARACTERISTICAS_PRESUPUESTO scp2";
 	private static final String TABLA_SVC_PARENTESCO_SP2 = "SVC_PARENTESCO sp2";
 	private static final String TABLA_SVC_PAIS_SP3 = "SVC_PAIS sp3";
 	private static final String TABLA_SVC_ESTADO_SE = "SVC_ESTADO se";
@@ -132,7 +131,7 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
-	public String obtenerUnidadMedica(Integer idDel) {
+	public String obtenerUnidadMedica() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sum2.ID_UNIDAD_MEDICA AS idUnidadMedica","sum2.DES_UNIDAD_MEDICA AS nombreUnidad")
 		.from(TABLA_SVC_UNIDAD_MEDICA_SUM2)
@@ -272,7 +271,7 @@ public class ReglasNegocioConsultaODSRepository {
 	}
 	
 	//Genera reporte tarjeta identificacion
-	public String ActualizaOperadorODS(OperadorRequest operadorRequest, UsuarioDto usuario) {		
+	public String actualizaOperadorODS(OperadorRequest operadorRequest, UsuarioDto usuario) {		
 		String str = "UPDATE SVC_ORDEN_SERVICIO SET  ID_OPERADOR = " + operadorRequest.getIdOperador()
 				+ ", ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_MODIFICA + WHERE_ID_ORDEN_SERVICIO + operadorRequest.getIdOrdenServicio();
 		log.info(str);
@@ -323,6 +322,12 @@ public class ReglasNegocioConsultaODSRepository {
 		log.info(str);
 		return str;
 	}
+	// actualizar salida donacion
+    public String cancelarSalidaDonacion(Integer idODS, UsuarioDto usuario) {
+                String str = "UPDATE SVC_SALIDA_DONACION SET IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA + WHERE_ID_ORDEN_SERVICIO + idODS;
+        		log.info(str);
+                return str;
+    }
 	public String actualizaCostoCancelacionPagoBitacora(CancelacionODSDto cancelacionODS, UsuarioDto usuario) {		
 		String str = "UPDATE SVT_PAGO_BITACORA SET DESC_VALOR = " + cancelacionODS.getCostoCancelacion() + ", CVE_ESTATUS_PAGO = 2, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() +", " + SET_CAMPO_FEC_MODIFICA
 				+ " WHERE ID_FLUJO_PAGOS = 1 AND ID_REGISTRO = " + cancelacionODS.getIdOrdenServicio() + " AND CVE_FOLIO = '" + cancelacionODS.getNumeroFolio() + "'" ;
