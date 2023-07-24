@@ -317,7 +317,7 @@ public class ReglasNegocioConsultaODSRepository {
 		return str;
 	}
 	public String cancelarInventarioArticulo(Integer idODS, UsuarioDto usuario) {		
-		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET  IND_ESTATUS = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA
+		String str = "UPDATE SVT_INVENTARIO_ARTICULO SET ID_TIPO_ASIGNACION_ART=3, IND_ESTATUS = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", " + SET_CAMPO_FEC_BAJA
 				+ " WHERE ID_INVE_ARTICULO IN (" + queryIdInvArticulo(idODS) +")";
 		log.info(str);
 		return str;
