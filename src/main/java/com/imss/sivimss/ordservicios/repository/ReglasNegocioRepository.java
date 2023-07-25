@@ -492,6 +492,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CONTRATANTE", "" + idContratante + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
+		q.agregarParametroValues("FEC_SOLICITUD", CURRENT_TIMESTAMP);
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
