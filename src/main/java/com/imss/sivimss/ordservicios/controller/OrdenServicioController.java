@@ -192,6 +192,12 @@ public class OrdenServicioController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+	
+	@PostMapping("/generar/reporte-salida-donacion")
+	public CompletableFuture<Object> generaReporteSalidaDonacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteSalidaDonacion");
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	/**
 	 * fallbacks generico
 	 * 
