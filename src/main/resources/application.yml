@@ -65,6 +65,7 @@ reporte:
   consulta_ODS: ${msit_CONSULTA_ODS}
   genera_Tarjeta_Iden: ${msit_GENERA_TARJETA_IDEN}
   genera_Reporte_ODS: "reportes/generales/GenerarReporteODS.jrxml"
+  control-salida-ataudes-donacion: reportes/plantilla/ControlSalidaDonacion.jrxml
 
 
 jwt:
