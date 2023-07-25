@@ -273,11 +273,7 @@ public class OrdenConsultar {
 		String query="";
 		try {
 	        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "buscarUnidadMedica", AppConstantes.CONSULTA, authentication);
-
-			Gson gson= new Gson();
-			String datosJson= datosRequest.getDatos().get(AppConstantes.DATOS).toString();
-			VelatorioRequest finadoRequest=gson.fromJson(datosJson, VelatorioRequest.class);
-			query = rNConsultaODSRepository.obtenerUnidadMedica(finadoRequest.getIdDelegacion());
+			query = rNConsultaODSRepository.obtenerUnidadMedica();
 			DatosRequest request= encodeQuery(query, datosRequest);
 			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
@@ -432,6 +428,8 @@ public class OrdenConsultar {
 		statement.executeUpdate(query);
 		query = rNConsultaODSRepository.cancelarInventarioArticulo(cancelacionODS.getIdOrdenServicio(), usuario);
 		statement.executeUpdate(query);
+		query = rNConsultaODSRepository.cancelarSalidaDonacion(cancelacionODS.getIdOrdenServicio(), usuario);
+		statement.executeUpdate(query);
 		query = rNConsultaODSRepository.actualizaCostoCancelacionPagoBitacora(cancelacionODS, usuario);
 		statement.executeUpdate(query);
 
@@ -469,7 +467,7 @@ public class OrdenConsultar {
 		connection = database.getConnection();
 		statement = connection.createStatement();
 		connection.setAutoCommit(false);
-		String query = rNConsultaODSRepository.ActualizaOperadorODS(operadorRequest, usuario);
+		String query = rNConsultaODSRepository.actualizaOperadorODS(operadorRequest, usuario);
 		statement.executeUpdate(query);
 		connection.commit();
 		Map<String, Object> envioDatos = new HashMap<>();

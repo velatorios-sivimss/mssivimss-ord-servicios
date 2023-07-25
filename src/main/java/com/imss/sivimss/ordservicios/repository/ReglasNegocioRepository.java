@@ -471,6 +471,60 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+	
+	// insertar SVC_SALIDA_DONACION/SVC_SALIDA_DONACION_TEMP
+	public String insertarSalidaDonacion(String from,Integer idOrdenSServcio, Integer cantidad, String otorgamiento, Integer idContratante, Integer idUsuarioAlta) {
+		final QueryHelper q = new QueryHelper("INSERT INTO "+from);
+		q.agregarParametroValues("ID_ORDEN_SERVICIO", "" + idOrdenSServcio + "");
+		q.agregarParametroValues("NUM_TOTAL_ATAUDES", "" + cantidad + "");
+		if (otorgamiento!=null) {
+			
+			Integer indOtorgamiento=Integer.parseInt(otorgamiento);
+			if (indOtorgamiento==1) {
+				q.agregarParametroValues("IND_ESTUDIO_SOCIECONOMICO", "1");
+			}else if(indOtorgamiento==2) {
+				q.agregarParametroValues("IND_ESTUDIO_LIBRE", "1");
+
+			}
+		}
+		
+		q.agregarParametroValues("FEC_SOLICITUD",CURRENT_TIMESTAMP);
+		q.agregarParametroValues("ID_CONTRATANTE", "" + idContratante + "");
+		q.agregarParametroValues(IND_ACTIVO, "1");
+		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
+		q.agregarParametroValues("FEC_SOLICITUD", CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		query = q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
+	}
+	
+	// insertar SVC_SALIDA_DONACION_ATAUDES/SVC_SALIDA_DONACION_ATAUDES_TEMP
+	public String insertarSalidaDonacionAtaud(String from, Integer idSalidaDonacion, Integer idInventario, Integer idUsuarioAlta) {
+		final QueryHelper q = new QueryHelper("INSERT INTO "+from);
+		q.agregarParametroValues("ID_SALIDA_DONACION", "" + idSalidaDonacion + "");
+		q.agregarParametroValues("ID_INVE_ARTICULO", "" + idInventario + "");
+		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		query = q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
+	}
+	
+	// insertar SVC_SALIDA_DONACION_FINADOS/SVC_SALIDA_DONACION_FINADOS_TEMP
+	public String insertarSalidaDonacionFinado(String from, String nombreFinado, String primerApellidoFinado, String segundoApellidoFinado, Integer idSalidaDonacion, Integer idUsuarioAlta) {
+		final QueryHelper q = new QueryHelper("INSERT INTO "+from);
+		q.agregarParametroValues("NOM_FINADO", setValor(nombreFinado));
+		q.agregarParametroValues("NOM_PRIMER_APELLIDO", setValor(primerApellidoFinado));
+		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", setValor(segundoApellidoFinado));
+		q.agregarParametroValues("ID_SALIDA_DONACION", "" + idSalidaDonacion + "");
+		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		query = q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
+	}
+	
 
 	// actualizar inventario ataud
 	public String actualizarAtaudTipoAsignacion(Integer idInventarioArticulo, Integer idAsignacion,
@@ -478,8 +532,8 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_INVENTARIO_ARTICULO ");
 		q.agregarParametroValues("ID_TIPO_ASIGNACION_ART", "" + idAsignacion + "");
 		q.agregarParametroValues("IND_ESTATUS", "" + estatus + "");
-		q.agregarParametroValues("FEC_ACTUALIZACION", CURRENT_TIMESTAMP);
-		q.agregarParametroValues("ID_USUARIO_MODIFICA", "" + idUsuarioModifica + "");
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioModifica + "");
 		q.addWhere("ID_INVE_ARTICULO = " + idInventarioArticulo);
 		query = q.obtenerQueryActualizar();
 		log.info(query);
@@ -492,6 +546,16 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("CVE_TAREA", "'" + cveTarea + "'");
 		q.addWhere("ID_ORDEN_SERVICIO = " + ordenServicio);
 		query = q.obtenerQueryActualizar();
+		log.info(query);
+		return query;
+	}
+	
+	// consultar tipo de asignacion ataud
+	public String consultarAsignacionInventario(Integer idInventario) {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("ID_TIPO_ASIGNACION_ART AS idAsignacion").from("SVT_INVENTARIO_ARTICULO ")
+					.where("ID_INVE_ARTICULO = " + idInventario);
+		query = selectQueryUtil.build();
 		log.info(query);
 		return query;
 	}
@@ -593,6 +657,16 @@ public class ReglasNegocioRepository {
 		final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_DONACION_ORDEN_SERVICIO_TEMP ");
 		queryHelper.agregarParametroValues("IND_ACTIVO", "0");
 		queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
+
+		query = queryHelper.obtenerQueryActualizar();
+		log.info(query);
+		return query;
+	}
+	
+	public String actualizarSalidaDonacionTemporal(Integer idSalida) {
+		final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_SALIDA_DONACION_TEMP ");
+		queryHelper.agregarParametroValues("IND_ACTIVO", "0");
+		queryHelper.addWhere(" ID_SALIDA_DONACION = " + idSalida);
 
 		query = queryHelper.obtenerQueryActualizar();
 		log.info(query);
@@ -722,7 +796,7 @@ public class ReglasNegocioRepository {
 	}
 	
 	// actualizar informacion servicio
-		public String desactivarInformacionServicio(Integer idOrdenServicio, Integer idUsuarioAlta) {
+	public String desactivarInformacionServicio(Integer idOrdenServicio, Integer idUsuarioAlta) {
 			final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO ");
 			q.agregarParametroValues(IND_ACTIVO, "0");
 			q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
@@ -731,8 +805,20 @@ public class ReglasNegocioRepository {
 			query = q.obtenerQueryActualizar();
 			log.info(query);
 			return query;
-		}
-
+	}
+	
+	// actualizar salida donacion
+	public String desactivarSalidaDonacionTemp(Integer idOrdenServicio, Integer idUsuarioAlta) {
+				final QueryHelper q = new QueryHelper("UPDATE SVC_SALIDA_DONACION_TEMP ");
+				q.agregarParametroValues(IND_ACTIVO, "0");
+				q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
+				q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+				q.addWhere(ID_ORDEN_SERVICIO+"="+idOrdenServicio);
+				query = q.obtenerQueryActualizar();
+				log.info(query);
+				return query;
+	}
+	
 	// actualizar informacion servicio velacion
 	public String actualizarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
 			Integer idInformacionServicio, Integer idUsuarioAlta) {
