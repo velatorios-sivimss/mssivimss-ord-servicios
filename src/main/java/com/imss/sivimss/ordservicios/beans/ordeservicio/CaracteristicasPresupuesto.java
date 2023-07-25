@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetallePresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleRequest;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
+import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 
 @Service
@@ -21,17 +22,21 @@ public class CaracteristicasPresupuesto {
 	private Statement statement;
 	
 	private Integer idDonacion;
+
+	private Integer idInventario;
+
+	private Boolean salidaDonacion=false;
 	
 	@Autowired
 	private ReglasNegocioRepository reglasNegocioRepository;
 	
-	public void insertarCaracteristicasPresupuestoTemp(CaracteristicasPresupuestoRequest caracteristicasPresupuestoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException{
+	public void insertarCaracteristicasPresupuestoTemp(CaracteristicasPresupuestoRequest caracteristicasPresupuestoRequest, OrdenesServicioRequest idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException{
 		try {
 			statement=connection.createStatement();
 			
 			// caracteristicas paquete temp
 			if (caracteristicasPresupuestoRequest.getCaracteristicasPaquete()!=null) {
-				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPaquete("SVC_CARACTERISTICAS_PAQUETE_TEMP",caracteristicasPresupuestoRequest.getCaracteristicasPaquete(), idOrdenServicio, idUsuarioAlta),
+				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPaquete("SVC_CARACTERISTICAS_PAQUETE_TEMP",caracteristicasPresupuestoRequest.getCaracteristicasPaquete(), idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
@@ -43,14 +48,19 @@ public class CaracteristicasPresupuesto {
 			}
 			// caracteristicas presupuesto temp
 			if (caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto()!=null) {
-				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPresupuesto("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP", caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto(), idOrdenServicio, idUsuarioAlta),
+				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPresupuesto("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP", caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto(), idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
 					caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().setIdCaracteristicasPresupuesto(rs.getInt(1));
 				}
 				// detalle caracteristicas presupuesto temp
-				detalleCaracteristicasPresupuestoTemp(caracteristicasPresupuestoRequest, idOrdenServicio, idUsuarioAlta);
+				detalleCaracteristicasPresupuestoTemp(caracteristicasPresupuestoRequest, idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta);
+				// salida donacion
+				if ((idOrdenServicio.getFinado().getIdTipoOrden()==1 || idOrdenServicio.getFinado().getIdTipoOrden()==2) && Boolean.TRUE.equals(salidaDonacion)) {
+					insertarSalidaDonacionTemp(idOrdenServicio,idUsuarioAlta);
+				}
+				
 			}
 			
 			
@@ -66,20 +76,21 @@ public class CaracteristicasPresupuesto {
 		
 	}
 	
-	public void insertarCaracteristicasPresupuesto(CaracteristicasPresupuestoRequest caracteristicasPresupuestoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException{
+	
+	public void insertarCaracteristicasPresupuesto(CaracteristicasPresupuestoRequest caracteristicasPresupuestoRequest, OrdenesServicioRequest idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException{
 		try {
 			statement=connection.createStatement();
 			
 			// caracteristicas paquete
 			if (caracteristicasPresupuestoRequest.getCaracteristicasPaquete()!=null) {
-				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPaquete("SVC_CARACTERISTICAS_PAQUETE",caracteristicasPresupuestoRequest.getCaracteristicasPaquete(), idOrdenServicio, idUsuarioAlta),
+				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPaquete("SVC_CARACTERISTICAS_PAQUETE",caracteristicasPresupuestoRequest.getCaracteristicasPaquete(), idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
 					caracteristicasPresupuestoRequest.getCaracteristicasPaquete().setIdCaracteristicasPaquete(rs.getInt(1));
 				}
 				// detalle caracteristicas paquete
-				detalleCaracteristicasPaquete(caracteristicasPresupuestoRequest, idOrdenServicio, idUsuarioAlta);
+				detalleCaracteristicasPaquete(caracteristicasPresupuestoRequest, idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta);
 				
 			}
 			// caracteristicas presupuesto
@@ -87,7 +98,7 @@ public class CaracteristicasPresupuesto {
 				statement.executeUpdate(reglasNegocioRepository.insertarCaracteristicasPresupuesto(
 						"SVC_CARACTERISTICAS_PRESUPUESTO", 
 						caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto(), 
-						idOrdenServicio, 
+						idOrdenServicio.getIdOrdenServicio(), 
 						idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
@@ -95,7 +106,11 @@ public class CaracteristicasPresupuesto {
 					caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().setIdCaracteristicasPresupuesto(rs.getInt(1));
 				}
 				// detalle caracteristicas presupuesto
-				detalleCaracteristicasPresupuesto(caracteristicasPresupuestoRequest, idOrdenServicio, idUsuarioAlta);
+				detalleCaracteristicasPresupuesto(caracteristicasPresupuestoRequest, idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta);
+				// salida donacion
+				if ((idOrdenServicio.getFinado().getIdTipoOrden()==1 || idOrdenServicio.getFinado().getIdTipoOrden()==2) && Boolean.TRUE.equals(salidaDonacion)) {
+					insertarSalidaDonacion(idOrdenServicio,idUsuarioAlta);
+				}
 			}
 			
 			
@@ -194,6 +209,11 @@ public class CaracteristicasPresupuesto {
 							Statement.RETURN_GENERATED_KEYS);
 					rs = statement.getGeneratedKeys();
 				}
+				
+				if (detallePresupuestoRequest.getIdCategoria()!=null && detallePresupuestoRequest.getIdCategoria()==1 && detallePresupuestoRequest.getProviene().equalsIgnoreCase("paquete") && detallePresupuestoRequest.getEsDonado()==0) {
+					idInventario=detallePresupuestoRequest.getIdInventario();
+					salidaDonacion=true;
+				}
 				// traslado temp
 				caracteristicasPresupuestoDetalleTrasladoTemp(detallePresupuestoRequest, idUsuarioAlta);
 				
@@ -255,18 +275,31 @@ public class CaracteristicasPresupuesto {
 					statement.executeUpdate(reglasNegocioRepository.actualizarAtaudTipoAsignacion(
 							detallePresupuestoRequest.getIdInventario(),
 							3,
-							idUsuarioAlta,1),
+							idUsuarioAlta,0),
 							Statement.RETURN_GENERATED_KEYS);
 					
 				}
 				
 				if(detallePresupuestoRequest.getIdInventario()!=null && (detallePresupuestoRequest.getIdCategoria()==1 || detallePresupuestoRequest.getIdCategoria()==2 || detallePresupuestoRequest.getIdCategoria()==4)) {
-					statement.executeUpdate(reglasNegocioRepository.actualizarEstatusAtaud(
+					if (detallePresupuestoRequest.getIdCategoria()==1 && detallePresupuestoRequest.getEsDonado()==1) {
+						statement.executeUpdate(reglasNegocioRepository.actualizarEstatusAtaud(
+								detallePresupuestoRequest.getIdInventario(),
+								idUsuarioAlta,0),
+								Statement.RETURN_GENERATED_KEYS);
+					}else {
+						statement.executeUpdate(reglasNegocioRepository.actualizarEstatusAtaud(
 							detallePresupuestoRequest.getIdInventario(),
 							idUsuarioAlta,1),
 							Statement.RETURN_GENERATED_KEYS);
+					}
+					
 				}
-				
+				if (detallePresupuestoRequest.getIdCategoria()!=null && detallePresupuestoRequest.getIdCategoria()==1 
+						&& detallePresupuestoRequest.getProviene().equalsIgnoreCase("paquete") 
+						&& detallePresupuestoRequest.getEsDonado()==0) {
+					idInventario=detallePresupuestoRequest.getIdInventario();
+					salidaDonacion=true;
+				}
 				// traslado
 				caracteristicasPresupuestoDetalleTraslado(detallePresupuestoRequest, idUsuarioAlta);
 				
@@ -291,4 +324,85 @@ public class CaracteristicasPresupuesto {
 			}
 		}
 	}
+
+	private void insertarSalidaDonacionTemp(OrdenesServicioRequest ordenesServicioRequest,Integer idUsuarioAlta) throws SQLException {
+		
+		ResultSet consultaAsignacion = statement
+				.executeQuery(reglasNegocioRepository.consultarAsignacionInventario(idInventario));
+		if (consultaAsignacion.next()) {
+			Integer idTipoAsignacion = consultaAsignacion.getInt("idAsignacion");
+			if (idTipoAsignacion == 3) {
+
+				statement
+						.executeUpdate(
+								reglasNegocioRepository.insertarSalidaDonacion("SVC_SALIDA_DONACION_TEMP",
+										ordenesServicioRequest.getIdOrdenServicio(), 1,
+										ordenesServicioRequest.getCaracteristicasPresupuesto()
+												.getCaracteristicasPaquete().getOtorgamiento(),
+										ordenesServicioRequest.getContratante().getIdContratante(), idUsuarioAlta),
+								Statement.RETURN_GENERATED_KEYS);
+				rs = statement.getGeneratedKeys();
+
+				if (rs.next()) {
+					Integer idSalidaDonacion = rs.getInt(1);
+
+					statement.executeUpdate(
+							reglasNegocioRepository.insertarSalidaDonacionAtaud("SVC_SALIDA_DONACION_ATAUDES_TEMP",
+									idSalidaDonacion, idInventario, idUsuarioAlta),
+							Statement.RETURN_GENERATED_KEYS);
+					rs = statement.getGeneratedKeys();
+					if (rs.next()) {
+						statement.executeUpdate(reglasNegocioRepository.insertarSalidaDonacionFinado(
+								"SVC_SALIDA_DONACION_FINADOS_TEMP", ordenesServicioRequest.getFinado().getNomPersona(),
+								ordenesServicioRequest.getFinado().getPrimerApellido(),
+								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
+								idUsuarioAlta));
+					}
+				}
+			}
+		}
+	}
+	
+	private void insertarSalidaDonacion(OrdenesServicioRequest ordenesServicioRequest,Integer idUsuarioAlta) throws SQLException {
+		ResultSet consultaAsignacion = statement
+				.executeQuery(reglasNegocioRepository.consultarAsignacionInventario(idInventario));
+		if (consultaAsignacion.next()) {
+			Integer idTipoAsignacion = consultaAsignacion.getInt("idAsignacion");
+			if (idTipoAsignacion == 3) {
+				statement
+						.executeUpdate(
+								reglasNegocioRepository.insertarSalidaDonacion("SVC_SALIDA_DONACION",
+										ordenesServicioRequest.getIdOrdenServicio(), 1,
+										ordenesServicioRequest.getCaracteristicasPresupuesto()
+												.getCaracteristicasPaquete().getOtorgamiento(),
+										ordenesServicioRequest.getContratante().getIdContratante(), idUsuarioAlta),
+								Statement.RETURN_GENERATED_KEYS);
+				rs = statement.getGeneratedKeys();
+
+				if (rs.next()) {
+					Integer idSalidaDonacion = rs.getInt(1);
+
+					statement
+							.executeUpdate(
+									reglasNegocioRepository.insertarSalidaDonacionAtaud("SVC_SALIDA_DONACION_ATAUDES",
+											idSalidaDonacion, idInventario, idUsuarioAlta),
+									Statement.RETURN_GENERATED_KEYS);
+					rs = statement.getGeneratedKeys();
+					if (rs.next()) {
+						statement.executeUpdate(reglasNegocioRepository.insertarSalidaDonacionFinado(
+								"SVC_SALIDA_DONACION_FINADOS", ordenesServicioRequest.getFinado().getNomPersona(),
+								ordenesServicioRequest.getFinado().getPrimerApellido(),
+								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
+								idUsuarioAlta));
+					}
+				}
+
+				statement.executeUpdate(
+						reglasNegocioRepository.actualizarAtaudTipoAsignacion(idInventario, 4, idUsuarioAlta, null),
+						Statement.RETURN_GENERATED_KEYS);
+
+			}
+		}
+	}
+	
 }
