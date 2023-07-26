@@ -139,4 +139,7 @@ public class OrdenesDAO {
 	public Response<Object> generaReporteSalidaDonacion(DatosRequest datos, Authentication auth) throws IOException, SQLException{
 		return generaReporteService.generarReporteSalidaDonacion(datos, auth);
 	}
+	public Response<Object> generaReporteDonacion(DatosRequest datos, Authentication auth) throws IOException, SQLException{
+		return generaReporteService.generarReporteDonacion(datos, auth);
+	}
 }

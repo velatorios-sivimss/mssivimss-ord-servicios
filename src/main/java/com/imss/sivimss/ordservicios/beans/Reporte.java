@@ -151,5 +151,60 @@ public class Reporte {
 		log.info(query);
 		return query;
 	}
+	
+	// consultar reporte donacion
+	public String consultarReporteDonacion(Integer idOrdenServicio) {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("SD.DES_DELEGACION AS ooadNom", "SV.ID_VELATORIO AS velatorioId","SOS.CVE_FOLIO AS numContrato", "CONCAT_WS('-',STA.FOLIO_ARTICULO,STVA.DES_MODELO_ARTICULO ) AS modeloAtaud",
+				"TM.DES_TIPO_MATERIAL AS tipoAtaud", "STA.FOLIO_ARTICULO AS numInventarios","CONCAT_WS(' ',SPE2.NOM_PERSONA,SPE2.NOM_PRIMER_APELLIDO,SPE2.NOM_SEGUNDO_APELLIDO ) AS nomFinado",
+				"CONCAT_WS(' ',SPE.NOM_PERSONA,SPE.NOM_PRIMER_APELLIDO,SPE.NOM_SEGUNDO_APELLIDO ) AS nomContratante","CONCAT_WS(' ',SU.NOM_USUARIO,SU.NOM_APELLIDO_PATERNO,SU.NOM_APELLIDO_MATERNO) AS nomAdministrador",
+				"SU.CVE_MATRICULA AS claveAdministrador","CONCAT_WS(',',SV.DES_VELATORIO,SD.DES_DELEGACION) AS lugar","DAY(NOW()) as dia","ELT(MONTH(NOW()), \"ENERO\", \"FEBRERO\", \"MARZO\", \"ABRIL\", \"MAYO\", \"JUNIO\", \"JULIO\", \"AGOSTO\", \"SEPTIEMBRE\", \"OCTUBRE\", \"NOVIEMBRE\", \"DICIEMBRE\") as mes",
+				"YEAR(NOW()) as anio")
+		.from("SVC_DONACION SDN")
+		.innerJoin("SVC_ATAUDES_DONADOS SAD", "SDN.ID_DONACION = SAD.ID_DONACION")
+		.innerJoin("SVC_ORDEN_SERVICIO SOS", "SOS.ID_ORDEN_SERVICIO = SDN.ID_ORDEN_SERVICIO ")
+		.innerJoin(ConsultaConstantes.SVC_CONTRATANTE_SC, "SC.ID_CONTRATANTE = SOS.ID_CONTRATANTE")
+		.innerJoin("SVC_PERSONA SPE", "SPE.ID_PERSONA = SC.ID_PERSONA")
+		.innerJoin("SVC_FINADO STF", "STF.ID_ORDEN_SERVICIO = SOS.ID_ORDEN_SERVICIO")
+		.leftJoin("SVC_PERSONA SPE2", "SPE2.ID_PERSONA =STF.ID_PERSONA")
+		.innerJoin("SVT_INVENTARIO_ARTICULO STA", "STA.ID_INVE_ARTICULO = SAD.ID_INVE_ARTICULO")
+		.innerJoin("SVT_ARTICULO STVA", "STVA.ID_ARTICULO  = STA.ID_ARTICULO").and("STVA.ID_CATEGORIA_ARTICULO = 1")
+		.innerJoin("SVC_TIPO_MATERIAL TM", "STVA.ID_TIPO_MATERIAL = TM.ID_TIPO_MATERIAL")
+		.innerJoin(ConsultaConstantes.SVC_VELATORIO_SV, "SOS.ID_VELATORIO = SV.ID_VELATORIO")
+		.innerJoin("SVC_DELEGACION SD", "SD.ID_DELEGACION = SV.ID_DELEGACION")
+		.leftJoin("SVT_USUARIOS SU", "SU.ID_USUARIO = SV.ID_USUARIO_ADMIN")
+		.where("SOS.ID_ORDEN_SERVICIO = :idOrdenServicio").setParameter("idOrdenServicio", idOrdenServicio).and("SDN.IND_ACTIVO = 1");
+		
+		query = selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+	
+	public String consultarReporteDonacionTemp(Integer idOrdenServicio) {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("SD.DES_DELEGACION AS ooadNom", "SV.ID_VELATORIO AS velatorioId","SOS.CVE_FOLIO AS numContrato", "CONCAT_WS('-',STA.FOLIO_ARTICULO,STVA.DES_MODELO_ARTICULO ) AS modeloAtaud",
+				"TM.DES_TIPO_MATERIAL AS tipoAtaud", "STA.FOLIO_ARTICULO AS numInventarios","CONCAT_WS(' ',SPE2.NOM_PERSONA,SPE2.NOM_PRIMER_APELLIDO,SPE2.NOM_SEGUNDO_APELLIDO ) AS nomFinado",
+				"CONCAT_WS(' ',SPE.NOM_PERSONA,SPE.NOM_PRIMER_APELLIDO,SPE.NOM_SEGUNDO_APELLIDO ) AS nomContratante","CONCAT_WS(' ',SU.NOM_USUARIO,SU.NOM_APELLIDO_PATERNO,SU.NOM_APELLIDO_MATERNO) AS nomAdministrador",
+				"SU.CVE_MATRICULA AS claveAdministrador","CONCAT_WS(',',SV.DES_VELATORIO,SD.DES_DELEGACION) AS lugar","DAY(NOW()) as dia","ELT(MONTH(NOW()), \"ENERO\", \"FEBRERO\", \"MARZO\", \"ABRIL\", \"MAYO\", \"JUNIO\", \"JULIO\", \"AGOSTO\", \"SEPTIEMBRE\", \"OCTUBRE\", \"NOVIEMBRE\", \"DICIEMBRE\") as mes",
+				"YEAR(NOW()) as anio")
+		.from("SVC_DONACION_ORDEN_SERVICIO_TEMP SDN")
+		.innerJoin("SVC_ORDEN_SERVICIO SOS", "SOS.ID_ORDEN_SERVICIO = SDN.ID_ORDEN_SERVICIO ")
+		.innerJoin(ConsultaConstantes.SVC_CONTRATANTE_SC, "SC.ID_CONTRATANTE = SOS.ID_CONTRATANTE")
+		.innerJoin("SVC_PERSONA SPE", "SPE.ID_PERSONA = SC.ID_PERSONA")
+		.innerJoin("SVC_FINADO STF", "STF.ID_ORDEN_SERVICIO = SOS.ID_ORDEN_SERVICIO")
+		.leftJoin("SVC_PERSONA SPE2", "SPE2.ID_PERSONA =STF.ID_PERSONA")
+		.innerJoin("SVT_INVENTARIO_ARTICULO STA", "STA.ID_INVE_ARTICULO = SDN.ID_INVE_ARTICULO")
+		.innerJoin("SVT_ARTICULO STVA", "STVA.ID_ARTICULO  = STA.ID_ARTICULO").and("STVA.ID_CATEGORIA_ARTICULO = 1")
+		.innerJoin("SVC_TIPO_MATERIAL TM", "STVA.ID_TIPO_MATERIAL = TM.ID_TIPO_MATERIAL")
+		.innerJoin(ConsultaConstantes.SVC_VELATORIO_SV, "SOS.ID_VELATORIO = SV.ID_VELATORIO")
+		.innerJoin("SVC_DELEGACION SD", "SD.ID_DELEGACION = SV.ID_DELEGACION")
+		.leftJoin("SVT_USUARIOS SU", "SU.ID_USUARIO = SV.ID_USUARIO_ADMIN")
+		.where("SOS.ID_ORDEN_SERVICIO = :idOrdenServicio").setParameter("idOrdenServicio", idOrdenServicio).and("SDN.IND_ACTIVO = 1");
+		
+		query = selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+		
 
 }
