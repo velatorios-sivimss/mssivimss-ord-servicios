@@ -186,7 +186,6 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		 } else {
 			 rs=statement.executeQuery(new Reporte().consultarReporteSalidaDonacionTemp(contratoServicioInmediatoRequest.getIdOrdenServicio()));
 		 }
-		connection.commit();
 		if (rs.next()) {
 			reporteControlSalidaDonacionResponse.setOoadNom(rs.getString(1));
 			reporteControlSalidaDonacionResponse.setVelatorioId(rs.getInt(2));
@@ -215,7 +214,7 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 					this.getClass().getPackage().toString(), "generaReporteTarjetaIdentificacion", GENERA_DOCUMENTO, authentication);
 			response = providerRestTemplate.consumirServicioReportes(controlSalidaDonacionMap(reporteControlSalidaDonacionResponse), urlReportes, authentication);
 			
-		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+			return   response;
 		} catch (Exception e) {
 			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
