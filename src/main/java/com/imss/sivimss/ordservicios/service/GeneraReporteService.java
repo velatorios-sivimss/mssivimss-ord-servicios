@@ -12,6 +12,8 @@ public interface GeneraReporteService {
 
 	Response<Object> generarDocumentoContratoServInmediato(DatosRequest request, Authentication authentication) throws IOException;
 	
+	Response<Object> generarReporteDonacion(DatosRequest request, Authentication authentication) throws IOException, SQLException;
+	
 	Response<Object> generarReporteSalidaDonacion(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 
 }

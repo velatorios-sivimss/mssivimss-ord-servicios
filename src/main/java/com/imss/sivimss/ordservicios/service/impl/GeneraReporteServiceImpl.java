@@ -24,6 +24,7 @@ import com.imss.sivimss.ordservicios.beans.Reporte;
 import com.imss.sivimss.ordservicios.model.request.ContratoServicioInmediatoRequest;
 import com.imss.sivimss.ordservicios.model.response.ContratoServicioInmediatoResponse;
 import com.imss.sivimss.ordservicios.model.response.ReporteControlSalidaDonacionResponse;
+import com.imss.sivimss.ordservicios.model.response.ReporteDonacionResponse;
 import com.imss.sivimss.ordservicios.service.GeneraReporteService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConsultaConstantes;
@@ -56,8 +57,11 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 	@Value("${reporte.contrato_servicio_inmediato}")
 	private String contratoServicioInmediato;
 	
-	@Value("${reporte..control-salida-ataudes-donacion}")
+	@Value("${reporte.control-salida-ataudes-donacion}")
 	private String nombrePdfControlSalida;
+	
+	@Value("${reporte.aceptacion-control-ataudes-donacion}")
+	private String nombrePdfAceptacionControl;
 	
 	@Autowired 
 	private ModelMapper modelMapper;
@@ -186,7 +190,6 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		 } else {
 			 rs=statement.executeQuery(new Reporte().consultarReporteSalidaDonacionTemp(contratoServicioInmediatoRequest.getIdOrdenServicio()));
 		 }
-		connection.commit();
 		if (rs.next()) {
 			reporteControlSalidaDonacionResponse.setOoadNom(rs.getString(1));
 			reporteControlSalidaDonacionResponse.setVelatorioId(rs.getInt(2));
@@ -212,10 +215,10 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		try {
 			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Salida Donacion " );
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Salida Donacion " + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(), "generaReporteTarjetaIdentificacion", GENERA_DOCUMENTO, authentication);
+					this.getClass().getPackage().toString(), "generarReporteSalidaDonacion", GENERA_DOCUMENTO, authentication);
 			response = providerRestTemplate.consumirServicioReportes(controlSalidaDonacionMap(reporteControlSalidaDonacionResponse), urlReportes, authentication);
 			
-		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+			return   response;
 		} catch (Exception e) {
 			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
@@ -258,6 +261,89 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		
 		log.info(" TERMINO - controlSalidaDonacionMap");
 
+		return envioDatos;
+	}
+
+	@Override
+	public Response<Object> generarReporteDonacion(DatosRequest request, Authentication authentication)
+			throws IOException, SQLException {
+		Gson gson= new Gson();
+		String datosJson= request.getDatos().get(AppConstantes.DATOS).toString();
+		ContratoServicioInmediatoRequest contratoServicioInmediatoRequest = gson.fromJson(datosJson, ContratoServicioInmediatoRequest.class);
+		ReporteDonacionResponse reporteDonacionResponse = new ReporteDonacionResponse();
+		connection = database.getConnection();
+		statement = connection.createStatement();
+		connection.setAutoCommit(false);
+		 if(contratoServicioInmediatoRequest.getGeneraReporte() == 1) {
+			 rs=statement.executeQuery(new Reporte().consultarReporteDonacion(contratoServicioInmediatoRequest.getIdOrdenServicio()));
+		 } else {
+			 rs=statement.executeQuery(new Reporte().consultarReporteDonacionTemp(contratoServicioInmediatoRequest.getIdOrdenServicio()));
+		 }
+		if (rs.next()) {
+			reporteDonacionResponse.setOoadNom(rs.getString(1));
+			reporteDonacionResponse.setVelatorioId(rs.getInt(2));
+			reporteDonacionResponse.setNumContrato(rs.getString(3));
+			reporteDonacionResponse.setModeloAtaud(rs.getString(4));
+			reporteDonacionResponse.setTipoAtaud(rs.getString(5));
+			reporteDonacionResponse.setNumInventarios(rs.getString(6));
+			reporteDonacionResponse.setNomFinado(rs.getString(7));
+			reporteDonacionResponse.setNomContratante(rs.getString(8));
+			reporteDonacionResponse.setNomAdministrador(rs.getString(9));
+			reporteDonacionResponse.setClaveAdministrador(rs.getString(10));
+			reporteDonacionResponse.setLugar(rs.getString(11));
+			reporteDonacionResponse.setDia(rs.getInt(12));
+			reporteDonacionResponse.setMes(rs.getString(13));
+			reporteDonacionResponse.setAnio(rs.getInt(14));
+			
+		}
+		reporteDonacionResponse.setTipoReporte(contratoServicioInmediatoRequest.getTipoReporte());
+
+		try {
+			log.info( CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Donacion " );
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + " Reporte Donacion " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarReporteDonacion", GENERA_DOCUMENTO, authentication);
+			response = providerRestTemplate.consumirServicioReportes(donacionMap(reporteDonacionResponse), urlReportes, authentication);
+			
+			return   response;
+		} catch (Exception e) {
+			log.error( CU024_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU024_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		} finally {
+				statement.close();
+				connection.close();
+		}
+	}
+	
+	private Map<String, Object> donacionMap(ReporteDonacionResponse reporteDonacionResponse) {
+		log.info(" INICIO - donacionMap");
+		
+		Map<String, Object> envioDatos = new HashMap<>();
+		
+		envioDatos.put("version", reporteDonacionResponse.getVersion());
+		envioDatos.put("ooadNom", ConsultaConstantes.validar(reporteDonacionResponse.getOoadNom()));
+		envioDatos.put("velatorio", reporteDonacionResponse.getVelatorioId());
+		envioDatos.put("numContrato", ConsultaConstantes.validar(reporteDonacionResponse.getNumContrato()));
+		envioDatos.put("tipoAtaud", ConsultaConstantes.validar(reporteDonacionResponse.getTipoAtaud()));
+		envioDatos.put("modeloAtaud", ConsultaConstantes.validar(reporteDonacionResponse.getModeloAtaud()));
+		envioDatos.put("numInventarios", ConsultaConstantes.validar(reporteDonacionResponse.getNumInventarios()));
+		envioDatos.put("nomFinado", ConsultaConstantes.validar(reporteDonacionResponse.getNomFinado()));
+		envioDatos.put(ConsultaConstantes.RESPONSABLE_ALMACEN, ConsultaConstantes.validar(reporteDonacionResponse.getNomResponsableAlmacen()));
+		envioDatos.put("matriculaResponSable",ConsultaConstantes.validar(reporteDonacionResponse.getClaveResponsableAlmacen()));
+		envioDatos.put("contratante", ConsultaConstantes.validar(reporteDonacionResponse.getNomContratante()));
+		envioDatos.put("administrador", ConsultaConstantes.validar(reporteDonacionResponse.getNomAdministrador()));
+		envioDatos.put("matriculaAdministrador", ConsultaConstantes.validar(reporteDonacionResponse.getClaveAdministrador()));
+		envioDatos.put("lugar", ConsultaConstantes.validar(reporteDonacionResponse.getLugar()));
+		envioDatos.put("dia", reporteDonacionResponse.getDia());
+		envioDatos.put("mes", ConsultaConstantes.validar(reporteDonacionResponse.getMes()));
+		envioDatos.put("anio", reporteDonacionResponse.getAnio());
+		envioDatos.put(ConsultaConstantes.TIPO_REPORTE, reporteDonacionResponse.getTipoReporte());
+		envioDatos.put("rutaNombreReporte", nombrePdfAceptacionControl);
+		
+		log.info(" TERMINO - donacionMap");
+		
 		return envioDatos;
 	}
 	
