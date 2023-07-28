@@ -11,6 +11,8 @@ import lombok.Setter;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AdministrarOperacionODSResponse {
+	
+	private Integer idOrden;
 	private String contrante;
 	private String finado;
 	private List<HistorialSituarServicioResponse>historialSituarServicioResponses;
