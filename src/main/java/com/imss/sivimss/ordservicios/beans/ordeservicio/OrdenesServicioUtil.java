@@ -41,4 +41,12 @@ public class OrdenesServicioUtil {
 			return valor;
 		}
 	}
+	
+	public static String setValor(String valor) {
+		if (valor==null || valor.equals("")) {
+			return "NULL";
+		}else {
+			return "'"+valor+"'";
+		}
+	}
 }
