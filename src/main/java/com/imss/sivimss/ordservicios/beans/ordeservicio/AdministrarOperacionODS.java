@@ -85,8 +85,9 @@ public class AdministrarOperacionODS {
 
 			if (rs.next()) {
 				
-				administrarOperacionODSResponse.setContrante(rs.getString(1));
-				administrarOperacionODSResponse.setFinado(rs.getString(2));
+				administrarOperacionODSResponse.setIdOrden(rs.getInt(1));
+				administrarOperacionODSResponse.setContrante(rs.getString(2));
+				administrarOperacionODSResponse.setFinado(rs.getString(3));
 				rs = statement.executeQuery(reglasNegocioAdministrarOperacionODSRepository
 						.consultarHistorialServicios(servicio.getFolio(), usuarioDto.getIdVelatorio()));
 
