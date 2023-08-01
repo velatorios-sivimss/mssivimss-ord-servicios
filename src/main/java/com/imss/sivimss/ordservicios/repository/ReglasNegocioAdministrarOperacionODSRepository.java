@@ -108,7 +108,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		.innerJoin("SVC_FINADO STF", "STF.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO ")
 		.leftJoin("SVC_PERSONA SPF", "SPF.ID_PERSONA = STF.ID_PERSONA  ")
 		.where("STO.CVE_FOLIO = '"+folio+"'")
-		.and("STO.ID_ESTATUS_ORDEN_SERVICIO IN (2) ")
+		.and("STO.ID_ESTATUS_ORDEN_SERVICIO IN (2,3) ")
 		.and("STO.ID_VELATORIO = "+idVelatorio);
 		
 		query=selectQueryUtilOrdenes.build();
@@ -131,7 +131,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		.innerJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCP.ID_SERVICIO ")
 		.innerJoin("SVC_TIPO_SERVICIO STS", "STS.ID_TIPO_SERVICIO = SS.ID_TIPO_SERVICIO AND SSO.ID_TIPO_SERVICIO = STS.ID_TIPO_SERVICIO ")
 		.where("STO.CVE_FOLIO = '"+folio+"'")
-		.and("STO.ID_ESTATUS_ORDEN_SERVICIO IN (2) ")
+		.and("STO.ID_ESTATUS_ORDEN_SERVICIO IN (2,3) ")
 		.and("SSO.IND_ACTIVO =1")
 		.and("STO.ID_VELATORIO = "+idVelatorio);
 
