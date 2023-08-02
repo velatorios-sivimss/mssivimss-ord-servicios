@@ -150,21 +150,21 @@ public class PanteonServiceImpl implements PanteonService{
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.info(e.getMessage());
 				}
 			}
 			if (rs != null) {
 				try {
 					rs.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.info(e.getMessage());
 				}
 			}
 			if (connection != null) {
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.info(e.getMessage());
 				}
 			}
 		}
