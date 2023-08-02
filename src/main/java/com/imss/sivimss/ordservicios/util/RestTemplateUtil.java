@@ -12,8 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.imss.sivimss.ordservicios.model.request.TareasDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,10 +39,10 @@ public class RestTemplateUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public Response<?> sendPostRequestByteArray(String url, EnviarDatosRequest body, Class<?> clazz)
-			throws IOException {
+	public Response<?> sendPostRequestByteArrayTokenProcesos(String url, TareasDTO body, String subject,
+			Class<?> clazz) throws IOException {
 		Response<?> responseBody = new Response<>();
-		HttpHeaders headers = RestTemplateUtil.createHttpHeaders();
+		HttpHeaders headers = RestTemplateUtil.createHttpHeadersToken(subject);
 
 		HttpEntity<Object> request = new HttpEntity<>(body, headers);
 		ResponseEntity<?> responseEntity = null;
@@ -60,7 +65,6 @@ public class RestTemplateUtil {
 
 		return responseBody;
 	}
-
 	/**
 	 * Env&iacute;a una petici&oacute;n con Body y token.
 	 *
@@ -68,9 +72,9 @@ public class RestTemplateUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public Response<?> sendPostRequestByteArrayToken(String url, EnviarDatosRequest body, String subject,
+	public Response<Object> sendPostRequestByteArrayToken(String url, EnviarDatosRequest body, String subject,
 			Class<?> clazz) throws IOException {
-		Response<?> responseBody = new Response<>();
+		Response<Object> responseBody = new Response<>();
 		HttpHeaders headers = RestTemplateUtil.createHttpHeadersToken(subject);
 
 		HttpEntity<Object> request = new HttpEntity<>(body, headers);
@@ -79,7 +83,7 @@ public class RestTemplateUtil {
 			responseEntity = restTemplate.postForEntity(url, request, clazz);
 			if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
 				// noinspection unchecked
-				responseBody = (Response<List<String>>) responseEntity.getBody();
+				responseBody = (Response<Object>) responseEntity.getBody();
 			} else {
 				throw new IOException("Ha ocurrido un error al enviar");
 			}
@@ -217,5 +221,55 @@ public class RestTemplateUtil {
 		}
 
 		return responseBody;
+	}
+	
+	//////// peticion api externa
+	/**
+	 * Env&iacute;a una petici&oacute;n de tipo POST a la url que se seleccione
+	 *
+	 * @param url
+	 * @param clazz
+	 * @return
+	 */
+	public Response<Object> sendGetRequest(String url) throws IOException {
+		Response<Object> response = new Response<>();
+		ResponseEntity<?> responseEntity = null;
+		try {
+			responseEntity = restTemplate.getForEntity(url, String.class);
+			if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
+				response = mapearRespuesta(responseEntity);
+
+			} else {
+				response.setCodigo(responseEntity.getStatusCodeValue());
+				response.setError(true);
+			}
+		} catch (HttpClientErrorException e) {
+			response.setError(true);
+			response.setCodigo(e.getRawStatusCode());
+		}
+		return response;
+	}
+
+	private Response<Object> mapearRespuesta(ResponseEntity<?> responseEntity) {
+		Response<Object> response = new Response<>();
+		JsonNode json;
+		ObjectMapper mapper = new ObjectMapper();
+		Object object = responseEntity.getBody();
+		if (object != null) {
+			try {
+				json = mapper.readTree(String.valueOf(object));
+				response.setError(false);
+				response.setCodigo(responseEntity.getStatusCodeValue());
+				response.setMensaje(AppConstantes.EXITO);
+				response.setDatos(json);
+			} catch (Exception e) {
+				response.setError(true);
+				response.setCodigo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+				response.setMensaje("186");
+			}
+
+		}
+		return response;
 	}
 }

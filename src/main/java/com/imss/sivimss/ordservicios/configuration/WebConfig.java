@@ -1,4 +1,4 @@
-package com.imss.sivimss.ordservicios.config;
+package com.imss.sivimss.ordservicios.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
