@@ -326,9 +326,11 @@ public class CaracteristicasPresupuesto {
 	}
 
 	private void insertarSalidaDonacionTemp(OrdenesServicioRequest ordenesServicioRequest,Integer idUsuarioAlta) throws SQLException {
-		
-		ResultSet consultaAsignacion = statement
+		ResultSet consultaAsignacion=null;
+		try {
+			consultaAsignacion = statement
 				.executeQuery(reglasNegocioRepository.consultarAsignacionInventario(idInventario));
+		
 		if (consultaAsignacion.next()) {
 			Integer idTipoAsignacion = consultaAsignacion.getInt("idAsignacion");
 			if (idTipoAsignacion == 3) {
@@ -361,10 +363,18 @@ public class CaracteristicasPresupuesto {
 				}
 			}
 		}
+		} finally {
+			if (consultaAsignacion!=null) {
+				consultaAsignacion.close();
+			}
+		}
+		
 	}
 	
 	private void insertarSalidaDonacion(OrdenesServicioRequest ordenesServicioRequest,Integer idUsuarioAlta) throws SQLException {
-		ResultSet consultaAsignacion = statement
+		ResultSet consultaAsignacion=null;
+		try {
+			consultaAsignacion = statement
 				.executeQuery(reglasNegocioRepository.consultarAsignacionInventario(idInventario));
 		if (consultaAsignacion.next()) {
 			Integer idTipoAsignacion = consultaAsignacion.getInt("idAsignacion");
@@ -403,6 +413,12 @@ public class CaracteristicasPresupuesto {
 
 			}
 		}
+		} finally {
+			if (consultaAsignacion!=null) {
+				consultaAsignacion.close();
+			}
+		}
+		
 	}
 	
 }
