@@ -261,14 +261,12 @@ public class OrdenActualizar {
 	}
 	
 	public ContratanteResponse consultarContratante(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet rsc=null;
-		try {
+		
+		try (Statement	statementc = conn.createStatement();ResultSet rsc = statementc.executeQuery(reglasNegocioRepository.consultarContratanteOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));){
 			ContratanteResponse contratanteResponse = null;
 			log.info("consultarContratante");
-			statementc = conn.createStatement();
+		
 			// contratante
-			rsc = statementc.executeQuery(reglasNegocioRepository.consultarContratanteOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
 			if (rsc.next()) {
 				contratanteResponse= new ContratanteResponse();
 				domicilioRequest= new DomicilioRequest();
@@ -303,100 +301,75 @@ public class OrdenActualizar {
 			}
 	
 			return contratanteResponse;
-		} finally {
-			
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
-			}
-			
 		}
 	}
 	
 	public FinadoResponse consultarFinado(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet rsc=null;
-		try {
+		try(Statement statementc = conn.createStatement(); ResultSet rsc= statementc.executeQuery(reglasNegocioRepository.consultarFinadoOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));) {
 			FinadoResponse finadoResponse = null;
 			log.info("consultarFinado");
-
-			statementc = conn.createStatement();
-			rsc = statementc.executeQuery(reglasNegocioRepository.consultarFinadoOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
-			
 			// finado
 			
-			if (rsc.next()) {
-				
-				finadoResponse= new FinadoResponse();
-				domicilioRequest= new DomicilioRequest();
-				finadoResponse.setIdFinado(rsc.getInt(1));
-				finadoResponse.setIdPersona(rsc.getInt(2));
-				finadoResponse.setIdTipoOrden(rsc.getInt(3));
-				finadoResponse.setExtremidad(rsc.getString(4));;
-				finadoResponse.setEsobito(rsc.getString(5));
-				finadoResponse.setMatricula(rsc.getString(6));
-				finadoResponse.setRfc(rsc.getString(7));
-				finadoResponse.setCurp(rsc.getString(8));
-				if (rsc.getString(9).equals("null") || rsc.getString(9).equals("")) {
-					finadoResponse.setNss(null);
-				}else {
-					finadoResponse.setNss(Integer.parseInt(rsc.getString(9)));
-				}
-				finadoResponse.setNomPersona(rsc.getString(10));
-				finadoResponse.setPrimerApellido(rsc.getString(11));
-				finadoResponse.setSegundoApellido(rsc.getString(12));
-				finadoResponse.setSexo(rsc.getString(13));
-				finadoResponse.setOtroSexo(rsc.getString(14));
-				finadoResponse.setFechaNac(rsc.getString(15));
-				finadoResponse.setNacionalidad(rsc.getString(16));
-				finadoResponse.setIdPais(rsc.getString(17));
-				finadoResponse.setIdEstado(rsc.getString(18));
-				finadoResponse.setTelefono(rsc.getString(19));
-				finadoResponse.setCorreo(rsc.getString(20));
-				domicilioRequest.setIdDomicilio(rsc.getInt(21));
-				domicilioRequest.setDesCalle(rsc.getString(22));
-				domicilioRequest.setNumExterior(rsc.getString(23));
-				domicilioRequest.setNumInterior(rsc.getString(24));
-				domicilioRequest.setCodigoPostal(rsc.getString(25));
-				domicilioRequest.setDesColonia(rsc.getString(26));
-				domicilioRequest.setDesMunicipio(rsc.getString(27));
-				domicilioRequest.setDesEstado(rsc.getString(28));
-				finadoResponse.setCp(domicilioRequest.getIdDomicilio()==0 || domicilioRequest.getIdDomicilio()==null?null:domicilioRequest);
-				finadoResponse.setFechaDeceso(rsc.getString(29));
-				finadoResponse.setCausaDeceso(rsc.getString(30));
-				finadoResponse.setLugarDeceso(rsc.getString(31));
-				finadoResponse.setHora(rsc.getString(32));
-				finadoResponse.setIdClinicaAdscripcion(rsc.getString(33)==null?null:rsc.getString(33));
-				finadoResponse.setIdUnidadProcedencia(rsc.getString(34)==null?null:rsc.getString(34));
-				finadoResponse.setProcedenciaFinado(rsc.getString(35));
-				finadoResponse.setIdTipoPension(rsc.getInt(36)==0?null:rsc.getInt(36));
-				finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
-				finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
-
-				
-		}
+				if (rsc.next()) {
+					
+					finadoResponse= new FinadoResponse();
+					domicilioRequest= new DomicilioRequest();
+					finadoResponse.setIdFinado(rsc.getInt(1));
+					finadoResponse.setIdPersona(rsc.getInt(2));
+					finadoResponse.setIdTipoOrden(rsc.getInt(3));
+					finadoResponse.setExtremidad(rsc.getString(4));;
+					finadoResponse.setEsobito(rsc.getString(5));
+					finadoResponse.setMatricula(rsc.getString(6));
+					finadoResponse.setRfc(rsc.getString(7));
+					finadoResponse.setCurp(rsc.getString(8));
+					if (rsc.getString(9).equals("null") || rsc.getString(9).equals("")) {
+						finadoResponse.setNss(null);
+					}else {
+						finadoResponse.setNss(Integer.parseInt(rsc.getString(9)));
+					}
+					finadoResponse.setNomPersona(rsc.getString(10));
+					finadoResponse.setPrimerApellido(rsc.getString(11));
+					finadoResponse.setSegundoApellido(rsc.getString(12));
+					finadoResponse.setSexo(rsc.getString(13));
+					finadoResponse.setOtroSexo(rsc.getString(14));
+					finadoResponse.setFechaNac(rsc.getString(15));
+					finadoResponse.setNacionalidad(rsc.getString(16));
+					finadoResponse.setIdPais(rsc.getString(17));
+					finadoResponse.setIdEstado(rsc.getString(18));
+					finadoResponse.setTelefono(rsc.getString(19));
+					finadoResponse.setCorreo(rsc.getString(20));
+					domicilioRequest.setIdDomicilio(rsc.getInt(21));
+					domicilioRequest.setDesCalle(rsc.getString(22));
+					domicilioRequest.setNumExterior(rsc.getString(23));
+					domicilioRequest.setNumInterior(rsc.getString(24));
+					domicilioRequest.setCodigoPostal(rsc.getString(25));
+					domicilioRequest.setDesColonia(rsc.getString(26));
+					domicilioRequest.setDesMunicipio(rsc.getString(27));
+					domicilioRequest.setDesEstado(rsc.getString(28));
+					finadoResponse.setCp(domicilioRequest.getIdDomicilio()==0 || domicilioRequest.getIdDomicilio()==null?null:domicilioRequest);
+					finadoResponse.setFechaDeceso(rsc.getString(29));
+					finadoResponse.setCausaDeceso(rsc.getString(30));
+					finadoResponse.setLugarDeceso(rsc.getString(31));
+					finadoResponse.setHora(rsc.getString(32));
+					finadoResponse.setIdClinicaAdscripcion(rsc.getString(33)==null?null:rsc.getString(33));
+					finadoResponse.setIdUnidadProcedencia(rsc.getString(34)==null?null:rsc.getString(34));
+					finadoResponse.setProcedenciaFinado(rsc.getString(35));
+					finadoResponse.setIdTipoPension(rsc.getInt(36)==0?null:rsc.getInt(36));
+					finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
+					finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
+	
+					
+			}
 			return finadoResponse;
-		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
-			}
 		}
 	}
 	
 	public CaracteristicasPaqueteResponse consultarCaracteristicasPaqueteResponse(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet rsc=null;
-		try {
+	
+		try(Statement statementc= conn.createStatement();ResultSet rsc = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPaqueteTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));) {
 			CaracteristicasPaqueteResponse caracteristicasPaqueteResponse=null;
 			log.info("consultarCaracteristicasPaqueteResponse");
-
-			statementc = conn.createStatement();
-			rsc = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPaqueteTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
+			
 			if (rsc.next()) {
 				
 				caracteristicasPaqueteResponse= new CaracteristicasPaqueteResponse();
@@ -410,31 +383,18 @@ public class OrdenActualizar {
 			
 			return caracteristicasPaqueteResponse;
 		
-		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
-			}
-		
 		}
 	}
 	
 	public List<CaracteristicasPaqueteDetalleResponse> consultarCaracteristicasPaqueteDetalleResponse(CaracteristicasPaqueteResponse caracteristicasPaqueteResponse, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet resultSetDetalle=null;
-		ResultSet resultSetDetalleTraslado=null;
-		try {
+	
+		try(Statement statementc= conn.createStatement();ResultSet resultSetDetalle = statementc.executeQuery(reglasNegocioRepository.
+				consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(caracteristicasPaqueteResponse.getIdCaracteristicasPaquete()));) {
 			
 			List<CaracteristicasPaqueteDetalleResponse> caracteristicasPaqueteDetalleResponse=null;
 			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPaqueteDetalleTrasladoRequest=null;
 			log.info("consultarCaracteristicasPaqueteResponse");
 
-			statementc = conn.createStatement();
-				
-			resultSetDetalle = statementc.executeQuery(reglasNegocioRepository.
-					consultarCaracteristicasPresupuestoDetallePaqueteTempOrdenServicios(caracteristicasPaqueteResponse.getIdCaracteristicasPaquete()));
 			caracteristicasPaqueteDetalleResponse= new ArrayList<>();
 			CaracteristicasPaqueteDetalleResponse detalleResponse=null;
 				
@@ -455,19 +415,21 @@ public class OrdenActualizar {
 					detalleResponse.setTotalPaquete(resultSetDetalle.getDouble(13));
 					detalleResponse.setAgregado(resultSetDetalle.getBoolean(14));
 					detalleResponse.setIdCategoriaPaquete(resultSetDetalle.getInt(15)==0?null:resultSetDetalle.getInt(15));
-					resultSetDetalleTraslado = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(detalleResponse.getIdPaqueteDetalle()));
+					
+					try(ResultSet resultSetDetalleTraslado = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(detalleResponse.getIdPaqueteDetalle()));){
 					caracteristicasPaqueteDetalleTrasladoRequest= null;
-					if (resultSetDetalleTraslado.next()) {
-						caracteristicasPaqueteDetalleTrasladoRequest= new CaracteristicasPaqueteDetalleTrasladoRequest();
-						caracteristicasPaqueteDetalleTrasladoRequest.setIdCaracteristicasPaqueteDetalleTraslado(resultSetDetalleTraslado.getInt(1));
-						caracteristicasPaqueteDetalleTrasladoRequest.setOrigen(resultSetDetalleTraslado.getString(2));
-						caracteristicasPaqueteDetalleTrasladoRequest.setDestino(resultSetDetalleTraslado.getString(3));
-						caracteristicasPaqueteDetalleTrasladoRequest.setTotalKilometros(resultSetDetalleTraslado.getString(4));
-						caracteristicasPaqueteDetalleTrasladoRequest.setLatitudInicial(resultSetDetalleTraslado.getDouble(5));
-						caracteristicasPaqueteDetalleTrasladoRequest.setLatitudFinal(resultSetDetalleTraslado.getDouble(6));
-						caracteristicasPaqueteDetalleTrasladoRequest.setLongitudInicial(resultSetDetalleTraslado.getDouble(7));
-						caracteristicasPaqueteDetalleTrasladoRequest.setLongitudFinal(resultSetDetalleTraslado.getDouble(8));
-						caracteristicasPaqueteDetalleTrasladoRequest.setIdDetalleCaracteristicas(detalleResponse.getIdPaqueteDetalle());
+						if (resultSetDetalleTraslado.next()) {
+							caracteristicasPaqueteDetalleTrasladoRequest= new CaracteristicasPaqueteDetalleTrasladoRequest();
+							caracteristicasPaqueteDetalleTrasladoRequest.setIdCaracteristicasPaqueteDetalleTraslado(resultSetDetalleTraslado.getInt(1));
+							caracteristicasPaqueteDetalleTrasladoRequest.setOrigen(resultSetDetalleTraslado.getString(2));
+							caracteristicasPaqueteDetalleTrasladoRequest.setDestino(resultSetDetalleTraslado.getString(3));
+							caracteristicasPaqueteDetalleTrasladoRequest.setTotalKilometros(resultSetDetalleTraslado.getString(4));
+							caracteristicasPaqueteDetalleTrasladoRequest.setLatitudInicial(resultSetDetalleTraslado.getDouble(5));
+							caracteristicasPaqueteDetalleTrasladoRequest.setLatitudFinal(resultSetDetalleTraslado.getDouble(6));
+							caracteristicasPaqueteDetalleTrasladoRequest.setLongitudInicial(resultSetDetalleTraslado.getDouble(7));
+							caracteristicasPaqueteDetalleTrasladoRequest.setLongitudFinal(resultSetDetalleTraslado.getDouble(8));
+							caracteristicasPaqueteDetalleTrasladoRequest.setIdDetalleCaracteristicas(detalleResponse.getIdPaqueteDetalle());
+						}
 					}
 					detalleResponse.setServicioDetalleTraslado(Objects.isNull(caracteristicasPaqueteDetalleTrasladoRequest)?null:caracteristicasPaqueteDetalleTrasladoRequest);
 					caracteristicasPaqueteDetalleResponse.add(detalleResponse);
@@ -475,31 +437,16 @@ public class OrdenActualizar {
 			
 			return caracteristicasPaqueteDetalleResponse;
 		
-		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (resultSetDetalle!=null) {
-				resultSetDetalle.close();
-			}
-			if (resultSetDetalleTraslado!=null) {
-				resultSetDetalleTraslado.close();
-			}
 		}
 	}
 	
 	public CaracteristicasPaquetePresupuestoResponse consultarCaracteristicasPaquetePresupuestoResponse(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet rsc=null;
-		
-		try {
+			
+		try(Statement statementc = conn.createStatement();ResultSet rsc = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPresupuestoTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));) {
 			CaracteristicasPaquetePresupuestoResponse caracteristicasPaquetePresupuestoResponse=null;
 		
 			log.info("consultarCaracteristicasPaquetePresupuestoResponse");
 
-			statementc = conn.createStatement();
-
-			rsc = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoPresupuestoTempOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
 			if (rsc.next()) {
 				caracteristicasPaquetePresupuestoResponse= new CaracteristicasPaquetePresupuestoResponse();
 				caracteristicasPaquetePresupuestoResponse.setIdCaracteristicasPresupuesto(rsc.getInt(1));
@@ -511,30 +458,18 @@ public class OrdenActualizar {
 			}
 			return caracteristicasPaquetePresupuestoResponse;
 		
-		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
-			}
-			
 		}
 	}
 	
 	public List<CaracteristicasPaqueteDetallePresupuestoResponse> consultarCaracteristicasPaqueteDetallePresupuestoResponse(CaracteristicasPaquetePresupuestoResponse caracteristicasPaquetePresupuestoResponse,OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet resultSetDetallePresupuesto =null;
-		ResultSet resultSetDetallePresupuestoTraslado=null;
-		try {
+		
+		try(Statement statementc = conn.createStatement();ResultSet resultSetDetallePresupuesto = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(caracteristicasPaquetePresupuestoResponse.getIdCaracteristicasPresupuesto(),ordenesServicioRequest.getIdOrdenServicio()));) {
 			List<CaracteristicasPaqueteDetallePresupuestoResponse> caracteristicasPaqueteDetallePresupuestoResponse= new ArrayList<>();
 			CaracteristicasPaqueteDetallePresupuestoResponse paqueteDetallePresupuesto;
 			CaracteristicasPaqueteDetalleTrasladoRequest caracteristicasPresupuestoDetalleTrasladoRequest=null;
 			log.info("consultarCaracteristicasPaquetePresupuestoResponse");
 
-			statementc = conn.createStatement();
-
-			resultSetDetallePresupuesto = statementc.executeQuery(reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTempOrdenServicios(caracteristicasPaquetePresupuestoResponse.getIdCaracteristicasPresupuesto(),ordenesServicioRequest.getIdOrdenServicio()));
+			
 			while (resultSetDetallePresupuesto.next()) {
 					paqueteDetallePresupuesto= new CaracteristicasPaqueteDetallePresupuestoResponse();
 					paqueteDetallePresupuesto.setIdPaqueteDetallePresupuesto(resultSetDetallePresupuesto.getInt(1));
@@ -550,20 +485,22 @@ public class OrdenActualizar {
 					paqueteDetallePresupuesto.setEsDonado(resultSetDetallePresupuesto.getInt(11));
 					paqueteDetallePresupuesto.setImporteMonto(resultSetDetallePresupuesto.getDouble(12));
 					paqueteDetallePresupuesto.setProviene(resultSetDetallePresupuesto.getString(13));
-					resultSetDetallePresupuestoTraslado = statementc.executeQuery(
-							reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto()));
+					
+					try(ResultSet resultSetDetallePresupuestoTraslado = statementc.executeQuery(
+							reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto()));){
 					caracteristicasPresupuestoDetalleTrasladoRequest=null;
-					if (resultSetDetallePresupuestoTraslado.next()) {
-						caracteristicasPresupuestoDetalleTrasladoRequest= new CaracteristicasPaqueteDetalleTrasladoRequest();
-						caracteristicasPresupuestoDetalleTrasladoRequest.setIdCaracteristicasPaqueteDetalleTraslado(resultSetDetallePresupuestoTraslado.getInt(1));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setOrigen(resultSetDetallePresupuestoTraslado.getString(2));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setDestino(resultSetDetallePresupuestoTraslado.getString(3));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setTotalKilometros(resultSetDetallePresupuestoTraslado.getString(4));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setLatitudInicial(resultSetDetallePresupuestoTraslado.getDouble(5));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setLatitudFinal(resultSetDetallePresupuestoTraslado.getDouble(6));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setLongitudInicial(resultSetDetallePresupuestoTraslado.getDouble(7));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setLongitudFinal(resultSetDetallePresupuestoTraslado.getDouble(8));
-						caracteristicasPresupuestoDetalleTrasladoRequest.setIdDetalleCaracteristicas(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto());
+						if (resultSetDetallePresupuestoTraslado.next()) {
+							caracteristicasPresupuestoDetalleTrasladoRequest= new CaracteristicasPaqueteDetalleTrasladoRequest();
+							caracteristicasPresupuestoDetalleTrasladoRequest.setIdCaracteristicasPaqueteDetalleTraslado(resultSetDetallePresupuestoTraslado.getInt(1));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setOrigen(resultSetDetallePresupuestoTraslado.getString(2));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setDestino(resultSetDetallePresupuestoTraslado.getString(3));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setTotalKilometros(resultSetDetallePresupuestoTraslado.getString(4));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setLatitudInicial(resultSetDetallePresupuestoTraslado.getDouble(5));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setLatitudFinal(resultSetDetallePresupuestoTraslado.getDouble(6));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setLongitudInicial(resultSetDetallePresupuestoTraslado.getDouble(7));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setLongitudFinal(resultSetDetallePresupuestoTraslado.getDouble(8));
+							caracteristicasPresupuestoDetalleTrasladoRequest.setIdDetalleCaracteristicas(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto());
+						}
 					}
 					paqueteDetallePresupuesto.setServicioDetalleTraslado(Objects.isNull(caracteristicasPresupuestoDetalleTrasladoRequest)?null:caracteristicasPresupuestoDetalleTrasladoRequest);
 					caracteristicasPaqueteDetallePresupuestoResponse.add(paqueteDetallePresupuesto);
@@ -571,32 +508,18 @@ public class OrdenActualizar {
 			
 			return caracteristicasPaqueteDetallePresupuestoResponse;
 		
-		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (resultSetDetallePresupuesto!=null) {
-				resultSetDetallePresupuesto.close();
-			}
-			if (resultSetDetallePresupuestoTraslado!=null) {
-				resultSetDetallePresupuestoTraslado.close();
-			}
-		}
+		} 
 	}
 
 	public InformacionServicioResponse consultarinformacionServicioResponse(OrdenesServicioRequest ordenesServicioRequest, Connection conn) throws SQLException {
-		Statement statementc=null;
-		ResultSet rsc=null;
-		ResultSet rscs=null;
 		
-		try {
+		
+		ResultSet rscs=null;
+		try (Statement statementc= conn.createStatement();ResultSet rsc = statementc.executeQuery(reglasNegocioRepository.consultarInformacionServicioOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));) {
 			InformacionServicioResponse informacionServicioResponse=null;
 			log.info("consultarinformacionServicioResponse");
 
-			statementc = conn.createStatement();
-
-			rsc = statementc.executeQuery(reglasNegocioRepository.consultarInformacionServicioOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));
-			
+		
 			// informacion de servicio
 			
 			if (rsc.next()) {
@@ -643,12 +566,7 @@ public class OrdenActualizar {
 			return informacionServicioResponse;
 		
 		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
-			}
+			
 			if (rscs != null) {
 				rscs.close();
 			}
@@ -1057,25 +975,14 @@ public class OrdenActualizar {
 	}
 
 	public void consultarEstatusOrden(Integer idOrdenServicio) throws SQLException {
-		Statement statementc=null;
-		ResultSet rsc=null;
-		try {
-
-			statementc = connection.createStatement();
-			rsc = statementc.executeQuery(reglasNegocioRepository.consultarOrdenServicio(idOrdenServicio));
+		
+		try(Statement statementc = connection.createStatement(); ResultSet rsc = statementc.executeQuery(reglasNegocioRepository.consultarOrdenServicio(idOrdenServicio));) {
 
 			if (rsc.next()) {
 				idEstatusTipoOrden = rsc.getInt("idTipoOrdenServicio");
 			}
 		
-		} finally {
-			if (statementc != null) {
-				statementc.close();
-			}
-			if (rsc != null) {
-				rsc.close();
-			}
-		}
+		} 
 	}
 
 	////////////////////// insertar
