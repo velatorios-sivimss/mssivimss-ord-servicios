@@ -31,11 +31,22 @@ public class Finado {
     		if (finadoRequest.getIdPersona()==null && 
     				(finadoRequest.getNomPersona()!=null &&
     				finadoRequest.getSegundoApellido()!=null)) {
-        		statement.executeUpdate(reglasNegocioRepository.insertarPersona(finadoRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
-    			rs=statement.getGeneratedKeys();
+    			
+    			
+    			
+    			rs=statement.executeQuery(reglasNegocioRepository.consultarPersona(ordenServcio.getFinado().getCurp(),ordenServcio.getFinado().getRfc()));
+    			
     			if (rs.next()) {
-    				finadoRequest.setIdPersona(rs.getInt(1));
-    			} 
+    				finadoRequest.setIdPersona(rs.getInt("idPersona"));
+    			}else {
+    				statement.executeUpdate(reglasNegocioRepository.insertarPersona(finadoRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
+        			rs=statement.getGeneratedKeys();
+        			if (rs.next()) {
+        				finadoRequest.setIdPersona(rs.getInt(1));
+        			} 
+    			}
+    			
+        		
     			statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 				rs=statement.getGeneratedKeys();
 				if (rs.next()) {

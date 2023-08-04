@@ -857,6 +857,19 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 	
+	// consultar orden de servicio
+	public String consultarPersona(String rfc,String curp) {
+			SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+			selectQueryUtil.select("SPE.ID_PERSONA AS idPersona ")
+			.from("SVC_PERSONA SPE STO")
+			.where("SPE.CVE_RFC = :rfc").or("SPE.CVE_CURP = :curp")
+			.setParameter("rfc",rfc)
+			.setParameter("curp",curp);
+			query = selectQueryUtil.build();
+			log.info(query);
+			return query;
+	}
+	
 	// consultar contratante
 	public String consultarContratanteOrdenServicios(Integer idOrdenServicio) {
 			SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
