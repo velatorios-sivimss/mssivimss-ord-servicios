@@ -34,7 +34,7 @@ public class Finado {
     			
     			
     			
-    			rs=statement.executeQuery(reglasNegocioRepository.consultarPersona(ordenServcio.getFinado().getCurp(),ordenServcio.getFinado().getRfc()));
+    			rs=statement.executeQuery(reglasNegocioRepository.consultarPersona(ordenServcio.getFinado().getRfc(),ordenServcio.getFinado().getCurp()));
     			
     			if (rs.next()) {
     				finadoRequest.setIdPersona(rs.getInt("idPersona"));
