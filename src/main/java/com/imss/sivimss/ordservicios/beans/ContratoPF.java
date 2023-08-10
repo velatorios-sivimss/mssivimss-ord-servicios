@@ -1,15 +1,9 @@
 package com.imss.sivimss.ordservicios.beans;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.imss.sivimss.ordservicios.model.request.ContratoPfRequest;
-import com.imss.sivimss.ordservicios.util.AppConstantes;
-import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 
 import lombok.Getter;

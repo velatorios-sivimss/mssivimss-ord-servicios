@@ -30,8 +30,6 @@ import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.Response;
 
-import lombok.AllArgsConstructor;
-
 
 @Service
 public class AdministrarOperacionODS {
@@ -56,7 +54,6 @@ public class AdministrarOperacionODS {
 	private String MSG105="105"; //Has registrado correctamente el otorgamiento del servicio.
 	private String MSG107="107"; //Se ha quitado correctamente el registro del servicio.
 	private String MSG085="85"; //El número de folio no existe. Verifica tu información.
-	private String MSG045="45"; //No se encontró información relacionada a tu búsqueda.
 	
 	private Response<Object>response;
 	
