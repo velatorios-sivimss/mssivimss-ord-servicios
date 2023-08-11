@@ -142,4 +142,10 @@ public class OrdenesDAO {
 	public Response<Object> generaReporteDonacion(DatosRequest datos, Authentication auth) throws IOException, SQLException{
 		return generaReporteService.generarReporteDonacion(datos, auth);
 	}
+	public Response<Object> buscarNombreContrante(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.buscarNombreContratante(datos, auth);
+	}	
+	public Response<Object> buscarNombreFinado(DatosRequest datos, Authentication auth) throws IOException{
+		return ordenConsultar.buscarNombreFinado(datos, auth);
+	}	
 }

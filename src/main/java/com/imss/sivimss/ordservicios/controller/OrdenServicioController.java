@@ -80,9 +80,24 @@ public class OrdenServicioController {
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
+
+	@PostMapping("/consultar/nombreContratante")
+	public CompletableFuture<Object>consultarNombreContratante(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarNombreContratante");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
 	@PostMapping("/consultar/finado")
 	public CompletableFuture<Object>consultarFinado(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarFinado");
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+	@PostMapping("/consultar/nombreFinado")
+	public CompletableFuture<Object>consultarNombreFinado(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
+		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarNombreFinado");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 

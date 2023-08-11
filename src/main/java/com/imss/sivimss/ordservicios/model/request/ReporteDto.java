@@ -29,6 +29,13 @@ public class ReporteDto {
 	private Integer idDelegacion;
 	private String fechaIni;
 	private String fechaFin;
+	private String cveFolio;
+	private String nombreContratante;
+	private String apPatContratante;
+	private String apMatContratante;
+	private String nombreFinado;
+	private String apPatFinado;
+	private String apMatFinado;
 	
 
 }
