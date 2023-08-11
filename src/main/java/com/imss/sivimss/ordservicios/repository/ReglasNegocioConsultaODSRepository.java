@@ -154,7 +154,7 @@ public class ReglasNegocioConsultaODSRepository {
 	public String obtenerEstadoODS() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("seos.ID_ESTATUS_ORDEN_SERVICIO AS idODS"," seos.DES_ESTATUS AS estatus")
-		.from(TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS) ;
+		.from(TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS).orderBy("seos.DES_ESTATUS");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
