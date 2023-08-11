@@ -44,7 +44,7 @@ public class ReglasNegocioConsultaODSRepository {
 	
 	private static final String AND_ID_TIPO_ORDEN_SERVICIO = " AND stos.ID_TIPO_ORDEN_SERVICIO = ";
 	private static final String AND_ID_UNIDAD_MEDICA = " AND sum2.ID_UNIDAD_MEDICA = ";
-	private static final String AND_ID_CONVENIO_PF = " AND scp.ID_CONVENIO_PF = "; 
+	private static final String AND_DES_FOLIO_CONVENIO_PF = " AND scp.DES_FOLIO "; 
 	
 	private static final Logger log = LoggerFactory.getLogger(ReglasNegocioConsultaODSRepository.class);
 
@@ -409,8 +409,8 @@ public class ReglasNegocioConsultaODSRepository {
 			condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
 		if (reporteDto.getIdUnidadMedica() != null) 
 			condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-		if (reporteDto.getIdConvenio() != null) 
-			condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
+		if (reporteDto.getCveConvenio() != null) 
+			condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " LIKE '%" + reporteDto.getCveConvenio() + "%'";
 		condicion = condicion + " GROUP BY 1";
 		log.info(condicion);
 		return condicion;

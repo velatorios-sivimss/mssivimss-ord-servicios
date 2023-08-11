@@ -36,6 +36,7 @@ public class ReporteDto {
 	private String nombreFinado;
 	private String apPatFinado;
 	private String apMatFinado;
+	private String cveConvenio; 
 	
 
 }
