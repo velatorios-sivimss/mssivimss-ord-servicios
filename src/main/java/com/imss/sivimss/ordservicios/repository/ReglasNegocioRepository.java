@@ -862,7 +862,7 @@ public class ReglasNegocioRepository {
 			SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 			selectQueryUtil.select("SPE.ID_PERSONA AS idPersona ")
 			.from("SVC_PERSONA SPE ")
-			.where("SPE.CVE_RFC = '"+rfc+"' OR SPE.CVE_CURP = '"+curp+"'");
+			.where("SPE.CVE_RFC = "+setValor(rfc)+" OR SPE.CVE_CURP = "+setValor(curp)+"");
 			query = selectQueryUtil.build();
 			log.info(query);
 			return query;
