@@ -858,11 +858,11 @@ public class ReglasNegocioRepository {
 	}
 	
 	// consultar orden de servicio
-	public String consultarPersona(String rfc,String curp) {
+	public String consultarPersona(String curp) {
 			SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 			selectQueryUtil.select("SPE.ID_PERSONA AS idPersona ")
 			.from("SVC_PERSONA SPE ")
-			.where("SPE.CVE_RFC = "+setValor(rfc)+" OR SPE.CVE_CURP = "+setValor(curp)+"");
+			.where("SPE.CVE_CURP = "+setValor(curp)+"");
 			query = selectQueryUtil.build();
 			log.info(query);
 			return query;
