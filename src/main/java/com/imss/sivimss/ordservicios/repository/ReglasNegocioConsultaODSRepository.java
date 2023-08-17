@@ -22,7 +22,6 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String TABLA_SVC_DELEGACION = "SVC_DELEGACION";
 	private static final String TABLA_SVC_ORDEN_SERVICIO_SOS = "SVC_ORDEN_SERVICIO sos";
 	private static final String TABLA_SVC_PERSONA_SP = "SVC_PERSONA sp";
-	private static final String TABLA_SVC_PERSONA_SP2 = "SVC_PERSONA sp2";
 	private static final String TABLA_SVC_CONTRATANTE_SC = "SVC_CONTRATANTE sc";
 	private static final String TABLA_SVC_FINADO_SF = "SVC_FINADO sf";
 	private static final String TABLA_SVC_TIPO_ORDEN_SERVICIO_STOS = "SVC_TIPO_ORDEN_SERVICIO stos";
@@ -43,10 +42,9 @@ public class ReglasNegocioConsultaODSRepository {
 	private static final String SET_CAMPO_FEC_MODIFICA = " FEC_ACTUALIZACION = CURRENT_TIMESTAMP() ";
 	private static final String WHERE_ID_ORDEN_SERVICIO = " WHERE ID_ORDEN_SERVICIO = ";
 	
-	private static final String AND_ID_FINADO = " AND sf.ID_FINADO = ";
 	private static final String AND_ID_TIPO_ORDEN_SERVICIO = " AND stos.ID_TIPO_ORDEN_SERVICIO = ";
 	private static final String AND_ID_UNIDAD_MEDICA = " AND sum2.ID_UNIDAD_MEDICA = ";
-	private static final String AND_ID_CONVENIO_PF = " AND scp.ID_CONVENIO_PF = "; 
+	private static final String AND_DES_FOLIO_CONVENIO_PF = " AND scp.DES_FOLIO "; 
 	
 	private static final Logger log = LoggerFactory.getLogger(ReglasNegocioConsultaODSRepository.class);
 
@@ -93,6 +91,19 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
+	public String obtenerNombreContratante() {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("DISTINCT CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoContratante "
+				+ " ,sp.NOM_PERSONA AS nomContratante"
+				+ ", sp.NOM_PRIMER_APELLIDO AS apPatContratante "
+				+ ", sp.NOM_SEGUNDO_APELLIDO AS apMatContratante ")
+		.from(TABLA_SVC_PERSONA_SP)
+		.join(TABLA_SVC_CONTRATANTE_SC, "sc.ID_PERSONA  = sp.ID_PERSONA").orderBy("sp.NOM_PERSONA");
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
+
 	public String obtenerFinado() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sf.id_finado AS idFinado, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoFinado"
@@ -122,6 +133,18 @@ public class ReglasNegocioConsultaODSRepository {
 		return query;
 	}
 
+	public String obtenerNombreFinado() {
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("DISTINCT CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoFinado "
+		+ " ,sp.NOM_PERSONA AS nomContratante"
+		+ ", sp.NOM_PRIMER_APELLIDO AS apPatContratante "
+		+ ", sp.NOM_SEGUNDO_APELLIDO AS apMatContratante ")
+		.from(TABLA_SVC_PERSONA_SP)
+		.join(TABLA_SVC_FINADO_SF, "sf.ID_PERSONA = sp.ID_PERSONA").orderBy("sp.NOM_PERSONA");
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
 	public String obtenerTipoOrden() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("stos.ID_TIPO_ORDEN_SERVICIO AS idTipoODS","stos.DES_TIPO_ORDEN_SERVICIO AS tipoODS")
@@ -154,7 +177,7 @@ public class ReglasNegocioConsultaODSRepository {
 	public String obtenerEstadoODS() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("seos.ID_ESTATUS_ORDEN_SERVICIO AS idODS"," seos.DES_ESTATUS AS estatus")
-		.from(TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS) ;
+		.from(TABLA_SVC_ESTATUS_ORDEN_SERVICIO_SEOS).orderBy("seos.DES_ESTATUS");
 		query=selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -358,18 +381,36 @@ public class ReglasNegocioConsultaODSRepository {
 		String  condicion = " WHERE sos.ID_ESTATUS_ORDEN_SERVICIO IS NOT NULL ";
 		if (reporteDto.getIdVelatorio() != null)
 			condicion = condicion + " AND sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
-		if (reporteDto.getIdOds() != null) 
-			condicion = condicion + " AND sos.ID_ORDEN_SERVICIo = " + reporteDto.getIdOds();
-		if (reporteDto.getIdContratante() != null) 
-			condicion = condicion + " AND sc.ID_CONTRATANTE = " + reporteDto.getIdContratante();
-		if (reporteDto.getIdFinado() != null) 
-			condicion = condicion + AND_ID_FINADO + reporteDto.getIdFinado();
+		if (reporteDto.getCveFolio() != null) 
+			condicion = condicion + " AND sos.CVE_FOLIO LIKE '%" + reporteDto.getCveFolio() + "%'";
+		if (reporteDto.getNombreContratante() != null) {
+			condicion = condicion + " AND (sp.NOM_PERSONA LIKE '%" + reporteDto.getNombreContratante() + "%' ";
+			if (reporteDto.getApPatContratante() != null) {
+				condicion = condicion + " AND sp.NOM_PRIMER_APELLIDO LIKE '%" + reporteDto.getApPatContratante() + "%'";
+				if (reporteDto.getApMatContratante() != null) 
+					condicion = condicion + " AND sp.NOM_SEGUNDO_APELLIDO LIKE '%"+ reporteDto.getApMatContratante() + "%')";
+				else 
+					condicion = condicion + ")";
+			}else 
+				condicion = condicion + ")";
+		}
+		if (reporteDto.getNombreFinado() != null) {
+			condicion = condicion + " AND (sp2.NOM_PERSONA LIKE '%" + reporteDto.getNombreFinado() + "%' ";
+			if (reporteDto.getApPatFinado() != null) {
+				condicion = condicion + " AND sp2.NOM_PRIMER_APELLIDO LIKE '%" + reporteDto.getApPatFinado() + "%'";
+				if (reporteDto.getApMatFinado() != null) 
+					condicion = condicion + " AND sp2.NOM_SEGUNDO_APELLIDO LIKE '%"+ reporteDto.getApMatFinado() + "%')";
+				else 
+					condicion = condicion + ")";
+			}else 
+				condicion = condicion + ")";
+		}
 		if (reporteDto.getIdTipoODS() != null) 
 			condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
 		if (reporteDto.getIdUnidadMedica() != null) 
 			condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
-		if (reporteDto.getIdConvenio() != null) 
-			condicion = condicion + AND_ID_CONVENIO_PF + reporteDto.getIdConvenio();
+		if (reporteDto.getCveConvenio() != null) 
+			condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " LIKE '%" + reporteDto.getCveConvenio() + "%'";
 		condicion = condicion + " GROUP BY 1";
 		log.info(condicion);
 		return condicion;

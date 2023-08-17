@@ -234,6 +234,27 @@ public class OrdenConsultar {
 		}
 	}
 
+	public Response<Object> buscarNombreContratante(DatosRequest datosRequest, Authentication authentication) throws IOException{
+		String query="";
+		try {
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString()
+            		, "buscarContratante", AppConstantes.CONSULTA, authentication);
+            
+			query = rNConsultaODSRepository.obtenerNombreContratante();
+			DatosRequest request= encodeQuery(query, datosRequest);
+			
+			response=providerServiceRestTemplate.consumirServicio(request.getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			
+			response= MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		}
+	}
 	public Response<Object> buscarFinado(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
 	try {
@@ -250,6 +271,29 @@ public class OrdenConsultar {
         throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 
 	}
+	}
+	
+
+	public Response<Object> buscarNombreFinado(DatosRequest datosRequest, Authentication authentication) throws IOException {
+		String query = "";
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "buscarFinado", AppConstantes.CONSULTA, authentication);
+			query = rNConsultaODSRepository.obtenerNombreFinado();
+			DatosRequest request = encodeQuery(query, datosRequest);
+			response = providerServiceRestTemplate.consumirServicio(request.getDatos(),
+					urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			response = MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+
+			return response;
+		} catch (Exception e) {
+			log.error(AppConstantes.ERROR_QUERY.concat(query));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query,
+					AppConstantes.CONSULTA, authentication);
+			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+
+		}
 	}
 	public Response<Object> buscarTipoOrden(DatosRequest datosRequest, Authentication authentication) throws IOException{
 		String query="";
