@@ -424,7 +424,7 @@ public class ReglasNegocioConsultaODSRepository {
 			if (reporteDto.getCveConvenio() != null)
 				condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
 		} else if (reporteDto.getNombreContratante() != null) {
-			condicion = " WHERE " + AND_NOMBRE_PERSONA + reporteDto.getNombreContratante() + "%' ";
+			condicion = " WHERE " + "CONCAT(IFNULL(sp.NOM_PERSONA,''), ' ', IFNULL(sp.NOM_PRIMER_APELLIDO,''), ' ', IFNULL(sp.NOM_SEGUNDO_APELLIDO,'')) LIKE '%" + reporteDto.getNombreContratante() + "%' ";
 			if (reporteDto.getNombreFinado() != null) {
 				condicion = condicion + AND_NOMBRE_PERSONA2 + reporteDto.getNombreFinado() + "%' ";
 			}
@@ -435,7 +435,7 @@ public class ReglasNegocioConsultaODSRepository {
 			if (reporteDto.getCveConvenio() != null)
 				condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " ='" + reporteDto.getCveConvenio() + "'";
 		} else if (reporteDto.getNombreFinado() != null) {
-			condicion = "WHERE CONCAT(IFNULL(sp2.NOM_PERSONA,''), ' ', IFNULL(sp2.NOM_PRIMER_APELLIDO,''), ' ', IFNULL(sp2.NOM_SEGUNDO_APELLIDO,'')) LIKE '%"
+			condicion = " WHERE CONCAT(IFNULL(sp2.NOM_PERSONA,''), ' ', IFNULL(sp2.NOM_PRIMER_APELLIDO,''), ' ', IFNULL(sp2.NOM_SEGUNDO_APELLIDO,'')) LIKE '%"
 					+ reporteDto.getNombreFinado() + "%' ";
 			if (reporteDto.getIdTipoODS() != null)
 				condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
@@ -450,7 +450,7 @@ public class ReglasNegocioConsultaODSRepository {
 			if (reporteDto.getCveConvenio() != null)
 				condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " ='" + reporteDto.getCveConvenio() + "'";
 		} else if (reporteDto.getIdUnidadMedica() != null) {
-			condicion = "WHERE sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+			condicion = " WHERE sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
 			if (reporteDto.getCveConvenio() != null)
 				condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
 		} else if (reporteDto.getCveConvenio() != null)
