@@ -38,16 +38,16 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilInventario= new SelectQueryUtil();
 		
 		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
+		.from("SVC_DETALLE_CARAC_PRESUP_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
 		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
+		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
-		selectQueryUtilArticulo.select("DISTINCT STA.ID_ARTICULO AS idArticulo","STI.ID_INVE_ARTICULO AS idInventario","CONCAT(STI.FOLIO_ARTICULO,'-',STA.DES_MODELO_ARTICULO,' $',SCA.MON_PRECIO) AS nombreArticulo",
+		selectQueryUtilArticulo.select("DISTINCT STA.ID_ARTICULO AS idArticulo","STI.ID_INVE_ARTICULO AS idInventario","CONCAT(CVE_FOLIO_ARTICULO,'-',STA.DES_MODELO_ARTICULO,' $',SCA.MON_PRECIO) AS nombreArticulo",
 				"STA.ID_CATEGORIA_ARTICULO AS idCategoria","SC.ID_PROVEEDOR AS idProveedor",
 				"STCA.DES_CATEGORIA_ARTICULO AS grupo",
 				"SCA.MON_PRECIO AS precio")
@@ -106,13 +106,13 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilCosto= new SelectQueryUtil();
 		
 		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
+		.from("SVC_DETALLE_CARAC_PRESUP_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
 		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
+		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
 		selectQueryUtilArticulo.select("DISTINCT SA.ID_ARTICULO AS idArticulo","SA.DES_ARTICULO AS nombreArticulo")
@@ -132,7 +132,7 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilInventarioArticulo= new SelectQueryUtil();
 		
 		selectQueryUtilInventarioArticulo.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
+		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.innerJoin("SVC_ATAUDES_DONADOS STA", "STA.ID_INVE_ARTICULO = SDCP.ID_INVE_ARTICULO ")
 		.innerJoin("SVT_INVENTARIO_ARTICULO STAI", "STAI.ID_INVE_ARTICULO = SDCP.ID_INVE_ARTICULO ")
 		.where("SDCP.IND_ACTIVO = 1").and("STAI.ID_TIPO_ASIGNACION_ART = "+idTipoAsignacion);
@@ -212,20 +212,20 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilCosto= new SelectQueryUtil();
 		
 		selectQueryUtilInventarioTemp.select("IFNULL(STP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP STP")
+		.from("SVC_DETALLE_CARAC_PRESUP_TEMP STP")
 		.where("STP.IND_ACTIVO=1")
 		.and("DATE_FORMAT(STP.FEC_ALTA,'YY-MM-DD')=DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
 		.and("TIMESTAMPDIFF(MINUTE,DATE_ADD(STP.FEC_ALTA, INTERVAL 4 HOUR),CURRENT_TIMESTAMP()) <= 0");
 		
 		selectQueryUtilInventario.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
+		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
 		selectQueryUtilCosto.select("CAST(IFNULL(SPS.TIP_PARAMETRO,0) AS DECIMAL(10,2))")
 		.from("SVC_PARAMETRO_SISTEMA SPS")
 		.where("SPS.DES_PARAMETRO='COSTO ATAUD'");
 		
-		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO AS idInventario","STI.FOLIO_ARTICULO AS idFolioArticulo")
+		selectQueryUtilArticulo.select("STI.ID_INVE_ARTICULO AS idInventario","CVE_FOLIO_ARTICULO AS idFolioArticulo")
 		.from("SVT_INVENTARIO_ARTICULO STI")
 		.innerJoin("SVT_ORDEN_ENTRADA SOE2", "SOE2.ID_ODE = STI.ID_ODE")
 		.innerJoin("SVT_CONTRATO SC", "SC.ID_CONTRATO = SOE2.ID_CONTRATO")
@@ -252,12 +252,12 @@ public class Ataud {
 		SelectQueryUtil selectQueryUtilInventarioAtaudDonado= new SelectQueryUtil();
 		
 		selectQueryUtilInventarioAtaudDonado.select("IFNULL(SDCP.ID_INVE_ARTICULO,0)")
-		.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP")
+		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.innerJoin("SVC_ATAUDES_DONADOS ST", "SDCP.ID_INVE_ARTICULO = ST.ID_INVE_ARTICULO")
 		.innerJoin("SVT_INVENTARIO_ARTICULO STID", "ST.ID_INVE_ARTICULO= STID.ID_INVE_ARTICULO ")
 		.where("SDCP.IND_ACTIVO=1").and("STID.ID_TIPO_ASIGNACION_ART NOT IN (1)");
 		
-		selectQueryUtilArticuloDonado.select("STI.ID_INVE_ARTICULO AS idInventario","STI.FOLIO_ARTICULO AS idFolioArticulo")
+		selectQueryUtilArticuloDonado.select("STI.ID_INVE_ARTICULO AS idInventario","CVE_FOLIO_ARTICULO AS idFolioArticulo")
 		.from("SVT_INVENTARIO_ARTICULO STI")
 		.innerJoin("SVT_ORDEN_ENTRADA SOE2", "SOE2.ID_ODE = STI.ID_ODE")
 		.innerJoin("SVT_CONTRATO SC", "SC.ID_CONTRATO = SOE2.ID_CONTRATO")
