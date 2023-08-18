@@ -89,7 +89,7 @@ public class Paquete {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
-		queryUtil.select("SS.ID_SERVICIO AS idServicio","SS.DES_NOM_SERVICIO AS nombreServicio")
+		queryUtil.select("SS.ID_SERVICIO AS idServicio","SS.DES_SERVICIO AS nombreServicio")
 		.from("SVT_SERVICIO SS")
 		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SS.ID_SERVICIO = SPS.ID_SERVICIO")
 		.innerJoin("SVT_PAQUETE SPA", "SPS.ID_PAQUETE = SPA.ID_PAQUETE")
@@ -111,7 +111,7 @@ public class Paquete {
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtilServicio= new SelectQueryUtil();
 		selectQueryUtilServicio.select("'' AS idCategoria","SPS.ID_SERVICIO AS idServicio","SS.ID_TIPO_SERVICIO AS idTipoServicio","STPS.DES_TIPO_SERVICIO AS grupo",
-				"SS.DES_NOM_SERVICIO AS concepto","SP.MON_PRECIO AS importe","'1' AS cantidad","SP.MON_PRECIO AS totalPaquete");
+				"SS.DES_SERVICIO AS concepto","SP.MON_PRECIO AS importe","'1' AS cantidad","SP.MON_PRECIO AS totalPaquete");
 		selectQueryUtilServicio.from("SVT_PAQUETE SP")
 		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SPS.ID_PAQUETE = SP.ID_PAQUETE")
 		.leftJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO =SPS.ID_SERVICIO")

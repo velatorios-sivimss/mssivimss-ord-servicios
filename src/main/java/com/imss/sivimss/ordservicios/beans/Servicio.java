@@ -34,7 +34,7 @@ public class Servicio {
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("DISTINCT SS.ID_SERVICIO AS idServicio",
-				"SS.DES_NOM_SERVICIO AS nombreServicio",
+				"SS.DES_SERVICIO AS nombreServicio",
 				"SS.ID_TIPO_SERVICIO AS idTipoServicio",
 				"SCO.DES_TIPO_SERVICIO AS grupo")
 		.from("SVT_SERVICIO SS")
