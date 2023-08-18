@@ -352,7 +352,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("CAN_CANTIDAD", "" + caracteristicasPaqueteRespuestoRequest.getCantidad() + "");
 		q.agregarParametroValues("IMP_IMPORTE", "" + caracteristicasPaqueteRespuestoRequest.getImporteMonto() + "");
 		q.agregarParametroValues("ID_PROVEEDOR", "" + caracteristicasPaqueteRespuestoRequest.getIdProveedor() + "");
-		q.agregarParametroValues("ID_CARACTERISTICAS_PRESUPUESTO", "" + idCaracteristicasPaquetePresupuesto + "");
+		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", "" + idCaracteristicasPaquetePresupuesto + "");
 		q.agregarParametroValues("DES_PROVIENE", "'" + caracteristicasPaqueteRespuestoRequest.getProviene() + "'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
@@ -634,7 +634,7 @@ public class ReglasNegocioRepository {
 	}
 
 	public String actualizarCaracteristicasPresupuestoTemporal(Integer idOrden) {
-		final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARACTERISTICAS_PRESUPUESTO_TEMP ");
+		final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARAC_PRESUP_TEMP ");
 		queryHelper.agregarParametroValues("IND_ACTIVO", "0");
 		queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
@@ -647,7 +647,7 @@ public class ReglasNegocioRepository {
 
 		query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SET IND_ACTIVO = 0"
 				+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO IN " + " (SELECT DISTINCT ID_CARACTERISTICAS_PRESUPUESTO "
-				+ " FROM SVC_CARACTERISTICAS_PRESUPUESTO_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
+				+ " FROM SVC_CARAC_PRESUP_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
 		log.info(query);
 		return query;
 
@@ -985,11 +985,11 @@ public class ReglasNegocioRepository {
 						SelectQueryUtil selectQueryAgregadoArticulo = new SelectQueryUtil();
 						
 						selectQueryAgregadoServicio.select("COUNT(SDCP.ID_DETALLE_CARACTERISTICAS)")
-						.from("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCPT")
+						.from("SVC_CARAC_PRESUP_TEMP SCPT")
 						.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO =SCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
 						.where("SCPT.ID_ORDEN_SERVICIO =SCP.ID_ORDEN_SERVICIO ");
 						selectQueryAgregadoArticulo.select("COUNT(SDCP.ID_DETALLE_CARACTERISTICAS)")
-						.from("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCPT")
+						.from("SVC_CARAC_PRESUP_TEMP SCPT")
 						.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO =SCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
 						.where("SCPT.ID_ORDEN_SERVICIO =SCP.ID_ORDEN_SERVICIO ");
 						
@@ -1079,7 +1079,7 @@ public class ReglasNegocioRepository {
 							"SCPT.DES_OBSERVACIONES AS observaciones",
 							"SCPT.DES_NOTAS_SERVICIO AS notasServicio")
 					.from("SVC_ORDEN_SERVICIO STO")
-					.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCPT ", "SCPT.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO  ")
+					.innerJoin("SVC_CARAC_PRESUP_TEMP SCPT ", "SCPT.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO  ")
 					.innerJoin("SVT_PAQUETE SP", "SCPT.ID_PAQUETE=SP.ID_PAQUETE")
 					.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
 					.and("SCPT.IND_ACTIVO = 1");
@@ -1109,7 +1109,7 @@ public class ReglasNegocioRepository {
 									"SDCPT.IMP_IMPORTE AS importeMonto",
 									"SDCPT.DES_PROVIENE AS proviene")
 							.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCPT  ")
-							.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO  ")
+							.innerJoin("SVC_CARAC_PRESUP_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO  ")
 							.leftJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO ")
 							.innerJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO  ")
 							.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR ")
@@ -1132,7 +1132,7 @@ public class ReglasNegocioRepository {
 									"SDCPT.IMP_IMPORTE AS importeMonto",
 									"SDCPT.DES_PROVIENE AS proviene")
 							.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCPT  ")
-							.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO_TEMP SCP  ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+							.innerJoin("SVC_CARAC_PRESUP_TEMP SCP  ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
 							.leftJoin("SVT_INVENTARIO_ARTICULO STIA ", "STIA.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO ")
 							.innerJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
 							.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
