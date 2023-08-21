@@ -277,10 +277,10 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_SERVICIO", "" + detalleCaracteristicasPaqueteRequest.getIdServicio() + "");
 		q.agregarParametroValues("DES_MOTIVO", setValor( detalleCaracteristicasPaqueteRequest.getDesmotivo()));
 		q.agregarParametroValues(IND_ACTIVO, "" + detalleCaracteristicasPaqueteRequest.getActivo() + "");
-		q.agregarParametroValues("CAN_CANTIDAD", "" + detalleCaracteristicasPaqueteRequest.getCantidad() + "");
-		q.agregarParametroValues("IMP_IMPORTE", "" + detalleCaracteristicasPaqueteRequest.getImporteMonto() + "");
+		q.agregarParametroValues("CAN_CARAC_PAQ", "" + detalleCaracteristicasPaqueteRequest.getCantidad() + "");
+		q.agregarParametroValues("IMP_CARAC_PAQ", "" + detalleCaracteristicasPaqueteRequest.getImporteMonto() + "");
 		q.agregarParametroValues("ID_PROVEEDOR", "" + detalleCaracteristicasPaqueteRequest.getIdProveedor() + "");
-		q.agregarParametroValues("ID_CARACTERISTICAS_PAQUETE", "" + idCaracteristicasPaquete + "");
+		q.agregarParametroValues("ID_CARAC_PAQUETE", "" + idCaracteristicasPaquete + "");
 		q.agregarParametroValues("ID_CATEGORIA_PAQUETE", "" + detalleCaracteristicasPaqueteRequest.getIdCategoriaPaquete() + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
@@ -414,7 +414,7 @@ public class ReglasNegocioRepository {
 	// insertar informacion servicio velacion
 	public String insertarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
 			Integer idInformacionServicio, Integer idUsuarioAlta) {
-		final QueryHelper q = new QueryHelper("INSERT INTO SVC_INFORMACION_SERVICIO_VELACION");
+		final QueryHelper q = new QueryHelper("INSERT INTO SVC_INF_SERVICIO_VELACION");
 		
 		if (informacionServicioRequest.getCp()==null) {
 			q.agregarParametroValues(ID_DOMICILIO, "NULL");
