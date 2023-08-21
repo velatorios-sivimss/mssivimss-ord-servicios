@@ -349,10 +349,10 @@ public class ReglasNegocioRepository {
 				"" + caracteristicasPaqueteRespuestoRequest.getIdInventario() + "");
 		q.agregarParametroValues("ID_SERVICIO", "" + caracteristicasPaqueteRespuestoRequest.getIdServicio() + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
-		q.agregarParametroValues("CAN_CANTIDAD", "" + caracteristicasPaqueteRespuestoRequest.getCantidad() + "");
-		q.agregarParametroValues("IMP_IMPORTE", "" + caracteristicasPaqueteRespuestoRequest.getImporteMonto() + "");
+		q.agregarParametroValues("CAN_DET_PRESUP", "" + caracteristicasPaqueteRespuestoRequest.getCantidad() + "");
+		q.agregarParametroValues("IMP_CARAC_PRESUP", "" + caracteristicasPaqueteRespuestoRequest.getImporteMonto() + "");
 		q.agregarParametroValues("ID_PROVEEDOR", "" + caracteristicasPaqueteRespuestoRequest.getIdProveedor() + "");
-		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", "" + idCaracteristicasPaquetePresupuesto + "");
+		q.agregarParametroValues("ID_CARAC_PRESUPUESTO", "" + idCaracteristicasPaquetePresupuesto + "");
 		q.agregarParametroValues("DES_PROVIENE", "'" + caracteristicasPaqueteRespuestoRequest.getProviene() + "'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
