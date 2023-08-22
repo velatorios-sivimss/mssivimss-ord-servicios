@@ -105,6 +105,34 @@ public class QueryHelper implements Serializable {
         querySelectFinal.append(queryValues).append(ESPACIO).append("WHERE").append(queryWhere).append(";");
         return querySelectFinal.toString();
     }
+    
+    public String obtenerQueryActualizarSinCoalesce() {
+        StringBuilder querySelectFinal = null;
+        StringBuilder queryValues = null;
+        querySelectFinal = new StringBuilder(this.querySelect);
+        querySelectFinal.append(ESPACIO);
+
+        queryValues = new StringBuilder("SET");
+        queryValues.append(ESPACIO);
+
+        int count = 0;
+        int max = parametros.size();
+        Set<String> keys = parametros.keySet();
+        for (String string : keys) {
+            queryValues.append(string + " = " + parametros.get(string));
+            count++;
+            if (count != max) {
+                queryValues.append(",").append(ESPACIO);
+
+            }
+
+        }
+        if (queryWhere.length() <= 0) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Sintaxis incorrecta, no se realizo la transacción.");
+        }
+        querySelectFinal.append(queryValues).append(ESPACIO).append("WHERE").append(queryWhere).append(";");
+        return querySelectFinal.toString();
+    }
 
 
 }

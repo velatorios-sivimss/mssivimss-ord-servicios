@@ -749,25 +749,29 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_FINADO ");
 		q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
-		q.agregarParametroValues("DES_EXTREMIDAD", "'" + finadoRequest.getExtremidad() + "'");
-		q.agregarParametroValues("DES_OBITO", "'" + finadoRequest.getEsobito() + "'");
-		q.agregarParametroValues("CVE_MATRICULA", "'" + finadoRequest.getMatricula() + "'");
+		q.agregarParametroValues("DES_EXTREMIDAD", setValor(finadoRequest.getExtremidad() ));
+		q.agregarParametroValues("DES_OBITO", setValor(finadoRequest.getEsobito()));
+		q.agregarParametroValues("CVE_MATRICULA", setValor(finadoRequest.getMatricula()));
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
-		q.agregarParametroValues(ID_DOMICILIO, "" + finadoRequest.getCp().getIdDomicilio() + "");
-		q.agregarParametroValues("FEC_DECESO", "'" + finadoRequest.getFechaDeceso() + "'");
-		q.agregarParametroValues("DES_CAUSA_DECESO", "'" + finadoRequest.getCausaDeceso() + "'");
-		q.agregarParametroValues("DES_LUGAR_DECESO", "'" + finadoRequest.getLugarDeceso() + "'");
-		q.agregarParametroValues("TIM_HORA", "'" + finadoRequest.getHora() + "'");
+		if (finadoRequest.getCp()==null) {
+			q.agregarParametroValues(ID_DOMICILIO, "NULL");
+		}else {
+			q.agregarParametroValues(ID_DOMICILIO, "" +finadoRequest.getCp().getIdDomicilio() + "");
+		}
+		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
+		q.agregarParametroValues("DES_CAUSA_DECESO",setValor(finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("DES_LUGAR_DECESO", setValor(finadoRequest.getLugarDeceso()));
+		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
-		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", "'" + finadoRequest.getProcedenciaFinado() + "'");
+		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor(finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
 		q.addWhere("ID_FINADO="+finadoRequest.getIdFinado());
 
-		query = q.obtenerQueryActualizar();
+		query = q.obtenerQueryActualizarSinCoalesce();
 		log.info(query);
 		return query;
 	}
@@ -777,14 +781,14 @@ public class ReglasNegocioRepository {
 	public String actualizarInformacionServicio(InformacionServicioRequest informacionServicioRequest,
 			Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO ");
-		q.agregarParametroValues("FEC_CORTEJO", "'" + informacionServicioRequest.getFechaCortejo() + "'");
-		q.agregarParametroValues("TIM_HORA_CORTEJO", "'" + informacionServicioRequest.getHoraCortejo() + "'");
-		q.agregarParametroValues("FEC_RECOGER", "'" + informacionServicioRequest.getFechaRecoger() + "'");
-		q.agregarParametroValues("TIM_HORA_RECOGER", "'" + informacionServicioRequest.getHoraRecoger() + "'");
+		q.agregarParametroValues("FEC_CORTEJO", setValor(informacionServicioRequest.getFechaCortejo()));
+		q.agregarParametroValues("TIM_HORA_CORTEJO", setValor(informacionServicioRequest.getHoraCortejo()));
+		q.agregarParametroValues("FEC_RECOGER", setValor(informacionServicioRequest.getFechaRecoger() ));
+		q.agregarParametroValues("TIM_HORA_RECOGER", setValor(informacionServicioRequest.getHoraRecoger()));
 		q.agregarParametroValues("ID_PANTEON", "" + informacionServicioRequest.getIdPanteon() + "");
 		q.agregarParametroValues("ID_SALA", "" + informacionServicioRequest.getIdSala() + "");
-		q.agregarParametroValues("FEC_CREMACION", "'" + informacionServicioRequest.getFechaCremacion() + "'");
-		q.agregarParametroValues("TIM_HORA_CREMACION", "'" + informacionServicioRequest.getHoraCremacion() + "'");
+		q.agregarParametroValues("FEC_CREMACION", setValor(informacionServicioRequest.getFechaCremacion()));
+		q.agregarParametroValues("TIM_HORA_CREMACION", setValor(informacionServicioRequest.getHoraCremacion() ));
 		q.agregarParametroValues("ID_PROMOTORES", "" + informacionServicioRequest.getIdPromotor());
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");

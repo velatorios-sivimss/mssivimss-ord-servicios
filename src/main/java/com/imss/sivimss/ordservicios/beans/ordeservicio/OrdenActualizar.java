@@ -158,7 +158,7 @@ public class OrdenActualizar {
 
 			return response;
 		} catch (Exception e) {
-			log.error(AppConstantes.ERROR_QUERY.concat(query));
+			log.error(AppConstantes.ERROR_QUERY.concat(e.getMessage()));
 			log.error(e.getMessage());
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA,
