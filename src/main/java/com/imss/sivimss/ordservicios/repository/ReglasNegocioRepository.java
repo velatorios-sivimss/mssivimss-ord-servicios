@@ -615,7 +615,7 @@ public class ReglasNegocioRepository {
 	////////////////////////////////// temporales//////////////////////////////////
 
 	public String actualizarCaracteristicasPaqueteTemporal(Integer idOrden) {
-		final QueryHelper q = new QueryHelper("UPDATE SVC_CARACTERISTICAS_PAQUETE_TEMP ");
+		final QueryHelper q = new QueryHelper("UPDATE SVC_CARAC_PAQUETE_TEMP ");
 		q.agregarParametroValues("IND_ACTIVO", "0");
 		q.addWhere("ID_ORDEN_SERVICIO = " + idOrden);
 		query = q.obtenerQueryActualizar();
@@ -625,9 +625,9 @@ public class ReglasNegocioRepository {
 
 	public String actualizarCaracteristicasPaqueteDetalleTemp(Integer idOrden) {
 
-		query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SET IND_ACTIVO = 0"
-				+ " WHERE ID_CARACTERISTICAS_PAQUETE IN " + " (SELECT DISTINCT ID_CARACTERISTICAS_PAQUETE "
-				+ " FROM SVC_CARACTERISTICAS_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
+		query = " UPDATE SVC_DETALLE_CARAC_PAQ_TEMP SET IND_ACTIVO = 0"
+				+ " WHERE ID_CARAC_PAQUETE IN " + " (SELECT DISTINCT ID_CARAC_PAQUETE "
+				+ " FROM SVC_CARAC_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
 		log.info(query);
 		return query;
 
@@ -645,8 +645,8 @@ public class ReglasNegocioRepository {
 
 	public String actualizarCaracteristicasPresuestoDetalleTemp(Integer idOrden) {
 
-		query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SET IND_ACTIVO = 0"
-				+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO IN " + " (SELECT DISTINCT ID_CARACTERISTICAS_PRESUPUESTO "
+		query = " UPDATE SVC_DETALLE_CARAC_PRESUP_TEMP SET IND_ACTIVO = 0"
+				+ " WHERE ID_CARAC_PRESUPUESTO IN " + " (SELECT DISTINCT ID_CARAC_PRESUPUESTO "
 				+ " FROM SVC_CARAC_PRESUP_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
 		log.info(query);
 		return query;
@@ -822,7 +822,7 @@ public class ReglasNegocioRepository {
 	// actualizar informacion servicio velacion
 	public String actualizarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
 			Integer idInformacionServicio, Integer idUsuarioAlta) {
-		final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO_VELACION ");
+		final QueryHelper q = new QueryHelper("UPDATE SVC_INF_SERVICIO_VELACION ");
 		q.agregarParametroValues(ID_DOMICILIO, "" + informacionServicioRequest.getCp().getIdDomicilio() + "");
 		q.agregarParametroValues("FEC_INSTALACION", "'" + informacionServicioRequest.getFechaInstalacion() + "'");
 		q.agregarParametroValues("TIM_HORA_INSTALACION", "'" + informacionServicioRequest.getHoraInstalacion() + "'");
@@ -832,7 +832,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", "" + idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
-		q.addWhere("ID_INFORMACION_SERVICIO_VELACION="+informacionServicioRequest.getIdInformacionServicioVelacion());
+		q.addWhere("ID_INF_SERVICIO_VELACION="+informacionServicioRequest.getIdInformacionServicioVelacion());
 		query = q.obtenerQueryActualizar();
 		log.info(query);
 		return query;
