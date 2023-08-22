@@ -870,12 +870,6 @@ public class OrdenActualizar {
 			cveTarea = generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		}
 
-		// finado
-		if (ordenesServicioRequest.getFinado() != null) {
-			finado.actualizarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
-					usuario.getIdUsuario(), connection);
-		}
-		
 		// caracteristicas presupuesto 
 		if (ordenesServicioRequest.getIdEstatus() ==1) { // temporales
 		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
