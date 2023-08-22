@@ -794,7 +794,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
 		q.addWhere("ID_INFORMACION_SERVICIO="+informacionServicioRequest.getIdInformacionServicio());
-		query = q.obtenerQueryActualizar();
+		query = q.obtenerQueryActualizarSinCoalesce();
 		log.info(query);
 		return query;
 	}
