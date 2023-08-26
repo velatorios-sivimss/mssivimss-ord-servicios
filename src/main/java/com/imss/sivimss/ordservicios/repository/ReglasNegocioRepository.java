@@ -437,7 +437,7 @@ public class ReglasNegocioRepository {
 
 	// insertar ataud donado temp
 	public String insertarAtaudDonadoTemp(Integer ordenServicio, Integer idInventario, Integer idUsuarioAlta) {
-		final QueryHelper q = new QueryHelper("INSERT INTO SVC_DONACION_ORDEN_SERVICIO_TEMP");
+		final QueryHelper q = new QueryHelper("INSERT INTO SVC_DONACION_ORDEN_SERV_TEMP");
 		q.agregarParametroValues("ID_ORDEN_SERVICIO", "" + ordenServicio + "");
 		q.agregarParametroValues("ID_INVE_ARTICULO", "" + idInventario + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
@@ -615,7 +615,7 @@ public class ReglasNegocioRepository {
 	////////////////////////////////// temporales//////////////////////////////////
 
 	public String actualizarCaracteristicasPaqueteTemporal(Integer idOrden) {
-		final QueryHelper q = new QueryHelper("UPDATE SVC_CARACTERISTICAS_PAQUETE_TEMP ");
+		final QueryHelper q = new QueryHelper("UPDATE SVC_CARAC_PAQUETE_TEMP ");
 		q.agregarParametroValues("IND_ACTIVO", "0");
 		q.addWhere("ID_ORDEN_SERVICIO = " + idOrden);
 		query = q.obtenerQueryActualizar();
@@ -625,9 +625,9 @@ public class ReglasNegocioRepository {
 
 	public String actualizarCaracteristicasPaqueteDetalleTemp(Integer idOrden) {
 
-		query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SET IND_ACTIVO = 0"
-				+ " WHERE ID_CARACTERISTICAS_PAQUETE IN " + " (SELECT DISTINCT ID_CARACTERISTICAS_PAQUETE "
-				+ " FROM SVC_CARACTERISTICAS_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
+		query = " UPDATE SVC_DETALLE_CARAC_PAQ_TEMP SET IND_ACTIVO = 0"
+				+ " WHERE ID_CARAC_PAQUETE IN " + " (SELECT DISTINCT ID_CARAC_PAQUETE "
+				+ " FROM SVC_CARAC_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
 		log.info(query);
 		return query;
 
@@ -645,8 +645,8 @@ public class ReglasNegocioRepository {
 
 	public String actualizarCaracteristicasPresuestoDetalleTemp(Integer idOrden) {
 
-		query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SET IND_ACTIVO = 0"
-				+ " WHERE ID_CARACTERISTICAS_PRESUPUESTO IN " + " (SELECT DISTINCT ID_CARACTERISTICAS_PRESUPUESTO "
+		query = " UPDATE SVC_DETALLE_CARAC_PRESUP_TEMP SET IND_ACTIVO = 0"
+				+ " WHERE ID_CARAC_PRESUPUESTO IN " + " (SELECT DISTINCT ID_CARAC_PRESUPUESTO "
 				+ " FROM SVC_CARAC_PRESUP_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + idOrden + ")";
 		log.info(query);
 		return query;
@@ -654,7 +654,7 @@ public class ReglasNegocioRepository {
 	}
 
 	public String actualizarDonacionTemporal(Integer idOrden) {
-		final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_DONACION_ORDEN_SERVICIO_TEMP ");
+		final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_DONACION_ORDEN_SERV_TEMP ");
 		queryHelper.agregarParametroValues("IND_ACTIVO", "0");
 		queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
@@ -749,25 +749,29 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_FINADO ");
 		q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
-		q.agregarParametroValues("DES_EXTREMIDAD", "'" + finadoRequest.getExtremidad() + "'");
-		q.agregarParametroValues("DES_OBITO", "'" + finadoRequest.getEsobito() + "'");
-		q.agregarParametroValues("CVE_MATRICULA", "'" + finadoRequest.getMatricula() + "'");
+		q.agregarParametroValues("DES_EXTREMIDAD", setValor(finadoRequest.getExtremidad() ));
+		q.agregarParametroValues("DES_OBITO", setValor(finadoRequest.getEsobito()));
+		q.agregarParametroValues("CVE_MATRICULA", setValor(finadoRequest.getMatricula()));
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
-		q.agregarParametroValues(ID_DOMICILIO, "" + finadoRequest.getCp().getIdDomicilio() + "");
-		q.agregarParametroValues("FEC_DECESO", "'" + finadoRequest.getFechaDeceso() + "'");
-		q.agregarParametroValues("DES_CAUSA_DECESO", "'" + finadoRequest.getCausaDeceso() + "'");
-		q.agregarParametroValues("DES_LUGAR_DECESO", "'" + finadoRequest.getLugarDeceso() + "'");
-		q.agregarParametroValues("TIM_HORA", "'" + finadoRequest.getHora() + "'");
+		if (finadoRequest.getCp()==null) {
+			q.agregarParametroValues(ID_DOMICILIO, "NULL");
+		}else {
+			q.agregarParametroValues(ID_DOMICILIO, "" +finadoRequest.getCp().getIdDomicilio() + "");
+		}
+		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
+		q.agregarParametroValues("DES_CAUSA_DECESO",setValor(finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("DES_LUGAR_DECESO", setValor(finadoRequest.getLugarDeceso()));
+		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
-		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", "'" + finadoRequest.getProcedenciaFinado() + "'");
+		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor(finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
 		q.addWhere("ID_FINADO="+finadoRequest.getIdFinado());
 
-		query = q.obtenerQueryActualizar();
+		query = q.obtenerQueryActualizarSinCoalesce();
 		log.info(query);
 		return query;
 	}
@@ -777,20 +781,20 @@ public class ReglasNegocioRepository {
 	public String actualizarInformacionServicio(InformacionServicioRequest informacionServicioRequest,
 			Integer idOrdenServicio, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO ");
-		q.agregarParametroValues("FEC_CORTEJO", "'" + informacionServicioRequest.getFechaCortejo() + "'");
-		q.agregarParametroValues("TIM_HORA_CORTEJO", "'" + informacionServicioRequest.getHoraCortejo() + "'");
-		q.agregarParametroValues("FEC_RECOGER", "'" + informacionServicioRequest.getFechaRecoger() + "'");
-		q.agregarParametroValues("TIM_HORA_RECOGER", "'" + informacionServicioRequest.getHoraRecoger() + "'");
+		q.agregarParametroValues("FEC_CORTEJO", setValor(informacionServicioRequest.getFechaCortejo()));
+		q.agregarParametroValues("TIM_HORA_CORTEJO", setValor(informacionServicioRequest.getHoraCortejo()));
+		q.agregarParametroValues("FEC_RECOGER", setValor(informacionServicioRequest.getFechaRecoger() ));
+		q.agregarParametroValues("TIM_HORA_RECOGER", setValor(informacionServicioRequest.getHoraRecoger()));
 		q.agregarParametroValues("ID_PANTEON", "" + informacionServicioRequest.getIdPanteon() + "");
 		q.agregarParametroValues("ID_SALA", "" + informacionServicioRequest.getIdSala() + "");
-		q.agregarParametroValues("FEC_CREMACION", "'" + informacionServicioRequest.getFechaCremacion() + "'");
-		q.agregarParametroValues("TIM_HORA_CREMACION", "'" + informacionServicioRequest.getHoraCremacion() + "'");
+		q.agregarParametroValues("FEC_CREMACION", setValor(informacionServicioRequest.getFechaCremacion()));
+		q.agregarParametroValues("TIM_HORA_CREMACION", setValor(informacionServicioRequest.getHoraCremacion() ));
 		q.agregarParametroValues("ID_PROMOTORES", "" + informacionServicioRequest.getIdPromotor());
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
 		q.addWhere("ID_INFORMACION_SERVICIO="+informacionServicioRequest.getIdInformacionServicio());
-		query = q.obtenerQueryActualizar();
+		query = q.obtenerQueryActualizarSinCoalesce();
 		log.info(query);
 		return query;
 	}
@@ -822,7 +826,7 @@ public class ReglasNegocioRepository {
 	// actualizar informacion servicio velacion
 	public String actualizarInformacionServicioVelacion(InformacionServicioVelacionRequest informacionServicioRequest,
 			Integer idInformacionServicio, Integer idUsuarioAlta) {
-		final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO_VELACION ");
+		final QueryHelper q = new QueryHelper("UPDATE SVC_INF_SERVICIO_VELACION ");
 		q.agregarParametroValues(ID_DOMICILIO, "" + informacionServicioRequest.getCp().getIdDomicilio() + "");
 		q.agregarParametroValues("FEC_INSTALACION", "'" + informacionServicioRequest.getFechaInstalacion() + "'");
 		q.agregarParametroValues("TIM_HORA_INSTALACION", "'" + informacionServicioRequest.getHoraInstalacion() + "'");
@@ -832,7 +836,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", "" + idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
-		q.addWhere("ID_INFORMACION_SERVICIO_VELACION="+informacionServicioRequest.getIdInformacionServicioVelacion());
+		q.addWhere("ID_INF_SERVICIO_VELACION="+informacionServicioRequest.getIdInformacionServicioVelacion());
 		query = q.obtenerQueryActualizar();
 		log.info(query);
 		return query;
@@ -963,11 +967,11 @@ public class ReglasNegocioRepository {
 	public String consultarCaracteristicasPresupuestoPaqueteTempOrdenServicios(Integer idOrdenServicio) {
 					SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 					selectQueryUtil.select(
-							"SCP.ID_CARACTERISTICAS_PAQUETE AS idCaracteristicasPaquete",
+							"SCP.ID_CARAC_PAQUETE AS idCaracteristicasPaquete",
 							"SCP.ID_PAQUETE AS idPaquete",
 							"SCP.IND_OTORGAMIENTO AS  otorgamiento")
 					.from("SVC_ORDEN_SERVICIO STO")
-					.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO ")
+					.innerJoin("SVC_CARAC_PAQUETE_TEMP SCP ", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO ")
 					.innerJoin("SVT_PAQUETE SP", "SCP.ID_PAQUETE=SP.ID_PAQUETE")
 					.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
 					.and("SCP.IND_ACTIVO = 1");
@@ -986,14 +990,14 @@ public class ReglasNegocioRepository {
 						
 						selectQueryAgregadoServicio.select("COUNT(SDCP.ID_DETALLE_CARACTERISTICAS)")
 						.from("SVC_CARAC_PRESUP_TEMP SCPT")
-						.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO =SCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+						.innerJoin("SVC_DETALLE_CARAC_PRESUP_TEMP SDCP", "SDCP.ID_CARAC_PRESUPUESTO =SCPT.ID_CARAC_PRESUPUESTO ")
 						.where("SCPT.ID_ORDEN_SERVICIO =SCP.ID_ORDEN_SERVICIO ");
 						selectQueryAgregadoArticulo.select("COUNT(SDCP.ID_DETALLE_CARACTERISTICAS)")
 						.from("SVC_CARAC_PRESUP_TEMP SCPT")
-						.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO =SCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+						.innerJoin("SVC_DETALLE_CARAC_PRESUP_TEMP SDCP", "SDCP.ID_CARAC_PRESUPUESTO =SCPT.ID_CARAC_PRESUPUESTO ")
 						.where("SCPT.ID_ORDEN_SERVICIO =SCP.ID_ORDEN_SERVICIO ");
 						
-						selectQueryUtilServicios.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetalle",
+						selectQueryUtilServicios.select("SDCPT.ID_DETALLE_CARAC AS idPaqueteDetalle",
 								"0 AS idArticulo",
 								"SDCPT.ID_SERVICIO AS idServicio",
 								"SS.ID_TIPO_SERVICIO AS idTipoServicio",
@@ -1001,25 +1005,25 @@ public class ReglasNegocioRepository {
 								"SS.DES_SERVICIO AS concepto",
 								"SDCPT.DES_MOTIVO AS desmotivo",
 								"SDCPT.IND_ACTIVO AS activo",
-								"SDCPT.CAN_CANTIDAD AS cantidad",
+								"SDCPT.CAN_CARAC_PAQ AS cantidad",
 								"SDCPT.ID_PROVEEDOR AS idProveedor",
 								"SP.NOM_PROVEEDOR AS nombreProveedor",
-								"SDCPT.IMP_IMPORTE AS importeMonto",
-								"SDCPT.IMP_IMPORTE AS totalPaquete",
+								"SDCPT.IMP_CARAC_PAQ AS importeMonto",
+								"SDCPT.IMP_CARAC_PAQ AS totalPaquete",
 								"CASE WHEN ("+selectQueryAgregadoServicio.and("SDCP.ID_SERVICIO = SDCPT.ID_SERVICIO ").build() + " ) > 0 THEN TRUE "+
 										" ELSE  FALSE END AS agregado ",
 										"0 AS idCategoriaPaquete "		
 								)
-						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
-						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
+						.from("SVC_DETALLE_CARAC_PAQ_TEMP SDCPT ")
+						.innerJoin("SVC_CARAC_PAQUETE_TEMP SCP ", "SCP.ID_CARAC_PAQUETE = SDCPT.ID_CARAC_PAQUETE  ")
 						.leftJoin("SVT_SERVICIO SS ", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO  ")
 						.leftJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO ")
 						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
-						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
+						.where("SDCPT.ID_CARAC_PAQUETE = " + idCaracteristicasPaquete)
 						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_SERVICIO IS NOT NULL");
 						
 						selectQueryUtilArticulos.select(
-								"SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetalle",
+								"SDCPT.ID_DETALLE_CARAC AS idPaqueteDetalle",
 								"SDCPT.ID_ARTICULO AS idArticulo",
 								"0 AS idServicio",
 								"0 AS idTipoServicio",
@@ -1027,20 +1031,20 @@ public class ReglasNegocioRepository {
 								"STA.DES_MODELO_ARTICULO AS concepto",
 								"SDCPT.DES_MOTIVO AS desmotivo",
 								"SDCPT.IND_ACTIVO AS activo",
-								"SDCPT.CAN_CANTIDAD AS cantidad",
+								"SDCPT.CAN_CARAC_PAQ AS cantidad",
 								"SDCPT.ID_PROVEEDOR AS idProveedor",
 								"SP.NOM_PROVEEDOR AS nombreProveedor",
-								"SDCPT.IMP_IMPORTE AS importeMonto",
-								"SDCPT.IMP_IMPORTE AS totalPaquete",
+								"SDCPT.IMP_CARAC_PAQ AS importeMonto",
+								"SDCPT.IMP_CARAC_PAQ AS totalPaquete",
 								"CASE WHEN ("+selectQueryAgregadoArticulo.and("SDCP.ID_ARTICULO = SDCPT.ID_ARTICULO  ").build() + " ) > 0 THEN TRUE "+
 										" ELSE  FALSE END AS agregado ",
 										"SDCPT.ID_CATEGORIA_PAQUETE AS idCategoriaPaquete ")
-						.from("SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SDCPT ")
-						.innerJoin("SVC_CARACTERISTICAS_PAQUETE_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PAQUETE = SDCPT.ID_CARACTERISTICAS_PAQUETE  ")
+						.from("SVC_DETALLE_CARAC_PAQ_TEMP SDCPT ")
+						.innerJoin("SVC_CARAC_PAQUETE_TEMP SCP ", "SCP.ID_CARAC_PAQUETE = SDCPT.ID_CARAC_PAQUETE  ")
 						.leftJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
 						.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = SDCPT.ID_CATEGORIA_PAQUETE ")
 						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
-						.where("SDCPT.ID_CARACTERISTICAS_PAQUETE = " + idCaracteristicasPaquete)
+						.where("SDCPT.ID_CARAC_PAQUETE = " + idCaracteristicasPaquete)
 						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_CATEGORIA_PAQUETE IS NOT NULL");
 				
 				query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
@@ -1052,7 +1056,7 @@ public class ReglasNegocioRepository {
 	// consultar CaracteristicasPresupuestoPaqueteTrasladoTempOrdenServicios
 	public String consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(Integer idDetalleCaracteristicasPaquete) {
 							SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
-							selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARACTERISTICA_PRESUPUESTO_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
+							selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARAC_PRESU_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
 									"SCPTT.DES_ORIGEN AS origen",
 									"SCPTT.DES_DESTINO AS destino",
 									"SCPTT.CAN_TOTAL_KILOMETROS AS totalKilometros ",
@@ -1060,8 +1064,8 @@ public class ReglasNegocioRepository {
 									"SCPTT.LATITUD_FINAl AS latitudFinal",
 									"SCPTT.LONGITUD_INICIAL AS longitudInicial",
 									"SCPTT.LONGITUD_FINAL AS longitudFinal")
-							.from("SVC_CARACTERISTICA_PAQUETE_TRASLADO_TEMP SCPTT")
-							.where("SCPTT.ID_DETALLE_CARACTERISTICAS = " + idDetalleCaracteristicasPaquete);
+							.from("SVC_CARAC_PAQ_TRAS_TEMP SCPTT")
+							.where("SCPTT.ID_CARAC_PRESU_TRASLADO = " + idDetalleCaracteristicasPaquete);
 							
 						
 					
@@ -1073,7 +1077,7 @@ public class ReglasNegocioRepository {
 	// consultar CaracteristicasPresupuestoPresupuestoTempOrdenServicios
 	public String consultarCaracteristicasPresupuestoPresupuestoTempOrdenServicios(Integer idOrdenServicio) {
 					SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
-					selectQueryUtil.select("SCPT.ID_CARACTERISTICAS_PRESUPUESTO AS idCaracteristicasPresupuesto",
+					selectQueryUtil.select("SCPT.ID_CARAC_PRESUPUESTO AS idCaracteristicasPresupuesto",
 							"SCPT.ID_PAQUETE AS idPaquete",
 							"SCPT.CAN_PRESUPUESTO AS  totalPresupuesto",
 							"SCPT.DES_OBSERVACIONES AS observaciones",
@@ -1102,18 +1106,18 @@ public class ReglasNegocioRepository {
 									"SDCPT.ID_SERVICIO AS idServicio",
 									"STS.DES_TIPO_SERVICIO AS grupo",
 									"SS.DES_SERVICIO AS concepto",
-									"SDCPT.CAN_CANTIDAD AS cantidad",
+									"SDCPT.CAN_DET_PRESUP AS cantidad",
 									"SDCPT.ID_PROVEEDOR AS idProveedor",
 									"SP.NOM_PROVEEDOR AS nombreProveedor",
 									"0 AS esDonado",
-									"SDCPT.IMP_IMPORTE AS importeMonto",
+									"SDCPT.IMP_CARAC_PRESUP AS importeMonto",
 									"SDCPT.DES_PROVIENE AS proviene")
-							.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCPT  ")
-							.innerJoin("SVC_CARAC_PRESUP_TEMP SCP ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO  ")
+							.from("SVC_DETALLE_CARAC_PRESUP_TEMP SDCPT  ")
+							.innerJoin("SVC_CARAC_PRESUP_TEMP SCP ", "SCP.ID_CARAC_PRESUPUESTO = SDCPT.ID_CARAC_PRESUPUESTO  ")
 							.leftJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCPT.ID_SERVICIO ")
 							.innerJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO  ")
 							.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR ")
-							.where("SDCPT.ID_CARACTERISTICAS_PRESUPUESTO = " + idCaracteristicasPresupuesto)
+							.where("SDCPT.ID_CARAC_PRESUPUESTO = " + idCaracteristicasPresupuesto)
 							.and("SDCPT.IND_ACTIVO = 1");
 							
 							selectQueryUtilArticulos.select("SDCPT.ID_DETALLE_CARACTERISTICAS AS idPaqueteDetallePresupuesto",
@@ -1123,21 +1127,21 @@ public class ReglasNegocioRepository {
 									"0 AS idServicio",
 									"SCA.DES_CATEGORIA_ARTICULO AS grupo",
 									"STA.DES_MODELO_ARTICULO AS concepto",
-									"SDCPT.CAN_CANTIDAD AS cantidad",
+									"SDCPT.CAN_DET_PRESUP AS cantidad",
 									"SDCPT.ID_PROVEEDOR AS idProveedor",
 									"SP.NOM_PROVEEDOR AS nombreProveedor",
-									"(SELECT IFNULL(SDO.ID_DONACION_ORDEN_SERVICIO,0)  FROM SVC_DONACION_ORDEN_SERVICIO_TEMP SDO "+ 
+									"(SELECT IFNULL(SDO.ID_DONACION_ORDEN_SERVICIO,0)  FROM SVC_DONACION_ORDEN_SERV_TEMP SDO "+ 
 									"WHERE SDO.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO AND SDO.ID_ORDEN_SERVICIO="+idOrdenServicio+" AND SDO.IND_ACTIVO=1)"+ 
 									"AS esDonado",
-									"SDCPT.IMP_IMPORTE AS importeMonto",
+									"SDCPT.IMP_CARAC_PRESUP AS importeMonto",
 									"SDCPT.DES_PROVIENE AS proviene")
-							.from("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SDCPT  ")
-							.innerJoin("SVC_CARAC_PRESUP_TEMP SCP  ", "SCP.ID_CARACTERISTICAS_PRESUPUESTO = SDCPT.ID_CARACTERISTICAS_PRESUPUESTO ")
+							.from("SVC_DETALLE_CARAC_PRESUP_TEMP SDCPT  ")
+							.innerJoin("SVC_CARAC_PRESUP_TEMP SCP  ", "SCP.ID_CARAC_PRESUPUESTO = SDCPT.ID_CARAC_PRESUPUESTO ")
 							.leftJoin("SVT_INVENTARIO_ARTICULO STIA ", "STIA.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO ")
 							.innerJoin("SVT_ARTICULO STA", "STA.ID_ARTICULO = SDCPT.ID_ARTICULO ")
 							.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO =STA.ID_CATEGORIA_ARTICULO ")
 							.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR   ")
-							.where("SDCPT.ID_CARACTERISTICAS_PRESUPUESTO = " + idCaracteristicasPresupuesto)
+							.where("SDCPT.ID_CARAC_PRESUPUESTO = " + idCaracteristicasPresupuesto)
 							.and("SDCPT.IND_ACTIVO = 1");
 					
 					query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
@@ -1148,7 +1152,7 @@ public class ReglasNegocioRepository {
 		// consultar CaracteristicasPresupuestoPTrasladoTempOrdenServicios
 		public String consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(Integer idDetalleCaracteristicasPresupuesto) {
 								SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
-								selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARACTERISTICA_PRESUPUESTO_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
+								selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARAC_PRESU_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
 										"SCPTT.DES_ORIGEN AS origen",
 										"SCPTT.DES_DESTINO AS destino",
 										"SCPTT.CAN_TOTAL_KILOMETROS AS totalKilometros ",
@@ -1156,7 +1160,7 @@ public class ReglasNegocioRepository {
 										"SCPTT.LATITUD_FINAl AS latitudFinal",
 										"SCPTT.LONGITUD_INICIAL AS longitudInicial",
 										"SCPTT.LONGITUD_FINAL AS longitudFinal")
-								.from("SVC_CARACTERISTICA_PRESUPUESTO_TRASLADO_TEMP SCPTT")
+								.from("SVC_CARAC_PRESUP_TRAS_TEMP SCPTT")
 								.where("SCPTT.ID_DETALLE_CARACTERISTICAS = " + idDetalleCaracteristicasPresupuesto);
 								
 							
@@ -1193,7 +1197,7 @@ public class ReglasNegocioRepository {
 		// consultar InformacionServicioOrdenServicios
 		public String consultarInformacionServicioVelacionOrdenServicios(Integer idInformacionServicio) {
 												SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
-												selectQueryUtilTrasladoServicio.select("SISV.ID_INFORMACION_SERVICIO_VELACION AS idInformacionServicioVelacion",
+												selectQueryUtilTrasladoServicio.select("SISV.ID_INF_SERVICIO_VELACION AS idInformacionServicioVelacion",
 														"DATE_FORMAT(SISV.FEC_INSTALACION ,'"+fecha+"') AS fechaInstalacion",
 														"TIME_FORMAT(SISV.TIM_HORA_INSTALACION,'%H:%i') AS horaInstalacion",
 														"DATE_FORMAT(SISV.FEC_VELACION,'"+fecha+"') AS fechaVelacion",
@@ -1207,7 +1211,7 @@ public class ReglasNegocioRepository {
 														"SCD.DES_COLONIA AS desColonia",
 														"SCD.DES_MUNICIPIO AS desMunicipio",
 														"SCD.DES_ESTADO AS desEstado")
-												.from("SVC_INFORMACION_SERVICIO_VELACION SISV ")
+												.from("SVC_INF_SERVICIO_VELACION SISV ")
 												.leftJoin("SVT_DOMICILIO SCD","SCD.ID_DOMICILIO = SISV.ID_DOMICILIO")
 												.where("SISV.ID_INFORMACION_SERVICIO = " + idInformacionServicio);
 												

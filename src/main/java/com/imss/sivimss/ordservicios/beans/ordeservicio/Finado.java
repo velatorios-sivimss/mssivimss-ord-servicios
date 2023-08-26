@@ -116,16 +116,44 @@ public class Finado {
     
     public Integer actualizarFinado(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
 		
-		try {
+		try {	
 			statement = connection.createStatement();
-			statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(), idUsuarioAlta),
-					Statement.RETURN_GENERATED_KEYS);
-
-			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
-					Statement.RETURN_GENERATED_KEYS);
-
-			statement.executeUpdate(reglasNegocioRepository.actualizarFinado(finadoRequest, idUsuarioAlta),
-					Statement.RETURN_GENERATED_KEYS);
+			if(!finadoRequest.getExtremidad().equalsIgnoreCase("true")){
+				if (Objects.isNull(finadoRequest.getIdPersona())) {
+	                rs=statement.executeQuery(reglasNegocioRepository.consultarPersona(finadoRequest.getCurp()));
+	    			
+	    			if (rs.next()) {
+	    				finadoRequest.setIdPersona(rs.getInt("idPersona"));
+	    			}else {
+	    				if (Objects.nonNull(finadoRequest.getNomPersona()) && !finadoRequest.getNomPersona().equals("")) {
+							statement.executeUpdate(reglasNegocioRepository.insertarPersona(finadoRequest, idUsuarioAlta),Statement.RETURN_GENERATED_KEYS);
+							rs=statement.getGeneratedKeys();
+							if (rs.next()) {
+								finadoRequest.setIdPersona(rs.getInt(1));
+							} 
+						}
+	    				
+	    			}
+	    			
+	        		
+	    			statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+					rs=statement.getGeneratedKeys();
+					if (rs.next()) {
+	    		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
+					}
+				}else {
+					
+						statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(), idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);	
+						statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				  }
+				
+			    }
+	
+				statement.executeUpdate(reglasNegocioRepository.actualizarFinado(finadoRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+			
 			
 		} finally {
 			if (statement!=null) {

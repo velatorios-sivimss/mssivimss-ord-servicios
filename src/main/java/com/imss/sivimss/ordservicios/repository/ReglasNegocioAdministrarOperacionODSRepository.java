@@ -33,7 +33,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 	public String insertarSituarServicio(SituarServicio situarServicio, Integer idUsuario) {
 		QueryHelper queryHelper= new QueryHelper("INSERT INTO SVC_ORDENES_HISTORIAL_SERVICIOS ");
 		queryHelper.addColumn("ID_ORDEN_SERVICIO", ""+situarServicio.getIdOrdenServicio()+"");
-		queryHelper.addColumn("DES_CERTIFICADO",""+situarServicio.getIndCertificado()+"");
+		queryHelper.addColumn("IND_CERTIFICADO",""+situarServicio.getIndCertificado()+"");
 		queryHelper.addColumn("ID_TIPO_SERVICIO", ""+situarServicio.getIdTipoServicio()+"");
 		queryHelper.addColumn("FEC_SERVICIO", OrdenesServicioUtil.setValor(situarServicio.getFechaSolicitud()));
 		queryHelper.addColumn("DES_NOTAS", OrdenesServicioUtil.setValor(situarServicio.getDesNotas()));
@@ -55,8 +55,8 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		
 		selectQueryUtilOrdenes.select("IFNULL(COUNT(STS.ID_TIPO_SERVICIO),0)")
 		.from("SVC_ORDEN_SERVICIO ST")
-		.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = ST.ID_ORDEN_SERVICIO")
-		.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO = SCP.ID_CARACTERISTICAS_PRESUPUESTO ")
+		.innerJoin("SVC_CARAC_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = ST.ID_ORDEN_SERVICIO")
+		.innerJoin("SVC_DETALLE_CARAC_PRESUP SDCP", "SDCP.ID_CARAC_PRESUPUESTO = SCP.ID_CARAC_PRESUPUESTO ")
 		.innerJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCP.ID_SERVICIO ")
 		.innerJoin("SVC_TIPO_SERVICIO STS", "STS.ID_TIPO_SERVICIO = SS.ID_TIPO_SERVICIO")
 		.where("ST.ID_ORDEN_SERVICIO="+idOrden)
@@ -79,8 +79,8 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		
 		selectQueryUtilOrdenes.select("STS.ID_TIPO_SERVICIO AS idTipoServicio , STS.DES_TIPO_SERVICIO AS nombreServicio")
 		.from("SVC_ORDEN_SERVICIO ST")
-		.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = ST.ID_ORDEN_SERVICIO")
-		.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO = SCP.ID_CARACTERISTICAS_PRESUPUESTO ")
+		.innerJoin("SVC_CARAC_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = ST.ID_ORDEN_SERVICIO")
+		.innerJoin("SVC_DETALLE_CARAC_PRESUP SDCP", "SDCP.ID_CARAC_PRESUPUESTO = SCP.ID_CARAC_PRESUPUESTO ")
 		.innerJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCP.ID_SERVICIO ")
 		.innerJoin("SVC_TIPO_SERVICIO STS", "STS.ID_TIPO_SERVICIO = SS.ID_TIPO_SERVICIO")
 		.where("ST.ID_ORDEN_SERVICIO="+idOrden)
@@ -126,8 +126,8 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 				" SSO.DES_NOTAS AS desNotas", "SSO.IND_ACTIVO AS estatus")
 		.from("SVC_ORDENES_HISTORIAL_SERVICIOS SSO ")
 		.innerJoin("SVC_ORDEN_SERVICIO STO", "STO.ID_ORDEN_SERVICIO = SSO.ID_ORDEN_SERVICIO")
-		.innerJoin("SVC_CARACTERISTICAS_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO")
-		.innerJoin("SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO SDCP", "SDCP.ID_CARACTERISTICAS_PRESUPUESTO = SCP.ID_CARACTERISTICAS_PRESUPUESTO ")
+		.innerJoin("SVC_CARAC_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO")
+		.innerJoin("SVC_DETALLE_CARAC_PRESUP SDCP", "SDCP.ID_CARAC_PRESUPUESTO = SCP.ID_CARAC_PRESUPUESTO ")
 		.innerJoin("SVT_SERVICIO SS", "SS.ID_SERVICIO = SDCP.ID_SERVICIO ")
 		.innerJoin("SVC_TIPO_SERVICIO STS", "STS.ID_TIPO_SERVICIO = SS.ID_TIPO_SERVICIO AND SSO.ID_TIPO_SERVICIO = STS.ID_TIPO_SERVICIO ")
 		.where("STO.CVE_FOLIO = '"+folio+"'")

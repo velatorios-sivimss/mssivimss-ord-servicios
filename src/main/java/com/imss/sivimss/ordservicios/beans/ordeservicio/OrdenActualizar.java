@@ -158,7 +158,7 @@ public class OrdenActualizar {
 
 			return response;
 		} catch (Exception e) {
-			log.error(AppConstantes.ERROR_QUERY.concat(query));
+			log.error(AppConstantes.ERROR_QUERY.concat(e.getMessage()));
 			log.error(e.getMessage());
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA,
@@ -870,12 +870,6 @@ public class OrdenActualizar {
 			cveTarea = generarCveTarea(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		}
 
-		// finado
-		if (ordenesServicioRequest.getFinado() != null) {
-			finado.actualizarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
-					usuario.getIdUsuario(), connection);
-		}
-		
 		// caracteristicas presupuesto 
 		if (ordenesServicioRequest.getIdEstatus() ==1) { // temporales
 		  desactivarRegistrosTemp(ordenesServicioRequest, usuario);
