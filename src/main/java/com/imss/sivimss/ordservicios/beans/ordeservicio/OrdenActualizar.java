@@ -451,9 +451,9 @@ public class OrdenActualizar {
 				caracteristicasPaquetePresupuestoResponse= new CaracteristicasPaquetePresupuestoResponse();
 				caracteristicasPaquetePresupuestoResponse.setIdCaracteristicasPresupuesto(rsc.getInt(1));
 				caracteristicasPaquetePresupuestoResponse.setIdPaquete(rsc.getInt(2));
-				caracteristicasPaquetePresupuestoResponse.setNotasServicio(rsc.getString(3));
+				caracteristicasPaquetePresupuestoResponse.setTotalPresupuesto(rsc.getString(3));
 				caracteristicasPaquetePresupuestoResponse.setObservaciones(rsc.getString(4));
-				caracteristicasPaquetePresupuestoResponse.setTotalPresupuesto(rsc.getString(5));
+				caracteristicasPaquetePresupuestoResponse.setNotasServicio(rsc.getString(5));
 				caracteristicasPaquetePresupuestoResponse.setDetallePresupuesto(consultarCaracteristicasPaqueteDetallePresupuestoResponse(caracteristicasPaquetePresupuestoResponse, ordenesServicioRequest, conn));
 			}
 			return caracteristicasPaquetePresupuestoResponse;
