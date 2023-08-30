@@ -150,7 +150,7 @@ public class OrdenActualizar {
 				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
 						this.getClass().getPackage().toString(), "convenioPF", AppConstantes.ALTA, authentication);
 
-				query = convenioPF(ordenesServicioRequest);
+				response = guardarOrdenServicio(ordenesServicioRequest, usuario, authentication);
 				break;
 			default:
 				throw new BadRequestException(HttpStatus.BAD_REQUEST, AppConstantes.ERROR_GUARDAR);
@@ -158,7 +158,7 @@ public class OrdenActualizar {
 
 			return response;
 		} catch (Exception e) {
-			log.error(AppConstantes.ERROR_QUERY.concat(e.getMessage()));
+			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR.concat(" "+e.getMessage())));
 			log.error(e.getMessage());
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA,
@@ -325,7 +325,7 @@ public class OrdenActualizar {
 					if (rsc.getString(9).equals("null") || rsc.getString(9).equals("")) {
 						finadoResponse.setNss(null);
 					}else {
-						finadoResponse.setNss(Integer.parseInt(rsc.getString(9)));
+						finadoResponse.setNss(rsc.getString(9));
 					}
 					finadoResponse.setNomPersona(rsc.getString(10));
 					finadoResponse.setPrimerApellido(rsc.getString(11));
@@ -451,9 +451,9 @@ public class OrdenActualizar {
 				caracteristicasPaquetePresupuestoResponse= new CaracteristicasPaquetePresupuestoResponse();
 				caracteristicasPaquetePresupuestoResponse.setIdCaracteristicasPresupuesto(rsc.getInt(1));
 				caracteristicasPaquetePresupuestoResponse.setIdPaquete(rsc.getInt(2));
-				caracteristicasPaquetePresupuestoResponse.setNotasServicio(rsc.getString(3));
+				caracteristicasPaquetePresupuestoResponse.setTotalPresupuesto(rsc.getString(3));
 				caracteristicasPaquetePresupuestoResponse.setObservaciones(rsc.getString(4));
-				caracteristicasPaquetePresupuestoResponse.setTotalPresupuesto(rsc.getString(5));
+				caracteristicasPaquetePresupuestoResponse.setNotasServicio(rsc.getString(5));
 				caracteristicasPaquetePresupuestoResponse.setDetallePresupuesto(consultarCaracteristicasPaqueteDetallePresupuestoResponse(caracteristicasPaquetePresupuestoResponse, ordenesServicioRequest, conn));
 			}
 			return caracteristicasPaquetePresupuestoResponse;
@@ -668,8 +668,15 @@ public class OrdenActualizar {
 
 		// finado
 		if (ordenesServicioRequest.getFinado() != null) {
-			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest,
+        	if (Objects.nonNull(ordenesServicioRequest.getFinado().getIdTipoOrden()) && ordenesServicioRequest.getFinado().getIdTipoOrden()==4) {
+				
+        		finado.insertarFinadoPagosAnticipado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        		
+				
+			}else {
+				finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
+			}
 		}
 
 		// caracteristicas presupuesto
@@ -787,8 +794,15 @@ public class OrdenActualizar {
 
 		// finado
 		if (ordenesServicioRequest.getFinado() != null) {
-			finado.actualizarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
+			if (Objects.nonNull(ordenesServicioRequest.getFinado().getIdTipoOrden()) && ordenesServicioRequest.getFinado().getIdTipoOrden()==4) {
+				// realizar actualizar
+        		finado.actualizarFinadoPa(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        		
+				
+			}else {
+			    finado.actualizarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
 					usuario.getIdUsuario(), connection);
+			}
 		}
 		
 		// caracteristicas presupuesto 

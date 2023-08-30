@@ -14,7 +14,7 @@ public class Persona {
 	private Integer idPersona;
 	private String rfc;
 	private String curp;
-	private Integer nss;
+	private String nss;
 	private String nomPersona;
 	private String primerApellido;
 	private String segundoApellido;

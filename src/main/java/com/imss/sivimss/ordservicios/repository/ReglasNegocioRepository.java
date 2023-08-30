@@ -124,10 +124,10 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_PERSONA");
 		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
 		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
-		if (personaRequest.getNss()==null ) {
+		if (personaRequest.getNss()==null || personaRequest.getNss().equalsIgnoreCase("null")) {
 			q.agregarParametroValues("CVE_NSS", "NULL");
 		}else {
-			q.agregarParametroValues("CVE_NSS", ""+personaRequest.getNss()+"");
+			q.agregarParametroValues("CVE_NSS", "'"+personaRequest.getNss()+"'");
 		}
 		
 		q.agregarParametroValues("NOM_PERSONA", setValor(personaRequest.getNomPersona()));
@@ -207,6 +207,41 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_OBITO", setValor( finadoRequest.getEsobito()));
 		q.agregarParametroValues("CVE_MATRICULA", setValor( finadoRequest.getMatricula()));
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
+		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
+		if (finadoRequest.getCp()==null) {
+			q.agregarParametroValues(ID_DOMICILIO, "NULL");
+		}else {
+		    q.agregarParametroValues(ID_DOMICILIO, "" + finadoRequest.getCp().getIdDomicilio() + "");
+		}
+		
+		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
+		q.agregarParametroValues("DES_CAUSA_DECESO", setValor( finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("DES_LUGAR_DECESO", setValor( finadoRequest.getLugarDeceso()));
+		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
+		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
+		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
+		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor( finadoRequest.getProcedenciaFinado()));
+		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
+		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
+		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
+		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		query = q.obtenerQueryInsertar();
+		log.info(query);
+		return query;
+	}
+	
+	// insertar finado pa
+	public String insertarFinadoPa(FinadoRequest finadoRequest, Integer idOrdenServicio, Integer idUsuarioAlta) {
+		final QueryHelper q = new QueryHelper("INSERT INTO SVC_FINADO");
+		if (finadoRequest.getIdPersona()!=null) {
+			q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
+		}else {
+			q.agregarParametroValues("ID_PERSONA", "NULL");
+		}
+		
+		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
+		q.agregarParametroValues("CVE_MATRICULA", setValor( finadoRequest.getMatricula()));
+		q.agregarParametroValues("ID_CONTRATO_PREVISION_PA", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
 		if (finadoRequest.getCp()==null) {
 			q.agregarParametroValues(ID_DOMICILIO, "NULL");
@@ -686,10 +721,10 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_PERSONA ");
 		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
 		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
-		if (personaRequest.getNss()==null ) {
+		if (personaRequest.getNss()==null || personaRequest.getNss().equalsIgnoreCase("null")) {
 			q.agregarParametroValues("CVE_NSS", "NULL");
 		}else {
-			q.agregarParametroValues("CVE_NSS", ""+personaRequest.getNss()+"");
+			q.agregarParametroValues("CVE_NSS", "'"+personaRequest.getNss()+"'");
 		}
 		q.agregarParametroValues("NOM_PERSONA", "'" + personaRequest.getNomPersona() + "'");
 		q.agregarParametroValues("NOM_PRIMER_APELLIDO", "'" + personaRequest.getPrimerApellido() + "'");

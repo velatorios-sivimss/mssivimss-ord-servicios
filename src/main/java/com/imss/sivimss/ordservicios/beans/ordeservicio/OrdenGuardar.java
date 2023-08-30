@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.slf4j.Logger;
@@ -110,7 +111,7 @@ public class OrdenGuardar {
 				break;
 			case 4:
 	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "convenioPF", AppConstantes.ALTA, authentication);
-
+	            response=guardarOrdenServicio(ordenesServicioRequest, usuario,authentication);
 				break;
 			default:
 				throw new BadRequestException(HttpStatus.BAD_REQUEST, AppConstantes.ERROR_GUARDAR);
@@ -118,7 +119,7 @@ public class OrdenGuardar {
 			
 			return response;
 		} catch (Exception e) {
-			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
+			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR.concat(" "+e.getMessage())));
 			log.error(e.getMessage());
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
@@ -140,6 +141,7 @@ public class OrdenGuardar {
         ordenesServicioRequest.getContratante().setIdContratante(contratante.insertarContratante(ordenesServicioRequest.getContratante(), usuario.getIdUsuario(), connection));
 		
         
+        
 		// orden de servicio
 		// generar folio
         if (ordenesServicioRequest.getIdEstatus()==2) {
@@ -154,7 +156,15 @@ public class OrdenGuardar {
         
         //finado
         if (ordenesServicioRequest.getFinado()!=null) {
-			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
+        	if (Objects.nonNull(ordenesServicioRequest.getFinado().getIdTipoOrden()) && ordenesServicioRequest.getFinado().getIdTipoOrden()==4) {
+				
+        		finado.insertarFinadoPagosAnticipado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        		
+				
+			}else {
+				finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest, usuario.getIdUsuario(), connection);
+			}
+			
 		}
         
         //caracteristicas presupuesto
