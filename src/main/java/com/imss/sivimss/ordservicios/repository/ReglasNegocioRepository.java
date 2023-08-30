@@ -124,10 +124,10 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVC_PERSONA");
 		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
 		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
-		if (personaRequest.getNss()==null ) {
+		if (personaRequest.getNss()==null || personaRequest.getNss().equalsIgnoreCase("null")) {
 			q.agregarParametroValues("CVE_NSS", "NULL");
 		}else {
-			q.agregarParametroValues("CVE_NSS", ""+personaRequest.getNss()+"");
+			q.agregarParametroValues("CVE_NSS", "'"+personaRequest.getNss()+"'");
 		}
 		
 		q.agregarParametroValues("NOM_PERSONA", setValor(personaRequest.getNomPersona()));
@@ -686,10 +686,10 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_PERSONA ");
 		q.agregarParametroValues("CVE_RFC", setValor(personaRequest.getRfc()));
 		q.agregarParametroValues("CVE_CURP", setValor(personaRequest.getCurp()));
-		if (personaRequest.getNss()==null ) {
+		if (personaRequest.getNss()==null || personaRequest.getNss().equalsIgnoreCase("null")) {
 			q.agregarParametroValues("CVE_NSS", "NULL");
 		}else {
-			q.agregarParametroValues("CVE_NSS", ""+personaRequest.getNss()+"");
+			q.agregarParametroValues("CVE_NSS", "'"+personaRequest.getNss()+"'");
 		}
 		q.agregarParametroValues("NOM_PERSONA", "'" + personaRequest.getNomPersona() + "'");
 		q.agregarParametroValues("NOM_PRIMER_APELLIDO", "'" + personaRequest.getPrimerApellido() + "'");

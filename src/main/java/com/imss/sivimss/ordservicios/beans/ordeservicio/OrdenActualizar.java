@@ -325,7 +325,7 @@ public class OrdenActualizar {
 					if (rsc.getString(9).equals("null") || rsc.getString(9).equals("")) {
 						finadoResponse.setNss(null);
 					}else {
-						finadoResponse.setNss(Integer.parseInt(rsc.getString(9)));
+						finadoResponse.setNss(rsc.getString(9));
 					}
 					finadoResponse.setNomPersona(rsc.getString(10));
 					finadoResponse.setPrimerApellido(rsc.getString(11));
