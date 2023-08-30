@@ -27,10 +27,13 @@ public class ConvenioPA {
 	
 	public String obtenerTitularConvenio(String folio) {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SPC.ID_PERSONA AS idPersona",
+		selectQueryUtil.select(
+				"SPSA.ID_PLAN_SFPA AS idConvenioPa",
 				"SPSA.NUM_FOLIO_PLAN_SFPA AS folio",
 				"SV.ID_VELATORIO AS idVelatorio",
 				"SV.DES_VELATORIO AS nombreVelatorio",
+				"SPC.ID_PERSONA AS idPersona",
+				"SC.ID_CONTRATANTE AS idContratante",
 				"IFNULL(SC.CVE_MATRICULA,'') AS matricula",
 				"IFNULL(SPC.CVE_CURP,'') AS curp",
 				"IFNULL(SPC.CVE_NSS,'') AS nss",
@@ -50,7 +53,7 @@ public class ConvenioPA {
 				"IFNULL(SVD.DES_CP,'') AS cp",
 				"IFNULL(SVD.DES_COLONIA,'') AS colonia",
 				"IFNULL(SVD.DES_MUNICIPIO,'') AS municipio",
-				"IFNULL(SVD.DES_ESTADO,'') AS estado)")
+				"IFNULL(SVD.DES_ESTADO,'') AS estado")
 		.from("SVT_PLAN_SFPA SPSA ")
 		.innerJoin("SVC_VELATORIO SV ", "SPSA.ID_VELATORIO = SV.ID_VELATORIO ")
 		.innerJoin("SVC_CONTRATANTE SC ", "SPSA.ID_TITULAR = SC.ID_CONTRATANTE ")

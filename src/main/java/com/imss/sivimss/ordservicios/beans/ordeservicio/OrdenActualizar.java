@@ -150,7 +150,7 @@ public class OrdenActualizar {
 				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
 						this.getClass().getPackage().toString(), "convenioPF", AppConstantes.ALTA, authentication);
 
-				query = convenioPF(ordenesServicioRequest);
+				response = guardarOrdenServicio(ordenesServicioRequest, usuario, authentication);
 				break;
 			default:
 				throw new BadRequestException(HttpStatus.BAD_REQUEST, AppConstantes.ERROR_GUARDAR);
@@ -158,7 +158,7 @@ public class OrdenActualizar {
 
 			return response;
 		} catch (Exception e) {
-			log.error(AppConstantes.ERROR_QUERY.concat(e.getMessage()));
+			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR.concat(" "+e.getMessage())));
 			log.error(e.getMessage());
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.ALTA,
@@ -668,8 +668,15 @@ public class OrdenActualizar {
 
 		// finado
 		if (ordenesServicioRequest.getFinado() != null) {
-			finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest,
+        	if (Objects.nonNull(ordenesServicioRequest.getFinado().getIdTipoOrden()) && ordenesServicioRequest.getFinado().getIdTipoOrden()==4) {
+				
+        		finado.insertarFinadoPagosAnticipado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        		
+				
+			}else {
+				finado.insertarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest,
 					usuario.getIdUsuario(), connection);
+			}
 		}
 
 		// caracteristicas presupuesto
@@ -787,8 +794,15 @@ public class OrdenActualizar {
 
 		// finado
 		if (ordenesServicioRequest.getFinado() != null) {
-			finado.actualizarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
+			if (Objects.nonNull(ordenesServicioRequest.getFinado().getIdTipoOrden()) && ordenesServicioRequest.getFinado().getIdTipoOrden()==4) {
+				// realizar actualizar
+        		finado.actualizarFinadoPa(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(), usuario.getIdUsuario(), connection);
+        		
+				
+			}else {
+			    finado.actualizarFinado(ordenesServicioRequest.getFinado(), ordenesServicioRequest.getIdOrdenServicio(),
 					usuario.getIdUsuario(), connection);
+			}
 		}
 		
 		// caracteristicas presupuesto 
