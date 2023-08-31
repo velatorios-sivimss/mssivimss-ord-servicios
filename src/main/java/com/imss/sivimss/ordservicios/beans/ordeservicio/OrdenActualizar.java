@@ -357,6 +357,7 @@ public class OrdenActualizar {
 					finadoResponse.setIdTipoPension(rsc.getInt(36)==0?null:rsc.getInt(36));
 					finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
 					finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
+					finadoResponse.setIdConvenioPrevision(OrdenesServicioUtil.setValor(rsc.getInt(39)));
 	
 					
 			}

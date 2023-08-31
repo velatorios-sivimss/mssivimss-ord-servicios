@@ -986,7 +986,8 @@ public class ReglasNegocioRepository {
 						"STF.DES_PROCEDENCIA_FINADO AS procedenciaFinado",
 						"STF.ID_TIPO_PENSION AS idTipoPension",
 						"STF.ID_CONTRATO_PREVISION AS idContratoPrevision",
-						"STF.ID_VELATORIO AS idVelatorioContratoPrevision")
+						"STF.ID_VELATORIO AS idVelatorioContratoPrevision",
+						"STF.ID_CONTRATO_PREVISION_PA AS idConvenioPrevision")
 				.from("SVC_ORDEN_SERVICIO STO")
 				.leftJoin("SVC_FINADO STF ", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
 				.leftJoin("SVC_PERSONA SPF ", "STF.ID_PERSONA =SPF.ID_PERSONA ")
