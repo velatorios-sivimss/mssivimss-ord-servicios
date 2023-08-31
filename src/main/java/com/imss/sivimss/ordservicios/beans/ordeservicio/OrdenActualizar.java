@@ -358,6 +358,8 @@ public class OrdenActualizar {
 					finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
 					finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
 					finadoResponse.setIdConvenioPrevision(OrdenesServicioUtil.setValor(rsc.getInt(39)));
+					finadoResponse.setFolioContrato(rsc.getString(40));
+					finadoResponse.setFolioConvenioPa(rsc.getString(41));
 	
 					
 			}

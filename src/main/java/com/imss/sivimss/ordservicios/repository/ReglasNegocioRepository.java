@@ -987,11 +987,16 @@ public class ReglasNegocioRepository {
 						"STF.ID_TIPO_PENSION AS idTipoPension",
 						"STF.ID_CONTRATO_PREVISION AS idContratoPrevision",
 						"STF.ID_VELATORIO AS idVelatorioContratoPrevision",
-						"STF.ID_CONTRATO_PREVISION_PA AS idConvenioPrevision")
+						"STF.ID_CONTRATO_PREVISION_PA AS idConvenioPrevision",
+						"SPC.DES_FOLIO AS folioContrato",
+						"SPLA.NUM_FOLIO_PLAN_SFPA AS folioConvenioPa"
+						)
 				.from("SVC_ORDEN_SERVICIO STO")
 				.leftJoin("SVC_FINADO STF ", "STO.ID_ORDEN_SERVICIO = STF.ID_ORDEN_SERVICIO")
 				.leftJoin("SVC_PERSONA SPF ", "STF.ID_PERSONA =SPF.ID_PERSONA ")
 				.leftJoin("SVT_DOMICILIO SCD", "STF.ID_DOMICILIO = SCD.ID_DOMICILIO")
+				.leftJoin("SVT_CONVENIO_PF SPC", "SPC.ID_CONVENIO_PF = STF.ID_CONTRATO_PREVISION")
+				.leftJoin("SVT_PLAN_SFPA SPLA", "SPLA.ID_PLAN_SFPA = STF.ID_CONTRATO_PREVISION_PA")
 				.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio);
 		
 				query = selectQueryUtil.build();

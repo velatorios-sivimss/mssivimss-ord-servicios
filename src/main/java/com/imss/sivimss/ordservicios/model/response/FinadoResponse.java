@@ -18,6 +18,8 @@ public class FinadoResponse extends  Persona{
 	private String extremidad;
 	private String esobito;
 	private String matricula;
+	private String folioContrato;
+	private String folioConvenioPa;
 	private Integer idContratoPrevision;
 	private Integer idConvenioPrevision;
 	private Integer idVelatorioContratoPrevision;
