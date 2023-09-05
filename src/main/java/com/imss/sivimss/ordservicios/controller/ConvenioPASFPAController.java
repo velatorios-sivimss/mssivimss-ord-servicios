@@ -21,6 +21,9 @@ import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -35,6 +38,9 @@ public class ConvenioPASFPAController {
 	private final LogUtil logUtil;
 	
 	@PostMapping("/consultar-folio")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarConvenio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<Object>response=convenioPaService.consultarConvenio(request, authentication);
 		return CompletableFuture

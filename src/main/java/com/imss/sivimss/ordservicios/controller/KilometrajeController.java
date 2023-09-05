@@ -20,6 +20,9 @@ import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -34,6 +37,9 @@ public class KilometrajeController {
 	private final LogUtil logUtil;
 	
 	@PostMapping("/consultar/paquete")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> obtenerKilometrajePorPaquete(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
 		Response<?>response=kilometrajeService.consultarKilometrajePorPaquete(request, authentication);
 		return CompletableFuture
@@ -41,6 +47,9 @@ public class KilometrajeController {
 	}
 	
 	@PostMapping("/consultar/servicio")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> obtenerKilometrajePorServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
 		Response<?>response=kilometrajeService.consultarKilometrajePorServicio(request, authentication);
 		return CompletableFuture
