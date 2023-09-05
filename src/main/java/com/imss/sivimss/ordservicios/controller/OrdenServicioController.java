@@ -21,6 +21,9 @@ import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
 
 
@@ -38,6 +41,9 @@ public class OrdenServicioController {
 	private final  LogUtil logUtil;
 	
 	@PostMapping("/consultar/rfc")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarRfc(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "buscarRfc");
 		return CompletableFuture
@@ -45,6 +51,9 @@ public class OrdenServicioController {
 	}
 	
 	@PostMapping("/consultar/curp")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarCurp(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "buscarCurp");
 		return CompletableFuture
@@ -52,6 +61,9 @@ public class OrdenServicioController {
 	}
 	
 	@PostMapping("/guardar")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>agregar(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "guardar");
 		return CompletableFuture
@@ -60,6 +72,9 @@ public class OrdenServicioController {
 	}
 //
 	@PostMapping("/consultar/velatorio")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarVelatorio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarVelatorio");
 		return CompletableFuture
@@ -67,6 +82,9 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/folio-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarFolioODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarFolioODS");
 		return CompletableFuture
@@ -74,6 +92,9 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/contratante")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarContratante(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarContratante");
 		return CompletableFuture
@@ -82,6 +103,9 @@ public class OrdenServicioController {
 	}
 
 	@PostMapping("/consultar/nombreContratante")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarNombreContratante(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarNombreContratante");
 		return CompletableFuture
@@ -89,6 +113,9 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/finado")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarFinado(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarFinado");
 		return CompletableFuture
@@ -96,6 +123,9 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/nombreFinado")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarNombreFinado(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarNombreFinado");
 		return CompletableFuture
@@ -103,6 +133,9 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/tipo-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarTipoODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarTipoODS");
 		return CompletableFuture
@@ -110,6 +143,9 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/unidad-medica")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarUnidadMedica(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarUnidadMedica");
 		return CompletableFuture
@@ -117,42 +153,63 @@ public class OrdenServicioController {
 
 	}
 	@PostMapping("/consultar/contrato-convenio")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarContratoConvenio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarContratoConvenio");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/consultar/estado-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarEstadoODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarEstadoODS");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/consultar/operadores")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarOperadores(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarOperadores");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/consultar/tarjeta-identificacion")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>generaTarjetaIdentificacion(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "generaTarjetaIdentificacion");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/consultar/costo-cancelar-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarCostoCancelarODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarCostoCancelarODS");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/cancelar/ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarCancelarODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "cancelarODS");
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/consultar/ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarODS(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "consultarODS");
 		return CompletableFuture
@@ -160,17 +217,26 @@ public class OrdenServicioController {
 	}
 
 	@PostMapping("/generar/tarjeta-identificacion")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteTarjetaIdentificacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteTarjetaIdentificacion");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("/generar/reporte-consulta-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteConsulta(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteConsultaODS");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
 	@PostMapping("/consultar/detalle")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>consultarDetalleOrdenServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "detalle-preorden");
 		return CompletableFuture
@@ -178,30 +244,45 @@ public class OrdenServicioController {
 	}
 
 	@PostMapping("/generar/reporte-contrato-serv-inmediato")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteServicioInmediato(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteServicioInmediato");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
 	@PostMapping("/generar/reporte-orden-servicio")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteOrdenServicio(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteOrdenServicio");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
 	@PostMapping("/generar/reporte-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteODS(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteODS");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
 	@PostMapping("/consulta/reporte-ods")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaReporteODS(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "consultaReporteODS");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
 	@PostMapping("/actualizar")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>actualizarOrdenServicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
 		Response<?>response=ordenServicioService.peticionOrden(request, authentication, "actualizar");
 		return CompletableFuture
@@ -209,12 +290,18 @@ public class OrdenServicioController {
 	}
 	
 	@PostMapping("/generar/reporte-salida-donacion")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteSalidaDonacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteSalidaDonacion");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
 	@PostMapping("/generar/reporte-donacion")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> generaReporteDonacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
 		Response<Object> response =  ordenServicioService.peticionOrden(request, authentication, "generaReporteDonacion");
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
