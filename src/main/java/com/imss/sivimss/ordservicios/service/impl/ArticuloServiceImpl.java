@@ -52,6 +52,7 @@ public class ArticuloServiceImpl implements ArticuloService{
 	private final ModelMapper modelMapper;
 	
 	private static final String SIN_EXISTENCIA = "15";
+	private static final String SIN_EXISTENCIA_ARTICULOS = "202";
 	
 	private final LogUtil logUtil;
 	
@@ -112,7 +113,7 @@ public class ArticuloServiceImpl implements ArticuloService{
             		response.setDatos(ConvertirGenerico.convertInstanceOfObject(articuloFunerarioResponses));
             		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 				} else {
-					return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA, AppConstantes.ERROR_CONSULTAR);
+					return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA_ARTICULOS, AppConstantes.ERROR_CONSULTAR);
 					}
             	}
            return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
@@ -144,7 +145,7 @@ public class ArticuloServiceImpl implements ArticuloService{
             		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 
 					} else {
-						return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA, AppConstantes.ERROR_CONSULTAR);
+						return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA_ARTICULOS, AppConstantes.ERROR_CONSULTAR);
 						}
 				}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
@@ -178,7 +179,7 @@ public class ArticuloServiceImpl implements ArticuloService{
             		return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.EXITO, AppConstantes.ERROR_CONSULTAR);
 
 					} else {
-						return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA, AppConstantes.ERROR_CONSULTAR);
+						return MensajeResponseUtil.mensajeConsultaResponseObject(response, SIN_EXISTENCIA_ARTICULOS, AppConstantes.ERROR_CONSULTAR);
 						}
 				}
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
