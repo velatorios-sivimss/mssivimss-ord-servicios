@@ -44,8 +44,11 @@ public class ReglasNegocioGeneraReporteODSRepository {
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
 					else if(reporteDto.getFechaFin() != null)
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
+					else 
+						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
+							query = query +  ")";
 				}
-				if(reporteDto.getIdDelegacion() != null) {
+				else if(reporteDto.getIdDelegacion() != null) {
 					query = query + "WHERE sd.ID_DELEGACION = " + reporteDto.getIdDelegacion();
 					if(reporteDto.getIdTipoODS() != null)
 						query = query + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
@@ -57,8 +60,11 @@ public class ReglasNegocioGeneraReporteODSRepository {
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
 					else if(reporteDto.getFechaFin() != null)
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
+					else 
+						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
+							query = query +  ")";
 				}
-				if(reporteDto.getIdTipoODS() != null) {
+				else if(reporteDto.getIdTipoODS() != null) {
 					query = query + " WHERE stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
 					if(reporteDto.getIdEstatusODS() != null)
 						query = query + AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
@@ -68,8 +74,11 @@ public class ReglasNegocioGeneraReporteODSRepository {
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
 					else if(reporteDto.getFechaFin() != null)
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
+					else 
+						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
+							query = query +  ")";
 				}
-				if(reporteDto.getIdEstatusODS() != null) {
+				else if(reporteDto.getIdEstatusODS() != null) {
 					query = query + " WHERE seos.ID_ESTATUS_ORDEN_SERVICIO = " + reporteDto.getIdEstatusODS();
 					if(reporteDto.getFechaIni() != null)
 						query = query + AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
@@ -77,15 +86,18 @@ public class ReglasNegocioGeneraReporteODSRepository {
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
 					else if(reporteDto.getFechaFin() != null)
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
+					else 
+						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
+							query = query +  ")";
 				}
-				if(reporteDto.getFechaIni() != null) {
+				else if(reporteDto.getFechaIni() != null) {
 					query = query + " WHERE (DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') >= '" + reporteDto.getFechaIni() + "' "; 
 					if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
 						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
 					else 
 						query = query + ")";
 				}
-				if(reporteDto.getFechaFin() != null) 
+				else if(reporteDto.getFechaFin() != null) 
 					query = query + " WHERE DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '" + reporteDto.getFechaIni() + "'"; 
 		return query;
 	}
