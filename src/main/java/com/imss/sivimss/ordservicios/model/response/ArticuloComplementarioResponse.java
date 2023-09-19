@@ -15,4 +15,6 @@ public class ArticuloComplementarioResponse {
 	private String nombreArticulo;
 	
 	private Double precio;
+	
+	private String nombreProveedor;
 }
