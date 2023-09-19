@@ -35,11 +35,14 @@ public class ArticuloComplementario {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo","STA.DES_ARTICULO AS nombreArticulo","SCTA.MON_PRECIO AS precio")
+		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo",
+				"STA.DES_ARTICULO AS nombreArticulo","SCTA.MON_PRECIO AS precio",
+				"SV.DES_VELATORIO AS nombreProveedor")
 		.from("SVT_ARTICULO STA")
 		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "STA.ID_CATEGORIA_ARTICULO = SCA.ID_CATEGORIA_ARTICULO")
 		.innerJoin("SVT_CONTRATO_ARTICULOS SCTA", "SCTA.ID_ARTICULO = STA .ID_ARTICULO ")
 		.innerJoin("SVT_CONTRATO SC", "SCTA.ID_CONTRATO = SC.ID_CONTRATO")
+		.innerJoin("SVC_VELATORIO SV", "SV.ID_VELATORIO = SC.ID_VELATORIO")
 		.where("SC.ID_TIPO_ASIGNACION =1")
 		.and("SC.ID_VELATORIO="+idVelatorio)
 		.and("STA.ID_TIPO_ARTICULO =2")
