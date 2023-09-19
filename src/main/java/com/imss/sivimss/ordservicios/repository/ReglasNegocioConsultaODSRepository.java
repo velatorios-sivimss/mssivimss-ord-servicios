@@ -324,8 +324,8 @@ public class ReglasNegocioConsultaODSRepository {
 		return str;
 	}
 	public String cancelarDetalleCaracteristicasPaquete(Integer idODS, UsuarioDto usuario) {		
-		String str = "UPDATE SVC_DETALLE_CARAC_PAQUETE SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", "
-		+ SET_CAMPO_FEC_BAJA + " WHERE ID_CARACTERISTICAS_PAQUETE IN (SELECT ID_CARACTERISTICAS_PAQUETE FROM SVC_CARACTERISTICAS_PAQUETE " + WHERE_ID_ORDEN_SERVICIO + idODS + ")";
+		String str = "UPDATE SVC_DETALLE_CARAC_PAQ SET  IND_ACTIVO = 0, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() + ", "
+		+ SET_CAMPO_FEC_BAJA + " WHERE ID_DETALLE_CARAC IN (SELECT ID_CARAC_PAQUETE FROM SVC_CARACTERISTICAS_PAQUETE " + WHERE_ID_ORDEN_SERVICIO + idODS + ")";
 		log.info(str);
 		return str;
 	}

@@ -484,7 +484,7 @@ public class OrdenConsultar {
 		} catch (Exception e) {
 			log.error(AppConstantes.ERROR_QUERY.concat(query));
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + query, AppConstantes.BAJA, authentication);
-	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+	        throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
 
 		} finally {
 			if (statement != null) {
