@@ -34,6 +34,9 @@ public class GeneraReporte {
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
+
+	@Value("${reporte.reporte_detalle_is}")
+	private String reporteDetalleIS;
 	
 	
 	@Autowired
@@ -54,6 +57,7 @@ public class GeneraReporte {
 	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
+	private static final String CU086_NOMBRE= "Genera Reoporte Detalle Importe Servicios: ";
 	
 	public Response<Object> generarReporteODS(DatosRequest request, Authentication authentication) throws IOException {
 		Gson gson = new Gson();
@@ -106,5 +110,32 @@ public class GeneraReporte {
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 		return request;
+	}
+
+	public Response<Object> generaReporteDetalleIS(DatosRequest request, Authentication authentication) throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		Map<String, Object> envioDatos = new HashMap<>();
+		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		envioDatos.put("fecIni", reporteDto.getFechaIni());
+		envioDatos.put("fecFin", reporteDto.getFechaFin());
+		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
+		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteDetalleIS);
+		try {
+			log.info(CU086_NOMBRE);
+			log.info("reporteDetalleIS = %s" + reporteDetalleIS);
+			log.info("fecIni= " + reporteDto.getFechaIni());
+			log.info("fecFin= " + reporteDto.getFechaFin());
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU086_NOMBRE + GENERAR_DOCUMENTO + " Genera Reporte Importe Servicios " + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generaReporteDetalleIS", GENERA_DOCUMENTO, authentication);
+			Response<Object> response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+		return   MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			log.error( CU086_NOMBRE + GENERAR_DOCUMENTO);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU086_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),"", GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}	
 	}
 }

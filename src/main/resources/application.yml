@@ -67,6 +67,7 @@ reporte:
   genera_Reporte_ODS: "reportes/generales/GenerarReporteODS.jrxml"
   control-salida-ataudes-donacion: reportes/plantilla/ControlSalidaDonacion.jrxml
   aceptacion-control-ataudes-donacion: reportes/plantilla/AceptacionControlAtaudesDonacion.jrxml
+  reporte_detalle_is: "reportes/generales/ReporteDetalleIS_CU086.jrxml"
 
 
 jwt:

@@ -101,6 +101,8 @@ public class OrdenServicioServiceImpl implements OrdenServicioService {
 			return ordenesDAO.buscarNombreContrante(request, authentication);	
 		case "consultarNombreFinado":
 			return ordenesDAO.buscarNombreFinado(request, authentication);	
+		case "generaReporteDetalleIS":
+			return ordenesDAO.generaReporteDetalleIS(request, authentication);
 		default:
 			throw new BadRequestException(HttpStatus.BAD_REQUEST, "La peticion no se pudo realizar");
 		}
