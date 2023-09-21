@@ -68,6 +68,8 @@ reporte:
   control-salida-ataudes-donacion: reportes/plantilla/ControlSalidaDonacion.jrxml
   aceptacion-control-ataudes-donacion: reportes/plantilla/AceptacionControlAtaudesDonacion.jrxml
   reporte_detalle_is: "reportes/generales/ReporteDetalleIS_CU086.jrxml"
+  generar_reporte_pago_proveedor: reportes/modulo/ReportePagoProveedor.jrxml
+
 
 
 jwt:
