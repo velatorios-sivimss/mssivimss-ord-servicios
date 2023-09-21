@@ -147,5 +147,8 @@ public class OrdenesDAO {
 	}	
 	public Response<Object> buscarNombreFinado(DatosRequest datos, Authentication auth) throws IOException{
 		return ordenConsultar.buscarNombreFinado(datos, auth);
+	}
+	public Response<Object> generaReporteDetalleIS(DatosRequest datos, Authentication auth) throws IOException{
+		return generarReporte.generaReporteDetalleIS(datos, auth);
 	}	
 }
