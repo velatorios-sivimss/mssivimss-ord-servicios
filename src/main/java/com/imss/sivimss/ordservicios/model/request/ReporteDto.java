@@ -37,6 +37,10 @@ public class ReporteDto {
 	private String apPatFinado;
 	private String apMatFinado;
 	private String cveConvenio; 
-	
+	private String fecha_inicial;
+	private String fecha_final;
+	private String id_delegacion;
+	private String id_velatorio;
+	private String id_tipo_reporte;
 
 }
