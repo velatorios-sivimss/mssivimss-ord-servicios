@@ -119,8 +119,8 @@ public class GeneraReporte {
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		envioDatos.put("fecIni", reporteDto.getFecha_inicial());
 		envioDatos.put("fecFin", reporteDto.getFecha_final());
-		envioDatos.put("fecFin", reporteDto.getId_delegacion());
-		envioDatos.put("fecFin", reporteDto.getId_velatorio());
+		envioDatos.put("idDel", reporteDto.getId_delegacion());
+		envioDatos.put("idVel", reporteDto.getId_velatorio());
 		envioDatos.put(TIPO_REPORTE, reporteDto.getId_tipo_reporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteDetalleIS);
 		try {
@@ -128,8 +128,8 @@ public class GeneraReporte {
 			log.info("reporteDetalleIS = %s" + reporteDetalleIS);
 			log.info("fecIni= " + reporteDto.getFecha_inicial());
 			log.info("fecFin= " + reporteDto.getFecha_final());
-			log.info("fecFin= " + reporteDto.getId_delegacion());
-			log.info("fecFin= " + reporteDto.getId_velatorio());
+			log.info("idDel= " + reporteDto.getId_delegacion());
+			log.info("idVel= " + reporteDto.getId_velatorio());
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU086_NOMBRE + GENERAR_DOCUMENTO + " Genera Reporte Importe Servicios " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generaReporteDetalleIS", GENERA_DOCUMENTO, authentication);
 			Response<Object> response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
