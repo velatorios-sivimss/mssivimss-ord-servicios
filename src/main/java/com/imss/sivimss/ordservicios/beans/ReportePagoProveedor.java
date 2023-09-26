@@ -23,7 +23,7 @@ public class ReportePagoProveedor {
 			condition.append(" AND SVEL.ID_VELATORIO = "+reporte.getId_velatorio()+"");
 		}
 		if(reporte.getFecha_inicial()!=null) {
-			condition.append(" AND SOS.FEC_ALTA BETWEEN '"+reporte.getFecInicioConsulta()+ " 00:00:01' AND '"+reporte.getFecFinConsulta()+" 23:59:59'");
+			condition.append(" AND SOS.FEC_ALTA BETWEEN '"+reporte.getFecInicioConsulta()+ "' AND '"+reporte.getFecFinConsulta()+"'");
 			envioDatos.put("fecInicio", reporte.getFecha_inicial());
 			envioDatos.put("fecFin", reporte.getFecha_final());
 		}
