@@ -59,16 +59,18 @@ public class ReportePagoProveedorImpl implements ReportePagoProveedorService{
 		ReportePagoProveedorDto reporte= gson.fromJson(datosJson, ReportePagoProveedorDto.class);
 		if(reporte.getFecha_inicial()!=null) {
 			reporte.setFecInicioConsulta(formatFecha(reporte.getFecha_inicial()));
-   	   		reporte.setFecFinConsulta(formatFecha(reporte.getFecha_final()));
+		}
+		if(reporte.getFecha_final()!=null) {
+			reporte.setFecFinConsulta(formatFecha(reporte.getFecha_final()));
 		}
 		if(reporte.getTipoReporte()==null) {
 			throw new BadRequestException(HttpStatus.BAD_REQUEST, INFORMACION_INCOMPLETA);
 		}
 		Map<String, Object> envioDatos = pagoProveedor.generarReporte(reporte, reportePagoProv);
-		return  providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
+		Response<?> response =  providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
-	//	logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(),"SE GENERO CORRECTAMENTE EL REPORTE SERVICIOS VELATORIOS", IMPRIMIR, authentication);
-	//	return response;
+		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(),"SE GENERO CORRECTAMENTE EL REPORTE PAGO PROVEEDOR", IMPRIMIR, authentication);
+		return response;
 	}
 	
 	 public String formatFecha(String fecha) throws ParseException {
