@@ -23,8 +23,11 @@ public class ReportePagoProveedor {
 			condition.append(" AND SVEL.ID_VELATORIO = "+reporte.getId_velatorio()+"");
 		}
 		if(reporte.getFecha_inicial()!=null) {
-			condition.append(" AND SOS.FEC_ALTA BETWEEN '"+reporte.getFecInicioConsulta()+ " 00:00:01' AND '"+reporte.getFecFinConsulta()+" 23:59:59'");
+			condition.append(" AND SOS.FEC_ALTA >= '"+reporte.getFecInicioConsulta()+ "'");
 			envioDatos.put("fecInicio", reporte.getFecha_inicial());
+		}
+		if(reporte.getFecha_final()!=null) {
+			condition.append(" AND SOS.FEC_ALTA <= '"+reporte.getFecFinConsulta()+"'");
 			envioDatos.put("fecFin", reporte.getFecha_final());
 		}
 		condition.append(" ORDER BY SOS.FEC_ALTA ASC");
