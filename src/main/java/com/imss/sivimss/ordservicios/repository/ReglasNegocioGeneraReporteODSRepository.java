@@ -102,4 +102,35 @@ public class ReglasNegocioGeneraReporteODSRepository {
 		return query;
 	}
 
+	public String generaReporteODSCU086(ReporteDto reporteDto) {
+		String query= "";
+		if(reporteDto.getId_velatorio() != null) {
+			query = "WHERE sos.ID_VELATORIO = " + reporteDto.getId_velatorio();
+			if(reporteDto.getId_delegacion() != null)
+				query = query + " AND  sd.ID_DELEGACION = " +reporteDto.getId_delegacion();
+			if(reporteDto.getFecha_inicial() != null)
+				query = query + " AND (DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') >= '" + reporteDto.getFecha_inicial() + "'"; 
+			if(reporteDto.getFecha_final() != null)
+				query = query + " AND DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '" + reporteDto.getFecha_final()+ "'";
+			if (reporteDto.getFecha_inicial() != null )
+				query = query + ")";
+		}else if(reporteDto.getId_delegacion() != null) {
+				query = query + " WHERE  sd.ID_DELEGACION = " +reporteDto.getId_delegacion();
+				if(reporteDto.getFecha_inicial() != null)
+					query = query + " AND (DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') >= '" + reporteDto.getFecha_inicial() + "'"; 
+				if(reporteDto.getFecha_final() != null)
+					query = query + " AND DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '" + reporteDto.getFecha_final()+ "'";
+				if (reporteDto.getFecha_inicial() != null )
+					query = query + ")";
+		} else if(reporteDto.getFecha_inicial() != null) {
+				query = query + " WHERE (DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') >= '" + reporteDto.getFecha_inicial() + "'"; 
+				if(reporteDto.getFecha_final() != null)
+					query = query + " AND DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '" + reporteDto.getFecha_final()+ "'";
+				if (reporteDto.getFecha_inicial() != null )
+					query = query + ")";
+		}else if(reporteDto.getFecha_final() != null)
+				query = query + " WHERE DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '" + reporteDto.getFecha_final()+ "'";
+		query = query + " GROUP BY sos.CVE_FOLIO";
+		return query;
+	}
 }
