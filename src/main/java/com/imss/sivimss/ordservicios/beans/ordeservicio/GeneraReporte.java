@@ -121,7 +121,7 @@ public class GeneraReporte {
 		envioDatos.put("condicion", query);
 		envioDatos.put("fecIni", reporteDto.getFecha_inicial());
 		envioDatos.put("fecFin", reporteDto.getFecha_final());
-		envioDatos.put(TIPO_REPORTE, reporteDto.getId_tipo_reporte());
+		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteDetalleIS);
 		try {
 			log.info(CU086_NOMBRE);
