@@ -119,11 +119,15 @@ public class GeneraReporte {
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		String query = reporteODSRepository.generaReporteODSCU086(reporteDto);
 		envioDatos.put("condicion", query);
+		envioDatos.put("fecIni", reporteDto.getFecha_inicial());
+		envioDatos.put("fecFin", reporteDto.getFecha_final());
 		envioDatos.put(TIPO_REPORTE, reporteDto.getId_tipo_reporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteDetalleIS);
 		try {
 			log.info(CU086_NOMBRE);
 			log.info(reporteDetalleIS);
+			log.info(reporteDto.getFecha_inicial());
+			log.info(reporteDto.getFecha_final());
 			log.info(query);
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU086_NOMBRE + GENERAR_DOCUMENTO + " Genera Reporte Importe Servicios " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generaReporteDetalleIS", GENERA_DOCUMENTO, authentication);
