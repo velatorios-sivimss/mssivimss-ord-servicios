@@ -117,19 +117,18 @@ public class GeneraReporte {
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		Map<String, Object> envioDatos = new HashMap<>();
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
+		String query = reporteODSRepository.generaReporteODSCU086(reporteDto);
+		envioDatos.put("condicion", query);
 		envioDatos.put("fecIni", reporteDto.getFecha_inicial());
 		envioDatos.put("fecFin", reporteDto.getFecha_final());
-		envioDatos.put("idDel", reporteDto.getId_delegacion());
-		envioDatos.put("idVel", reporteDto.getId_velatorio());
 		envioDatos.put(TIPO_REPORTE, reporteDto.getId_tipo_reporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteDetalleIS);
 		try {
 			log.info(CU086_NOMBRE);
-			log.info("reporteDetalleIS = %s" + reporteDetalleIS);
-			log.info("fecIni= " + reporteDto.getFecha_inicial());
-			log.info("fecFin= " + reporteDto.getFecha_final());
-			log.info("idDel= " + reporteDto.getId_delegacion());
-			log.info("idVel= " + reporteDto.getId_velatorio());
+			log.info(reporteDetalleIS);
+			log.info(reporteDto.getFecha_inicial());
+			log.info(reporteDto.getFecha_final());
+			log.info(query);
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU086_NOMBRE + GENERAR_DOCUMENTO + " Genera Reporte Importe Servicios " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generaReporteDetalleIS", GENERA_DOCUMENTO, authentication);
 			Response<Object> response = providerServiceRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
