@@ -21,7 +21,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 
 	private static final String IND_ACTIVO = "IND_ACTIVO";
 
-	private static final String CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP()";
+	private static final String CURRENT_TIMESTAMP = "CURRENT_DATE()";
 	
 	private String query;
 	
@@ -31,12 +31,12 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 	private static final Logger log = LoggerFactory.getLogger(ReglasNegocioAdministrarOperacionODSRepository.class);
 
 	public String insertarSituarServicio(SituarServicio situarServicio, Integer idUsuario) {
-		QueryHelper queryHelper= new QueryHelper("INSERT INTO SVC_ORDENES_HISTORIAL_SERVICIOS ");
+		QueryHelper queryHelper= new QueryHelper("INSERT INTO SVC_ORDENES_HIST_SERVICIOS ");
 		queryHelper.addColumn("ID_ORDEN_SERVICIO", ""+situarServicio.getIdOrdenServicio()+"");
 		queryHelper.addColumn("IND_CERTIFICADO",""+situarServicio.getIndCertificado()+"");
 		queryHelper.addColumn("ID_TIPO_SERVICIO", ""+situarServicio.getIdTipoServicio()+"");
-		queryHelper.addColumn("FEC_SERVICIO", OrdenesServicioUtil.setValor(situarServicio.getFechaSolicitud()));
-		queryHelper.addColumn("DES_NOTAS", OrdenesServicioUtil.setValor(situarServicio.getDesNotas()));
+		queryHelper.addColumn("TIM_SERVICIO", OrdenesServicioUtil.setValor(situarServicio.getFechaSolicitud()));
+		queryHelper.addColumn("REF_NOTAS", OrdenesServicioUtil.setValor(situarServicio.getDesNotas()));
 		queryHelper.addColumn(ID_USUARIO_ALTA, ""+idUsuario+"");
 	
 		query=queryHelper.obtenerQueryInsertar();
@@ -49,7 +49,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		SelectQueryUtil selectQueryUtilServicios= new SelectQueryUtil();
 		
 		selectQueryUtilServicios.select("STO.ID_TIPO_SERVICIO ")
-		.from("SVC_ORDENES_HISTORIAL_SERVICIOS STO")
+		.from("SVC_ORDENES_HIST_SERVICIOS STO")
 		.where("STO.ID_ORDEN_SERVICIO = "+idOrden)
 		.and("STO.IND_ACTIVO =1");
 		
@@ -73,7 +73,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		SelectQueryUtil selectQueryUtilServicios= new SelectQueryUtil();
 		
 		selectQueryUtilServicios.select("STO.ID_TIPO_SERVICIO ")
-		.from("SVC_ORDENES_HISTORIAL_SERVICIOS STO")
+		.from("SVC_ORDENES_HIST_SERVICIOS STO")
 		.where("STO.ID_ORDEN_SERVICIO = "+idOrden)
 		.and("STO.IND_ACTIVO =1");
 		
@@ -122,9 +122,9 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 	
 		selectQueryUtilOrdenes.select("SSO.ID_ORDENES_HISTORIAL_SERVICIO AS idHistorialServicio ",
 				"SS.DES_SERVICIO AS nombreServicio  ",
-				"DATE_FORMAT(SSO.FEC_SERVICIO,'"+fecha+" %H:%i:%s') AS fechaSolicitud",
-				" SSO.DES_NOTAS AS desNotas", "SSO.IND_ACTIVO AS estatus")
-		.from("SVC_ORDENES_HISTORIAL_SERVICIOS SSO ")
+				"DATE_FORMAT(SSO.TIM_SERVICIO,'"+fecha+" %H:%i:%s') AS fechaSolicitud",
+				" SSO.REF_NOTAS AS desNotas", "SSO.IND_ACTIVO AS estatus")
+		.from("SVC_ORDENES_HIST_SERVICIOS SSO ")
 		.innerJoin("SVC_ORDEN_SERVICIO STO", "STO.ID_ORDEN_SERVICIO = SSO.ID_ORDEN_SERVICIO")
 		.innerJoin("SVC_CARAC_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO")
 		.innerJoin("SVC_DETALLE_CARAC_PRESUP SDCP", "SDCP.ID_CARAC_PRESUPUESTO = SCP.ID_CARAC_PRESUPUESTO ")
@@ -146,7 +146,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 	
 	
 		selectQueryUtilOrdenes.select("IFNULL(COUNT(SSO.ID_TIPO_SERVICIO),0)")
-		.from("SVC_ORDENES_HISTORIAL_SERVICIOS SSO ")
+		.from("SVC_ORDENES_HIST_SERVICIOS SSO ")
 		.where("SSO.ID_ORDEN_SERVICIO = "+idOrden)
 		.and("SSO.IND_ACTIVO =1")
 		.and("SSO.ID_TIPO_SERVICIO = "+idTipoServicio);
@@ -172,7 +172,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 	
 	// actualizar historial de servicio
 	public String actualizarHistorialOrdenServicio(Integer idHistorialServicio, Integer idEstatus, Integer idUsuario) {
-			final QueryHelper q = new QueryHelper("UPDATE SVC_ORDENES_HISTORIAL_SERVICIOS ");
+			final QueryHelper q = new QueryHelper("UPDATE SVC_ORDENES_HIST_SERVICIOS ");
 			q.agregarParametroValues(IND_ACTIVO, "" + idEstatus + "");
 			q.agregarParametroValues("ID_USUARIO_BAJA", "" + idUsuario + "");
 			q.agregarParametroValues("FEC_BAJA", CURRENT_TIMESTAMP);
