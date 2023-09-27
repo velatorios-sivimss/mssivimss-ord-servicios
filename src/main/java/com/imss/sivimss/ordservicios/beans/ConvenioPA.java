@@ -47,13 +47,13 @@ public class ConvenioPA {
 				"SPC.ID_PAIS AS idPais",
 				"SPC.ID_ESTADO AS idEstado",
 				"IFNULL(SC.ID_DOMICILIO,'') AS idDomicilio",
-				"IFNULL(SVD.DES_CALLE,'') AS calle",
+				"IFNULL(SVD.REF_CALLE,'') AS calle",
 				"IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
 				"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior",
-				"IFNULL(SVD.DES_CP,'') AS cp",
-				"IFNULL(SVD.DES_COLONIA,'') AS colonia",
-				"IFNULL(SVD.DES_MUNICIPIO,'') AS municipio",
-				"IFNULL(SVD.DES_ESTADO,'') AS estado")
+				"IFNULL(SVD.REF_CP,'') AS cp",
+				"IFNULL(SVD.REF_COLONIA,'') AS colonia",
+				"IFNULL(SVD.REF_MUNICIPIO,'') AS municipio",
+				"IFNULL(SVD.REF_ESTADO,'') AS estado")
 		.from("SVT_PLAN_SFPA SPSA ")
 		.innerJoin("SVC_VELATORIO SV ", "SPSA.ID_VELATORIO = SV.ID_VELATORIO ")
 		.innerJoin("SVC_CONTRATANTE SC ", "SPSA.ID_TITULAR = SC.ID_CONTRATANTE ")

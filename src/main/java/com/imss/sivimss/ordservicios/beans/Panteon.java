@@ -36,10 +36,10 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.DES_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.DES_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
-				"STD.DES_COLONIA desColonia","STD.DES_CP AS codigoPostal",
-				"STD.DES_MUNICIPIO AS desMunicipio","STD.DES_ESTADO AS desEstado")
+				"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
+				"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
 		.where("SP.DES_PANTEON LIKE '%"+panteonRequest.getNombrePanteon()+"%'")
@@ -61,10 +61,10 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.DES_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.DES_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
-				"STD.DES_COLONIA desColonia","STD.DES_CP AS codigoPostal",
-				"STD.DES_MUNICIPIO AS desMunicipio","STD.DES_ESTADO AS desEstado")
+				"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
+				"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
 		.where("SP.DES_PANTEON = '"+panteonRequest.getNombrePanteon()+"'")
@@ -102,10 +102,10 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.DES_PANTEON AS nombrePanteon","STD.DES_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.DES_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
-				"STD.DES_COLONIA desColonia","STD.DES_CP AS codigoPostal",
-				"STD.DES_MUNICIPIO AS desMunicipio","STD.DES_ESTADO AS desEstado")
+				"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
+				"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
 		.where("SP.ID_PANTEON = '"+panteonRequest.getIdPanteon()+"'")

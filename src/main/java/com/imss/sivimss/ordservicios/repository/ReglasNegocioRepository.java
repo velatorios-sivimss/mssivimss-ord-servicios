@@ -56,10 +56,10 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo", "IFNULL(SPE .FEC_NAC,'') AS fechaNac",
 						"IFNULL(SVP.ID_PAIS,'') AS idPais", "IFNULL(SVE.ID_ESTADO,'') AS idEstado",
 						"IFNULL(SPE.DES_TELEFONO,'') AS telefono", "IFNULL(SPE.DES_CORREO,'') AS correo",
-						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
-						"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior", "IFNULL(SVD.DES_CP,'') AS cp",
-						"IFNULL(SVD.DES_COLONIA,'') AS colonia", "IFNULL(SVD.DES_MUNICIPIO,'') AS municipio",
-						"IFNULL(SVD.DES_ESTADO,'') AS estado")
+						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.REF_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
+						"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior", "IFNULL(SVD.REF_CP,'') AS cp",
+						"IFNULL(SVD.REF_COLONIA,'') AS colonia", "IFNULL(SVD.REF_MUNICIPIO,'') AS municipio",
+						"IFNULL(SVD.REF_ESTADO,'') AS estado")
 				.from("SVC_PERSONA SPE").leftJoin("SVC_PAIS SVP", "SPE.ID_PAIS = SVP.ID_PAIS")
 				.leftJoin("SVC_ESTADO SVE", "SPE.ID_ESTADO = SVE.ID_ESTADO")
 				.innerJoin("SVC_CONTRATANTE SVC", "SPE.ID_PERSONA = SVC.ID_PERSONA")
@@ -81,10 +81,10 @@ public class ReglasNegocioRepository {
 						"IFNULL(SPE.DES_OTRO_SEXO,'') AS otroSexo",  "IFNULL(SPE .FEC_NAC,'') AS fechaNac",
 						"IFNULL(SVP.ID_PAIS,'') AS idPais", "IFNULL(SVE.ID_ESTADO,'') AS idEstado",
 						"IFNULL(SPE.DES_TELEFONO,'') AS telefono", "IFNULL(SPE.DES_CORREO,'') AS correo",
-						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.DES_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
-						"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior", "IFNULL(SVD.DES_CP,'') AS cp",
-						"IFNULL(SVD.DES_COLONIA,'') AS colonia", "IFNULL(SVD.DES_MUNICIPIO,'') AS municipio",
-						"IFNULL(SVD.DES_ESTADO,'') AS estado")
+						"IFNULL(SVC.ID_DOMICILIO,'') AS idDomicilio","IFNULL(SVD.REF_CALLE,'') AS calle", "IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
+						"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior", "IFNULL(SVD.REF_CP,'') AS cp",
+						"IFNULL(SVD.REF_COLONIA,'') AS colonia", "IFNULL(SVD.REF_MUNICIPIO,'') AS municipio",
+						"IFNULL(SVD.REF_ESTADO,'') AS estado")
 				.from("SVC_PERSONA SPE").leftJoin("SVC_PAIS SVP", "SPE.ID_PAIS = SVP.ID_PAIS")
 				.leftJoin("SVC_ESTADO SVE", "SPE.ID_ESTADO = SVE.ID_ESTADO")
 				.innerJoin("SVC_CONTRATANTE SVC", "SPE.ID_PERSONA = SVC.ID_PERSONA")
@@ -162,13 +162,13 @@ public class ReglasNegocioRepository {
 
 	public String insertarDomicilio(DomicilioRequest domicilioRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DOMICILIO");
-		q.agregarParametroValues("DES_CALLE", setValor(domicilioRequest.getDesCalle()));
+		q.agregarParametroValues("REF_CALLE", setValor(domicilioRequest.getDesCalle()));
 		q.agregarParametroValues("NUM_EXTERIOR", setValor(domicilioRequest.getNumExterior()));
 		q.agregarParametroValues("NUM_INTERIOR", setValor(domicilioRequest.getNumInterior()));
-		q.agregarParametroValues("DES_CP", setValor(domicilioRequest.getCodigoPostal()));
-		q.agregarParametroValues("DES_COLONIA", setValor( domicilioRequest.getDesColonia()));
-		q.agregarParametroValues("DES_MUNICIPIO", setValor( domicilioRequest.getDesMunicipio()));
-		q.agregarParametroValues("DES_ESTADO", setValor( domicilioRequest.getDesEstado()));
+		q.agregarParametroValues("REF_CP", setValor(domicilioRequest.getCodigoPostal()));
+		q.agregarParametroValues("REF_COLONIA", setValor( domicilioRequest.getDesColonia()));
+		q.agregarParametroValues("REF_MUNICIPIO", setValor( domicilioRequest.getDesMunicipio()));
+		q.agregarParametroValues("REF_ESTADO", setValor( domicilioRequest.getDesEstado()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
@@ -637,7 +637,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("FEC_ODS", CURRENT_DATE);
 		q.agregarParametroValues("NOM_CONTRATANTE", "'" + contratante + "'");
 		q.agregarParametroValues("CVE_FOLIO", "'" + folio + "'");
-		q.agregarParametroValues("DESC_VALOR", "'" + valor + "'");
+		q.agregarParametroValues("IMP_VALOR", "'" + valor + "'");
 		q.agregarParametroValues("CVE_ESTATUS_PAGO", "" + estatus + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
@@ -747,13 +747,13 @@ public class ReglasNegocioRepository {
 	// actualizar domicilio
 	public String actualizarDomicilio(DomicilioRequest domicilioRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_DOMICILIO ");
-		q.agregarParametroValues("DES_CALLE", "'" + domicilioRequest.getDesCalle() + "'");
+		q.agregarParametroValues("REF_CALLE", "'" + domicilioRequest.getDesCalle() + "'");
 		q.agregarParametroValues("NUM_EXTERIOR", "'" + domicilioRequest.getNumExterior() + "'");
 		q.agregarParametroValues("NUM_INTERIOR", "'" + domicilioRequest.getNumInterior() + "'");
-		q.agregarParametroValues("DES_CP", "'" + domicilioRequest.getCodigoPostal() + "'");
-		q.agregarParametroValues("DES_COLONIA", "'" + domicilioRequest.getDesColonia() + "'");
-		q.agregarParametroValues("DES_MUNICIPIO", "'" + domicilioRequest.getDesMunicipio() + "'");
-		q.agregarParametroValues("DES_ESTADO", "'" + domicilioRequest.getDesEstado() + "'");
+		q.agregarParametroValues("REF_CP", "'" + domicilioRequest.getCodigoPostal() + "'");
+		q.agregarParametroValues("REF_COLONIA", "'" + domicilioRequest.getDesColonia() + "'");
+		q.agregarParametroValues("REF_MUNICIPIO", "'" + domicilioRequest.getDesMunicipio() + "'");
+		q.agregarParametroValues("REF_ESTADO", "'" + domicilioRequest.getDesEstado() + "'");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_DOMICILIO = "+domicilioRequest.getIdDomicilio());
@@ -927,13 +927,13 @@ public class ReglasNegocioRepository {
 					"SPC.DES_TELEFONO AS telefono",
 					"SPC.DES_CORREO AS correo",
 					"SC.ID_DOMICILIO AS idDomicilio",
-					"SCD.DES_CALLE AS desCalle",
+					"SCD.REF_CALLE AS desCalle",
 					"SCD.NUM_EXTERIOR AS numExterior",
 					"SCD.NUM_INTERIOR AS numInterior",
-					"SCD.DES_CP AS codigoPostal",
-					"SCD.DES_COLONIA AS desColonia",
-					"SCD.DES_MUNICIPIO AS desMunicipio",
-					"SCD.DES_ESTADO AS desEstado")
+					"SCD.REF_CP AS codigoPostal",
+					"SCD.REF_COLONIA AS desColonia",
+					"SCD.REF_MUNICIPIO AS desMunicipio",
+					"SCD.REF_ESTADO AS desEstado")
 			.from("SVC_ORDEN_SERVICIO STO")
 			.leftJoin("SVC_CONTRATANTE SC", "STO.ID_CONTRATANTE =SC.ID_CONTRATANTE")
 			.leftJoin("SVC_PERSONA SPC", "SC.ID_PERSONA = SPC.ID_PERSONA")
@@ -970,13 +970,13 @@ public class ReglasNegocioRepository {
 						"SPF.DES_TELEFONO AS telefono",
 						"SPF.DES_CORREO AS correo",
 						"SCD.ID_DOMICILIO AS idDomicilio",
-						"SCD.DES_CALLE AS desCalle",
+						"SCD.REF_CALLE AS desCalle",
 						"SCD.NUM_EXTERIOR AS numExterior",
 						"SCD.NUM_INTERIOR AS numInterior",
-						"SCD.DES_CP AS codigoPostal",
-						"SCD.DES_COLONIA AS desColonia",
-						"SCD.DES_MUNICIPIO AS desMunicipio",
-						"SCD.DES_ESTADO AS desEstado",
+						"SCD.REF_CP AS codigoPostal",
+						"SCD.REF_COLONIA AS desColonia",
+						"SCD.REF_MUNICIPIO AS desMunicipio",
+						"SCD.REF_ESTADO AS desEstado",
 						"DATE_FORMAT(STF.FEC_DECESO,'"+fecha+"') AS fechaDeceso",
 						"STF.DES_CAUSA_DECESO AS causaDeceso",
 						"STF.DES_LUGAR_DECESO AS lugarDeceso",
@@ -1245,13 +1245,13 @@ public class ReglasNegocioRepository {
 														"TIME_FORMAT(SISV.TIM_HORA_VELACION,'%H:%i') AS horaVelacion",
 														"SISV.ID_CAPILLA AS idCapilla",
 														"SISV.ID_DOMICILIO AS idDomicilio",
-														"SCD.DES_CALLE AS desCalle",
+														"SCD.REF_CALLE AS desCalle",
 														"SCD.NUM_EXTERIOR AS numExterior",
 														"SCD.NUM_INTERIOR AS numInterior",
-														"SCD.DES_CP AS codigoPostal",
-														"SCD.DES_COLONIA AS desColonia",
-														"SCD.DES_MUNICIPIO AS desMunicipio",
-														"SCD.DES_ESTADO AS desEstado")
+														"SCD.REF_CP AS codigoPostal",
+														"SCD.REF_COLONIA AS desColonia",
+														"SCD.REF_MUNICIPIO AS desMunicipio",
+														"SCD.REF_ESTADO AS desEstado")
 												.from("SVC_INF_SERVICIO_VELACION SISV ")
 												.leftJoin("SVT_DOMICILIO SCD","SCD.ID_DOMICILIO = SISV.ID_DOMICILIO")
 												.where("SISV.ID_INFORMACION_SERVICIO = " + idInformacionServicio);
