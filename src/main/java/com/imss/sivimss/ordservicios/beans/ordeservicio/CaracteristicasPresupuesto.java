@@ -349,13 +349,13 @@ public class CaracteristicasPresupuesto {
 					Integer idSalidaDonacion = rs.getInt(1);
 
 					statement.executeUpdate(
-							reglasNegocioRepository.insertarSalidaDonacionAtaud("SVC_SALIDA_DONACION_ATAUDES_TEMP",
+							reglasNegocioRepository.insertarSalidaDonacionAtaud("SVC_SALIDA_DON_ATAUDES_TEMP",
 									idSalidaDonacion, idInventario, idUsuarioAlta),
 							Statement.RETURN_GENERATED_KEYS);
 					rs = statement.getGeneratedKeys();
 					if (rs.next()) {
 						statement.executeUpdate(reglasNegocioRepository.insertarSalidaDonacionFinado(
-								"SVC_SALIDA_DONACION_FINADOS_TEMP", ordenesServicioRequest.getFinado().getNomPersona(),
+								"SVC_SALIDA_DON_FINADOS_TEMP", ordenesServicioRequest.getFinado().getNomPersona(),
 								ordenesServicioRequest.getFinado().getPrimerApellido(),
 								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
 								idUsuarioAlta));

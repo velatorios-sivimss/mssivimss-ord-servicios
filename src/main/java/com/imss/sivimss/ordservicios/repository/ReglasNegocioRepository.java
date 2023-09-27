@@ -534,7 +534,7 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 	
-	// insertar SVC_SALIDA_DONACION_ATAUDES/SVC_SALIDA_DONACION_ATAUDES_TEMP
+	// insertar SVC_SALIDA_DONACION_ATAUDES/SVC_SALIDA_DON_ATAUDES_TEMP
 	public String insertarSalidaDonacionAtaud(String from, Integer idSalidaDonacion, Integer idInventario, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO "+from);
 		q.agregarParametroValues("ID_SALIDA_DONACION", "" + idSalidaDonacion + "");
@@ -546,7 +546,7 @@ public class ReglasNegocioRepository {
 		return query;
 	}
 	
-	// insertar SVC_SALIDA_DONACION_FINADOS/SVC_SALIDA_DONACION_FINADOS_TEMP
+	// insertar SVC_SALIDA_DONACION_FINADOS/SVC_SALIDA_DON_FINADOS_TEMP
 	public String insertarSalidaDonacionFinado(String from, String nombreFinado, String primerApellidoFinado, String segundoApellidoFinado, Integer idSalidaDonacion, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO "+from);
 		q.agregarParametroValues("NOM_FINADO", setValor(nombreFinado));
