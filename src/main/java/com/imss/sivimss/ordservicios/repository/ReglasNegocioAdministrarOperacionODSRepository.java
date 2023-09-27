@@ -21,7 +21,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 
 	private static final String IND_ACTIVO = "IND_ACTIVO";
 
-	private static final String CURRENT_TIMESTAMP = "CURRENT_DATE()";
+	private static final String CURRENT_DATE = "CURRENT_DATE()";
 	
 	private String query;
 	
@@ -162,7 +162,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_ORDEN_SERVICIO ");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO", "" + idEstatus + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuario + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_ORDEN_SERVICIO=" + idOrdenServicio);
 
 		query = q.obtenerQueryActualizar();
@@ -175,7 +175,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 			final QueryHelper q = new QueryHelper("UPDATE SVC_ORDENES_HIST_SERVICIOS ");
 			q.agregarParametroValues(IND_ACTIVO, "" + idEstatus + "");
 			q.agregarParametroValues("ID_USUARIO_BAJA", "" + idUsuario + "");
-			q.agregarParametroValues("FEC_BAJA", CURRENT_TIMESTAMP);
+			q.agregarParametroValues("FEC_BAJA", CURRENT_DATE);
 			q.addWhere("ID_ORDENES_HISTORIAL_SERVICIO=" + idHistorialServicio);
 
 			query = q.obtenerQueryActualizar();

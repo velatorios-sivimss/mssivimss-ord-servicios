@@ -88,7 +88,7 @@ public class Panteon {
 		q.agregarParametroValues("NUM_TELEFONO", ""+panteonRequest.getNumTelefono()+"");
 		q.agregarParametroValues("ID_USUARIO_ALTA", "" +dto.getIdUsuario() + "");
 		q.agregarParametroValues("IND_ACTIVO", "1");
-		q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
+		q.agregarParametroValues("FEC_ALTA", "CURRENT_DATE()");
 		String query=q.obtenerQueryInsertar();
 		log.info(query);
 				

@@ -36,7 +36,7 @@ public class ReglasNegocioRepository {
 
 	private static final String ID_ORDEN_SERVICIO = "ID_ORDEN_SERVICIO";
 
-	private static final String CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP()";
+	private static final String CURRENT_DATE = "CURRENT_DATE()";
 	
 	@Value("${formato_fecha}")
 	private String fecha;
@@ -141,7 +141,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_TELEFONO", setValor(personaRequest.getTelefono()));
 		q.agregarParametroValues("DES_CORREO", setValor(personaRequest.getCorreo()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -154,7 +154,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("CVE_MATRICULA", setValor(contratanteRequest.getMatricula()));
 		q.agregarParametroValues(ID_DOMICILIO, "" + contratanteRequest.getCp().getIdDomicilio() + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -170,7 +170,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_MUNICIPIO", setValor( domicilioRequest.getDesMunicipio()));
 		q.agregarParametroValues("DES_ESTADO", setValor( domicilioRequest.getDesEstado()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -187,7 +187,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CONTRATANTE_PF", "" + idContratantePf + "");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO", "" + idEstatus + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -224,7 +224,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -259,7 +259,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -272,7 +272,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -296,7 +296,7 @@ public class ReglasNegocioRepository {
 		}
 		
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -318,7 +318,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CARAC_PAQUETE", "" + idCaracteristicasPaquete + "");
 		q.agregarParametroValues("ID_CATEGORIA_PAQUETE", "" + detalleCaracteristicasPaqueteRequest.getIdCategoriaPaquete() + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -344,7 +344,7 @@ public class ReglasNegocioRepository {
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getTotalKilometros());
 		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", "" + idDetalleCaracteristicasPaquete + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -366,7 +366,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_NOTAS_SERVICIO",
 				setValor( caracteristicasPaquetePresupuestoRequest.getNotasServicio()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -390,7 +390,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CARAC_PRESUPUESTO", "" + idCaracteristicasPaquetePresupuesto + "");
 		q.agregarParametroValues("DES_PROVIENE", "'" + caracteristicasPaqueteRespuestoRequest.getProviene() + "'");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -419,7 +419,7 @@ public class ReglasNegocioRepository {
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getTotalKilometros());
 		q.agregarParametroValues("ID_DETALLE_CARACTERISTICAS", "" + idDetalleCaracteristicasPaquete + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -440,7 +440,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_PROMOTORES", "" + informacionServicioRequest.getIdPromotor());
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -464,7 +464,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CAPILLA", "" + informacionServicioRequest.getIdCapilla() + "");
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", "" + idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -477,7 +477,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_INVE_ARTICULO", "" + idInventario + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -489,7 +489,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_ORDEN_SERVICIO", "" + ordenServicio + "");
 		q.agregarParametroValues("NUM_TOTAL_ATAUDES", "1");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -501,7 +501,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_DONACION", "" + donacion + "");
 		q.agregarParametroValues("ID_INVE_ARTICULO", "" + idInventario + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -523,12 +523,12 @@ public class ReglasNegocioRepository {
 			}
 		}
 		
-		q.agregarParametroValues("FEC_SOLICITUD",CURRENT_TIMESTAMP);
+		q.agregarParametroValues("FEC_SOLICITUD",CURRENT_DATE);
 		q.agregarParametroValues("ID_CONTRATANTE", "" + idContratante + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues("FEC_SOLICITUD", CURRENT_TIMESTAMP);
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues("FEC_SOLICITUD", CURRENT_DATE);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -540,7 +540,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_SALIDA_DONACION", "" + idSalidaDonacion + "");
 		q.agregarParametroValues("ID_INVE_ARTICULO", "" + idInventario + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -554,7 +554,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", setValor(segundoApellidoFinado));
 		q.agregarParametroValues("ID_SALIDA_DONACION", "" + idSalidaDonacion + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -567,7 +567,7 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_INVENTARIO_ARTICULO ");
 		q.agregarParametroValues("ID_TIPO_ASIGNACION_ART", "" + idAsignacion + "");
 		q.agregarParametroValues("IND_ESTATUS", "" + estatus + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioModifica + "");
 		q.addWhere("ID_INVE_ARTICULO = " + idInventarioArticulo);
 		query = q.obtenerQueryActualizar();
@@ -619,7 +619,7 @@ public class ReglasNegocioRepository {
 	public String actualizarEstatusAtaud(Integer idInventarioArticulo, Integer idUsuarioModifica, Integer estatus) {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_INVENTARIO_ARTICULO ");
 		q.agregarParametroValues("IND_ESTATUS", "" + estatus + "");
-		q.agregarParametroValues("FEC_ACTUALIZACION", CURRENT_TIMESTAMP);
+		q.agregarParametroValues("FEC_ACTUALIZACION", CURRENT_DATE);
 		q.agregarParametroValues("ID_USUARIO_MODIFICA", "" + idUsuarioModifica + "");
 		q.addWhere("ID_INVE_ARTICULO = " + idInventarioArticulo);
 		query = q.obtenerQueryActualizar();
@@ -634,13 +634,13 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_REGISTRO", "" + idRegistro + "");
 		q.agregarParametroValues("ID_FLUJO_PAGOS", "1");
 		q.agregarParametroValues("ID_VELATORIO", "" + idVelatorio + "");
-		q.agregarParametroValues("FEC_ODS", CURRENT_TIMESTAMP);
+		q.agregarParametroValues("FEC_ODS", CURRENT_DATE);
 		q.agregarParametroValues("NOM_CONTRATANTE", "'" + contratante + "'");
 		q.agregarParametroValues("CVE_FOLIO", "'" + folio + "'");
 		q.agregarParametroValues("DESC_VALOR", "'" + valor + "'");
 		q.agregarParametroValues("CVE_ESTATUS_PAGO", "" + estatus + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ALTA, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
 		log.info(query);
 		return query;
@@ -737,7 +737,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_TELEFONO", "'" + personaRequest.getTelefono() + "'");
 		q.agregarParametroValues("DES_CORREO", "'" + personaRequest.getCorreo() + "'");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuario + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_PERSONA = " + personaRequest.getIdPersona());
 		query = q.obtenerQueryActualizar();
 		log.info(query);
@@ -755,7 +755,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_MUNICIPIO", "'" + domicilioRequest.getDesMunicipio() + "'");
 		q.agregarParametroValues("DES_ESTADO", "'" + domicilioRequest.getDesEstado() + "'");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_DOMICILIO = "+domicilioRequest.getIdDomicilio());
 		query = q.obtenerQueryActualizar();
 		log.info(query);
@@ -771,7 +771,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CONTRATANTE_PF", "" + idContratantePf + "");
 		q.agregarParametroValues("ID_ESTATUS_ORDEN_SERVICIO", "" + idEstatus + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_ORDEN_SERVICIO="+idOrdenServicio);
 
 		query = q.obtenerQueryActualizar();
@@ -803,7 +803,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor(finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_FINADO="+finadoRequest.getIdFinado());
 
 		query = q.obtenerQueryActualizarSinCoalesce();
@@ -827,7 +827,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_PROMOTORES", "" + informacionServicioRequest.getIdPromotor());
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_INFORMACION_SERVICIO="+informacionServicioRequest.getIdInformacionServicio());
 		query = q.obtenerQueryActualizarSinCoalesce();
 		log.info(query);
@@ -839,7 +839,7 @@ public class ReglasNegocioRepository {
 			final QueryHelper q = new QueryHelper("UPDATE SVC_INFORMACION_SERVICIO ");
 			q.agregarParametroValues(IND_ACTIVO, "0");
 			q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-			q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+			q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 			q.addWhere(ID_ORDEN_SERVICIO+"="+idOrdenServicio);
 			query = q.obtenerQueryActualizar();
 			log.info(query);
@@ -851,7 +851,7 @@ public class ReglasNegocioRepository {
 				final QueryHelper q = new QueryHelper("UPDATE SVC_SALIDA_DONACION_TEMP ");
 				q.agregarParametroValues(IND_ACTIVO, "0");
 				q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-				q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+				q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 				q.addWhere(ID_ORDEN_SERVICIO+"="+idOrdenServicio);
 				query = q.obtenerQueryActualizar();
 				log.info(query);
@@ -870,7 +870,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("ID_CAPILLA", "" + informacionServicioRequest.getIdCapilla() + "");
 		q.agregarParametroValues("ID_INFORMACION_SERVICIO", "" + idInformacionServicio);
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
-		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_TIMESTAMP);
+		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_INF_SERVICIO_VELACION="+informacionServicioRequest.getIdInformacionServicioVelacion());
 		query = q.obtenerQueryActualizar();
 		log.info(query);
