@@ -748,8 +748,8 @@ public class ReglasNegocioRepository {
 	public String actualizarDomicilio(DomicilioRequest domicilioRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_DOMICILIO ");
 		q.agregarParametroValues("DES_CALLE", "'" + domicilioRequest.getDesCalle() + "'");
-		q.agregarParametroValues("NUM_EXTERIOR", "'" + domicilioRequest.getNumExterior() + "'");
-		q.agregarParametroValues("NUM_INTERIOR", "'" + domicilioRequest.getNumInterior() + "'");
+		q.agregarParametroValues("NUM_EXTERIOR", setValor(domicilioRequest.getNumExterior()));
+		q.agregarParametroValues("NUM_INTERIOR",  setValor(domicilioRequest.getNumInterior()));
 		q.agregarParametroValues("DES_CP", "'" + domicilioRequest.getCodigoPostal() + "'");
 		q.agregarParametroValues("DES_COLONIA", "'" + domicilioRequest.getDesColonia() + "'");
 		q.agregarParametroValues("DES_MUNICIPIO", "'" + domicilioRequest.getDesMunicipio() + "'");
