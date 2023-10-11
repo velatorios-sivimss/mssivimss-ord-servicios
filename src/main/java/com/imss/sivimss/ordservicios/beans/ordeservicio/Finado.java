@@ -38,8 +38,8 @@ public class Finado {
 			statement = connection.createStatement();
 			
     		if (finadoRequest.getIdPersona()==null && 
-    				(finadoRequest.getNomPersona()!=null &&
-    				finadoRequest.getSegundoApellido()!=null)) {
+    				(finadoRequest.getNomPersona()!=null && !finadoRequest.getNomPersona().equals("")) &&
+    				(finadoRequest.getSegundoApellido()!=null && !finadoRequest.getSegundoApellido().equals(""))) {
     			
     			
     			
@@ -81,13 +81,14 @@ public class Finado {
             }
     	
     		
-    		
-    	
 			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,ordenServcio.getIdOrdenServicio(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
-    		if (rs.next()) {
-    			return rs.getInt(1);
-    		}
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+				
+    	
+			
 		} finally {
 			if (statement!=null) {
 				statement.close();
