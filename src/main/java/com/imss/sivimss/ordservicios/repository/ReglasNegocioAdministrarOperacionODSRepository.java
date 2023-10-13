@@ -121,7 +121,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 	
 	
 		selectQueryUtilOrdenes.select("SSO.ID_ORDENES_HISTORIAL_SERVICIO AS idHistorialServicio ",
-				"SS.DES_SERVICIO AS nombreServicio  ",
+				"STS.DES_TIPO_SERVICIO AS nombreServicio  ",
 				"DATE_FORMAT(SSO.FEC_SERVICIO,'"+fecha+" %H:%i:%s') AS fechaSolicitud",
 				" SSO.DES_NOTAS AS desNotas", "SSO.IND_ACTIVO AS estatus")
 		.from("SVC_ORDENES_HISTORIAL_SERVICIOS SSO ")
