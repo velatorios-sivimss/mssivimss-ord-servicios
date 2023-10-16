@@ -739,7 +739,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuario + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_PERSONA = " + personaRequest.getIdPersona());
-		query = q.obtenerQueryActualizar();
+		query = q.obtenerQueryActualizarSinCoalesce();
 		log.info(query);
 		return query;
 	}
@@ -748,8 +748,8 @@ public class ReglasNegocioRepository {
 	public String actualizarDomicilio(DomicilioRequest domicilioRequest, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_DOMICILIO ");
 		q.agregarParametroValues("REF_CALLE", "'" + domicilioRequest.getDesCalle() + "'");
-		q.agregarParametroValues("NUM_EXTERIOR", "'" + domicilioRequest.getNumExterior() + "'");
-		q.agregarParametroValues("NUM_INTERIOR", "'" + domicilioRequest.getNumInterior() + "'");
+		q.agregarParametroValues("NUM_EXTERIOR", setValor(domicilioRequest.getNumExterior()));
+		q.agregarParametroValues("NUM_INTERIOR",  setValor(domicilioRequest.getNumInterior()));
 		q.agregarParametroValues("REF_CP", "'" + domicilioRequest.getCodigoPostal() + "'");
 		q.agregarParametroValues("REF_COLONIA", "'" + domicilioRequest.getDesColonia() + "'");
 		q.agregarParametroValues("REF_MUNICIPIO", "'" + domicilioRequest.getDesMunicipio() + "'");
