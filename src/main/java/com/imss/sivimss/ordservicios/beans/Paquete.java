@@ -37,13 +37,13 @@ public class Paquete {
 		SelectQueryUtil selectQueryUtilUnionPaqueteServicio= new SelectQueryUtil();
 		SelectQueryUtil selectQueryUtilUnionPaqueteArticulo= new SelectQueryUtil();
 		
-		selectQueryUtilUnionPaqueteVelatorio.select("SP.ID_PAQUETE","SP.DES_NOM_PAQUETE")
+		selectQueryUtilUnionPaqueteVelatorio.select("SP.ID_PAQUETE","SP.REF_PAQUETE_NOMBRE")
 		.from("SVT_PAQUETE SP")
 		.innerJoin("SVT_PAQUETE_VELATORIO SPV", "SP.ID_PAQUETE=SPV.ID_PAQUETE")
 		.where("SP.IND_ACTIVO = 1")
 		.and("SPV.ID_VELATORIO = "+idVelatorio);
 
-		selectQueryUtilUnionPaqueteRegion.select("SP.ID_PAQUETE","SP.DES_NOM_PAQUETE")
+		selectQueryUtilUnionPaqueteRegion.select("SP.ID_PAQUETE","SP.REF_PAQUETE_NOMBRE")
 		.from("SVT_PAQUETE SP")
 		.where("SP.IND_ACTIVO =1 ")
 		.and("SP.IND_REGION =1");
@@ -72,7 +72,7 @@ public class Paquete {
 		String queryPaqueteRegion=selectQueryUtilUnionPaqueteVelatorio.union(selectQueryUtilUnionPaqueteRegion);
 		String queryPaqueteServiciosArticulos=selectQueryUtilUnionPaqueteServicio.union(selectQueryUtilUnionPaqueteArticulo);
 		
-		selectQueryUtilPaquete.select("PAQUETES.ID_PAQUETE AS idPaquete","PAQUETES.DES_NOM_PAQUETE AS nombrePaquete")
+		selectQueryUtilPaquete.select("PAQUETES.ID_PAQUETE AS idPaquete","PAQUETES.REF_PAQUETE_NOMBRE AS nombrePaquete")
 		.from("("+queryPaqueteRegion+") PAQUETES")
 		.where("PAQUETES.ID_PAQUETE IN("+queryPaqueteServiciosArticulos+")");
 		
