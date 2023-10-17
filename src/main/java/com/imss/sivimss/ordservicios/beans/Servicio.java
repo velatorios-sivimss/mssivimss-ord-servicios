@@ -61,7 +61,7 @@ public class Servicio {
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("SP.ID_PROVEEDOR AS idProveedor",
-				"SP.NOM_PROVEEDOR AS nombreProveedor",
+				"SP.REF_PROVEEDOR AS nombreProveedor",
 				"SCS.MON_PRECIO AS importe")
 		.from("SVT_PROVEEDOR SP")
 		.innerJoin("SVT_CONTRATO SC", "SP.ID_PROVEEDOR = SC.ID_PROVEEDOR")
@@ -72,7 +72,7 @@ public class Servicio {
 		.and("SS.ID_SERVICIO = "+idServicio)
 		.and("DATE_FORMAT(SC.FEC_FIN_VIG,\"YY-MM-DD\") >= DATE_FORMAT(CURRENT_DATE(),\"YY-MM-DD\")")
 		.and("DATE_FORMAT(SP.FEC_VIGENCIA,\"YY-MM-DD\") >= DATE_FORMAT(CURRENT_DATE(),\"YY-MM-DD\")")
-		.orderBy("SP.NOM_PROVEEDOR ASC");
+		.orderBy("SP.REF_PROVEEDOR ASC");
 		
 		String query=selectQueryUtil.build();
 		log.info(query);

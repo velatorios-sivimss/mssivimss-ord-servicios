@@ -116,7 +116,7 @@ public class Ataud {
 		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
-		selectQueryUtilArticulo.select("DISTINCT SA.ID_ARTICULO AS idArticulo","SA.DES_ARTICULO AS nombreArticulo")
+		selectQueryUtilArticulo.select("DISTINCT SA.ID_ARTICULO AS idArticulo","SA.REF_ARTICULO AS nombreArticulo")
 		.from("SVT_ARTICULO SA")
 		.innerJoin("SVT_INVENTARIO_ARTICULO STI", "SA.ID_ARTICULO = STI.ID_ARTICULO AND STI.IND_ESTATUS NOT IN (2,3) AND "
 				+ "STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventarioTemp.build()+") AND STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventario.build()+")")
@@ -139,7 +139,7 @@ public class Ataud {
 		.where("SDCP.IND_ACTIVO = 1").and("STAI.ID_TIPO_ASIGNACION_ART = "+idTipoAsignacion);
 		
 	
-		 selectQueryUtilInventarioDonado.select("DISTINCT SA.ID_ARTICULO AS idArticulo","SA.DES_ARTICULO AS nombreArticulo")
+		 selectQueryUtilInventarioDonado.select("DISTINCT SA.ID_ARTICULO AS idArticulo","SA.REF_ARTICULO AS nombreArticulo")
 		.from("SVT_ARTICULO SA")
 		.innerJoin("SVT_INVENTARIO_ARTICULO STI", "SA.ID_ARTICULO = STI.ID_ARTICULO AND STI.IND_ESTATUS NOT IN (2,3) AND "
 				+ "STI.ID_INVE_ARTICULO NOT IN ("+selectQueryUtilInventarioTemp.build()+") AND STI.ID_INVE_ARTICULO IN ("+selectQueryUtilInventarioArticulo.build()+")")
@@ -186,7 +186,7 @@ public class Ataud {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SP.ID_PROVEEDOR as idProveedor","SP.NOM_PROVEEDOR as nombreProveedor")
+		selectQueryUtil.select("SP.ID_PROVEEDOR as idProveedor","SP.REF_PROVEEDOR as nombreProveedor")
 		.from("SVT_PROVEEDOR SP")
 		.innerJoin("SVT_CONTRATO SC", "SP .ID_PROVEEDOR = SC.ID_PROVEEDOR")
 		.innerJoin("SVT_CONTRATO_ARTICULOS SCA", "SCA.ID_CONTRATO =SC.ID_CONTRATO")
