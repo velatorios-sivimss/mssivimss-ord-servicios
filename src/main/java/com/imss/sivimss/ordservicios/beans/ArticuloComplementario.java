@@ -36,7 +36,7 @@ public class ArticuloComplementario {
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		selectQueryUtil.select("STA.ID_ARTICULO AS idArticulo",
-				"STA.DES_ARTICULO AS nombreArticulo","SCTA.MON_PRECIO AS precio",
+				"STA.REF_ARTICULO AS nombreArticulo","SCTA.MON_PRECIO AS precio",
 				"SV.DES_VELATORIO AS nombreProveedor")
 		.from("SVT_ARTICULO STA")
 		.innerJoin("SVC_CATEGORIA_ARTICULO SCA", "STA.ID_CATEGORIA_ARTICULO = SCA.ID_CATEGORIA_ARTICULO")
