@@ -47,9 +47,9 @@ public class Ataud {
 		.from("SVC_DETALLE_CARAC_PRESUP SDCP")
 		.where("SDCP.IND_ACTIVO=1");
 		
-		selectQueryUtilArticulo.select("DISTINCT STA.ID_ARTICULO AS idArticulo","STI.ID_INVE_ARTICULO AS idInventario","CONCAT(CVE_FOLIO_ARTICULO,'-',STA.DES_MODELO_ARTICULO,' $',SCA.MON_PRECIO) AS nombreArticulo",
+		selectQueryUtilArticulo.select("DISTINCT STA.ID_ARTICULO AS idArticulo","STI.ID_INVE_ARTICULO AS idInventario","CONCAT(CVE_FOLIO_ARTICULO,'-',STA.REF_MODELO_ARTICULO,' $',SCA.MON_PRECIO) AS nombreArticulo",
 				"STA.ID_CATEGORIA_ARTICULO AS idCategoria","SC.ID_PROVEEDOR AS idProveedor",
-				"SP.NOM_PROVEEDOR AS nombreProveedor",
+				"SP.REF_PROVEEDOR AS nombreProveedor",
 				"STCA.DES_CATEGORIA_ARTICULO AS grupo",
 				"SCA.MON_PRECIO AS precio")
 		.from("SVT_INVENTARIO_ARTICULO STI")
