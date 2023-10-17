@@ -36,13 +36,13 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.DES_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.REF_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
 				"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
 				"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
-		.where("SP.DES_PANTEON LIKE '%"+panteonRequest.getNombrePanteon()+"%'")
+		.where("SP.REF_PANTEON LIKE '%"+panteonRequest.getNombrePanteon()+"%'")
 		.and("SP.IND_ACTIVO = 1")
 		.orderBy("nombrePanteon ASC");
 	
@@ -61,13 +61,13 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.DES_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.REF_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
 				"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
 				"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
 		.from("SVT_PANTEON SP")
 		.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
-		.where("SP.DES_PANTEON = '"+panteonRequest.getNombrePanteon()+"'")
+		.where("SP.REF_PANTEON = '"+panteonRequest.getNombrePanteon()+"'")
 		.and("SP.IND_ACTIVO = 1")
 		.orderBy("nombrePanteon ASC");
 	
@@ -82,7 +82,7 @@ public class Panteon {
 	
 	public String insertar(PanteonRequest panteonRequest, UsuarioDto dto) {
 		final QueryHelper q= new QueryHelper("INSERT INTO SVT_PANTEON");
-		q.agregarParametroValues("DES_PANTEON", "'"+panteonRequest.getNombrePanteon()+"'");
+		q.agregarParametroValues("REF_PANTEON", "'"+panteonRequest.getNombrePanteon()+"'");
 		q.agregarParametroValues("ID_DOMICILIO",  "'"+panteonRequest.getDomicilio().getIdDomicilio() +"'");
 		q.agregarParametroValues("NOM_CONTACTO", "'"+panteonRequest.getNombreContacto()+"'");
 		q.agregarParametroValues("NUM_TELEFONO", ""+panteonRequest.getNumTelefono()+"");
@@ -102,7 +102,7 @@ public class Panteon {
 		SelectQueryUtil selectQuery= new SelectQueryUtil();
 
 		selectQuery.select("SP.ID_PANTEON AS idPanteon",
-				"SP.DES_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+				"SP.REF_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
 				"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
 				"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
 				"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
