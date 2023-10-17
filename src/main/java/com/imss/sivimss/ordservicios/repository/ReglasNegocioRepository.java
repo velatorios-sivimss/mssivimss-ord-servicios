@@ -134,7 +134,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("NOM_PRIMER_APELLIDO", setValor(personaRequest.getPrimerApellido()));
 		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", setValor(personaRequest.getSegundoApellido()));
 		q.agregarParametroValues("NUM_SEXO", "" + setValor(personaRequest.getSexo()));
-		q.agregarParametroValues("DES_OTRO_SEXO", setValor(personaRequest.getOtroSexo()));
+		q.agregarParametroValues("REF_OTRO_SEXO", setValor(personaRequest.getOtroSexo()));
 		q.agregarParametroValues("FEC_NAC", setValor(personaRequest.getFechaNac()));
 		q.agregarParametroValues("ID_PAIS", setValor(personaRequest.getIdPais()));
 		q.agregarParametroValues("ID_ESTADO", setValor(personaRequest.getIdEstado()));
@@ -203,8 +203,8 @@ public class ReglasNegocioRepository {
 		}
 		
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
-		q.agregarParametroValues("DES_EXTREMIDAD", setValor( finadoRequest.getExtremidad()));
-		q.agregarParametroValues("DES_OBITO", setValor( finadoRequest.getEsobito()));
+		q.agregarParametroValues("REF_EXTREMIDAD", setValor( finadoRequest.getExtremidad()));
+		q.agregarParametroValues("REF_OBITO", setValor( finadoRequest.getEsobito()));
 		q.agregarParametroValues("CVE_MATRICULA", setValor( finadoRequest.getMatricula()));
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
@@ -215,12 +215,12 @@ public class ReglasNegocioRepository {
 		}
 		
 		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
-		q.agregarParametroValues("DES_CAUSA_DECESO", setValor( finadoRequest.getCausaDeceso()));
-		q.agregarParametroValues("DES_LUGAR_DECESO", setValor( finadoRequest.getLugarDeceso()));
+		q.agregarParametroValues("REF_CAUSA_DECESO", setValor( finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("REF_LUGAR_DECESO", setValor( finadoRequest.getLugarDeceso()));
 		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
-		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor( finadoRequest.getProcedenciaFinado()));
+		q.agregarParametroValues("REF_PROCEDENCIA_FINADO", setValor( finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
@@ -250,12 +250,12 @@ public class ReglasNegocioRepository {
 		}
 		
 		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
-		q.agregarParametroValues("DES_CAUSA_DECESO", setValor( finadoRequest.getCausaDeceso()));
-		q.agregarParametroValues("DES_LUGAR_DECESO", setValor( finadoRequest.getLugarDeceso()));
+		q.agregarParametroValues("REF_CAUSA_DECESO", setValor( finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("REF_LUGAR_DECESO", setValor( finadoRequest.getLugarDeceso()));
 		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
-		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor( finadoRequest.getProcedenciaFinado()));
+		q.agregarParametroValues("REF_PROCEDENCIA_FINADO", setValor( finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
@@ -330,15 +330,15 @@ public class ReglasNegocioRepository {
 			CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPaqueteTrasladoRequest,
 			Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO " + from);
-		q.agregarParametroValues("DES_ORIGEN", setValor( detalleCaracteristicasPaqueteTrasladoRequest.getOrigen()));
-		q.agregarParametroValues("DES_DESTINO", setValor( detalleCaracteristicasPaqueteTrasladoRequest.getDestino()));
-		q.agregarParametroValues("LATITUD_INICIAL",
+		q.agregarParametroValues("REF_ORIGEN", setValor( detalleCaracteristicasPaqueteTrasladoRequest.getOrigen()));
+		q.agregarParametroValues("REF_DESTINO", setValor( detalleCaracteristicasPaqueteTrasladoRequest.getDestino()));
+		q.agregarParametroValues("NUM_LATITUD_INICIAL",
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getLatitudInicial() + "");
-		q.agregarParametroValues("LATITUD_FINAL",
+		q.agregarParametroValues("NUM_LATITUD_FINAL",
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getLatitudFinal() + "");
-		q.agregarParametroValues("LONGITUD_INICIAL",
+		q.agregarParametroValues("NUM_LONGITUD_INICIAL",
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getLongitudInicial() + "");
-		q.agregarParametroValues("LONGITUD_FINAL",
+		q.agregarParametroValues("NUM_LONGITUD_FINAL",
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getLongitudFinal() + "");
 		q.agregarParametroValues("CAN_TOTAL_KILOMETROS",
 				"" + detalleCaracteristicasPaqueteTrasladoRequest.getTotalKilometros());
@@ -361,9 +361,9 @@ public class ReglasNegocioRepository {
 				"" + caracteristicasPaquetePresupuestoRequest.getTotalPresupuesto() + "");
 		q.agregarParametroValues(ID_ORDEN_SERVICIO, "" + idOrdenServicio + "");
 		q.agregarParametroValues(IND_ACTIVO, "1");
-		q.agregarParametroValues("DES_OBSERVACIONES",
+		q.agregarParametroValues("REF_OBSERVACIONES",
 				setValor( caracteristicasPaquetePresupuestoRequest.getObservaciones()));
-		q.agregarParametroValues("DES_NOTAS_SERVICIO",
+		q.agregarParametroValues("REF_NOTAS_SERVICIO",
 				setValor( caracteristicasPaquetePresupuestoRequest.getNotasServicio()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
@@ -403,17 +403,17 @@ public class ReglasNegocioRepository {
 			CaracteristicasPaqueteDetalleTrasladoRequest detalleCaracteristicasPresupuestoTrasladoRequest,
 			Integer idDetalleCaracteristicasPaquete, Integer idUsuarioAlta) {
 		final QueryHelper q = new QueryHelper("INSERT INTO " + from);
-		q.agregarParametroValues("DES_ORIGEN",
+		q.agregarParametroValues("REF_ORIGEN",
 				setValor( detalleCaracteristicasPresupuestoTrasladoRequest.getOrigen()));
-		q.agregarParametroValues("DES_DESTINO",
+		q.agregarParametroValues("REF_DESTINO",
 				setValor( detalleCaracteristicasPresupuestoTrasladoRequest.getDestino()));
-		q.agregarParametroValues("LATITUD_INICIAL",
+		q.agregarParametroValues("NUM_LATITUD_INICIAL",
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getLatitudInicial() + "");
-		q.agregarParametroValues("LATITUD_FINAL",
+		q.agregarParametroValues("NUM_LATITUD_FINAL",
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getLatitudFinal() + "");
-		q.agregarParametroValues("LONGITUD_INICIAL",
+		q.agregarParametroValues("NUM_LONGITUD_INICIAL",
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getLongitudInicial() + "");
-		q.agregarParametroValues("LONGITUD_FINAL",
+		q.agregarParametroValues("NUM_LONGITUD_FINAL",
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getLongitudFinal() + "");
 		q.agregarParametroValues("CAN_TOTAL_KILOMETROS",
 				"" + detalleCaracteristicasPresupuestoTrasladoRequest.getTotalKilometros());
@@ -730,7 +730,7 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("NOM_PRIMER_APELLIDO", "'" + personaRequest.getPrimerApellido() + "'");
 		q.agregarParametroValues("NOM_SEGUNDO_APELLIDO", "'" + personaRequest.getSegundoApellido() + "'");
 		q.agregarParametroValues("NUM_SEXO", "" + personaRequest.getSexo() + "");
-		q.agregarParametroValues("DES_OTRO_SEXO", setValor(personaRequest.getOtroSexo()));
+		q.agregarParametroValues("REF_OTRO_SEXO", setValor(personaRequest.getOtroSexo()));
 		q.agregarParametroValues("FEC_NAC", "'" + personaRequest.getFechaNac() + "'");
 		q.agregarParametroValues("ID_PAIS", "" + personaRequest.getIdPais() + "");
 		q.agregarParametroValues("ID_ESTADO", "" + personaRequest.getIdEstado() + "");
@@ -784,8 +784,8 @@ public class ReglasNegocioRepository {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_FINADO ");
 		q.agregarParametroValues("ID_PERSONA", "" + finadoRequest.getIdPersona() + "");
 		q.agregarParametroValues("ID_TIPO_ORDEN", "" + finadoRequest.getIdTipoOrden() + "");
-		q.agregarParametroValues("DES_EXTREMIDAD", setValor(finadoRequest.getExtremidad() ));
-		q.agregarParametroValues("DES_OBITO", setValor(finadoRequest.getEsobito()));
+		q.agregarParametroValues("REF_EXTREMIDAD", setValor(finadoRequest.getExtremidad() ));
+		q.agregarParametroValues("REF_OBITO", setValor(finadoRequest.getEsobito()));
 		q.agregarParametroValues("CVE_MATRICULA", setValor(finadoRequest.getMatricula()));
 		q.agregarParametroValues("ID_CONTRATO_PREVISION", "" + finadoRequest.getIdContratoPrevision() + "");
 		q.agregarParametroValues("ID_VELATORIO", "" + finadoRequest.getIdVelatorioContratoPrevision() + "");
@@ -795,12 +795,12 @@ public class ReglasNegocioRepository {
 			q.agregarParametroValues(ID_DOMICILIO, "" +finadoRequest.getCp().getIdDomicilio() + "");
 		}
 		q.agregarParametroValues("FEC_DECESO", setValor(finadoRequest.getFechaDeceso()));
-		q.agregarParametroValues("DES_CAUSA_DECESO",setValor(finadoRequest.getCausaDeceso()));
-		q.agregarParametroValues("DES_LUGAR_DECESO", setValor(finadoRequest.getLugarDeceso()));
+		q.agregarParametroValues("REF_CAUSA_DECESO",setValor(finadoRequest.getCausaDeceso()));
+		q.agregarParametroValues("REF_LUGAR_DECESO", setValor(finadoRequest.getLugarDeceso()));
 		q.agregarParametroValues("TIM_HORA", setValor(finadoRequest.getHora()));
 		q.agregarParametroValues("ID_CLINICA_ADSCRIPCION", "" + finadoRequest.getIdClinicaAdscripcion() + "");
 		q.agregarParametroValues("ID_UNIDAD_PROCEDENCIA", "" + finadoRequest.getIdUnidadProcedencia() + "");
-		q.agregarParametroValues("DES_PROCEDENCIA_FINADO", setValor(finadoRequest.getProcedenciaFinado()));
+		q.agregarParametroValues("REF_PROCEDENCIA_FINADO", setValor(finadoRequest.getProcedenciaFinado()));
 		q.agregarParametroValues("ID_TIPO_PENSION", "" + finadoRequest.getIdTipoPension() + "");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
@@ -1048,7 +1048,7 @@ public class ReglasNegocioRepository {
 								"SDCPT.IND_ACTIVO AS activo",
 								"SDCPT.CAN_CARAC_PAQ AS cantidad",
 								"SDCPT.ID_PROVEEDOR AS idProveedor",
-								"SP.NOM_PROVEEDOR AS nombreProveedor",
+								"SP.REF_PROVEEDOR AS nombreProveedor",
 								"SDCPT.IMP_CARAC_PAQ AS importeMonto",
 								"SDCPT.IMP_CARAC_PAQ AS totalPaquete",
 								"CASE WHEN ("+selectQueryAgregadoServicio.and("SDCP.ID_SERVICIO = SDCPT.ID_SERVICIO ").build() + " ) > 0 THEN TRUE "+
@@ -1069,12 +1069,12 @@ public class ReglasNegocioRepository {
 								"0 AS idServicio",
 								"0 AS idTipoServicio",
 								"SCA.DES_CATEGORIA_ARTICULO AS grupo",
-								"STA.DES_MODELO_ARTICULO AS concepto",
+								"STA.REF_MODELO_ARTICULO AS concepto",
 								"SDCPT.DES_MOTIVO AS desmotivo",
 								"SDCPT.IND_ACTIVO AS activo",
 								"SDCPT.CAN_CARAC_PAQ AS cantidad",
 								"SDCPT.ID_PROVEEDOR AS idProveedor",
-								"SP.NOM_PROVEEDOR AS nombreProveedor",
+								"SP.REF_PROVEEDOR AS nombreProveedor",
 								"SDCPT.IMP_CARAC_PAQ AS importeMonto",
 								"SDCPT.IMP_CARAC_PAQ AS totalPaquete",
 								"CASE WHEN ("+selectQueryAgregadoArticulo.and("SDCP.ID_ARTICULO = SDCPT.ID_ARTICULO  ").build() + " ) > 0 THEN TRUE "+
@@ -1098,13 +1098,13 @@ public class ReglasNegocioRepository {
 	public String consultarCaracteristicasPresupuestoDetallePaqueteTrasladoTempOrdenServicios(Integer idDetalleCaracteristicasPaquete) {
 							SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
 							selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARAC_PRESU_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
-									"SCPTT.DES_ORIGEN AS origen",
-									"SCPTT.DES_DESTINO AS destino",
+									"SCPTT.REF_ORIGEN AS origen",
+									"SCPTT.REF_DESTINO AS destino",
 									"SCPTT.CAN_TOTAL_KILOMETROS AS totalKilometros ",
-									"SCPTT.LATITUD_INICIAL AS latitudInicial",
-									"SCPTT.LATITUD_FINAl AS latitudFinal",
-									"SCPTT.LONGITUD_INICIAL AS longitudInicial",
-									"SCPTT.LONGITUD_FINAL AS longitudFinal")
+									"SCPTT.NUM_LATITUD_INICIAL AS latitudInicial",
+									"SCPTT.NUM_LATITUD_FINAL AS latitudFinal",
+									"SCPTT.NUM_LONGITUD_INICIAL AS longitudInicial",
+									"SCPTT.NUM_LONGITUD_FINAL AS longitudFinal")
 							.from("SVC_CARAC_PAQ_TRAS_TEMP SCPTT")
 							.where("SCPTT.ID_CARAC_PRESU_TRASLADO = " + idDetalleCaracteristicasPaquete);
 							
@@ -1121,8 +1121,8 @@ public class ReglasNegocioRepository {
 					selectQueryUtil.select("SCPT.ID_CARAC_PRESUPUESTO AS idCaracteristicasPresupuesto",
 							"SCPT.ID_PAQUETE AS idPaquete",
 							"SCPT.CAN_PRESUPUESTO AS  totalPresupuesto",
-							"SCPT.DES_OBSERVACIONES AS observaciones",
-							"SCPT.DES_NOTAS_SERVICIO AS notasServicio")
+							"SCPT.REF_OBSERVACIONES AS observaciones",
+							"SCPT.REF_NOTAS_SERVICIO AS notasServicio")
 					.from("SVC_ORDEN_SERVICIO STO")
 					.innerJoin("SVC_CARAC_PRESUP_TEMP SCPT ", "SCPT.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO  ")
 					.innerJoin("SVT_PAQUETE SP", "SCPT.ID_PAQUETE=SP.ID_PAQUETE")
@@ -1149,7 +1149,7 @@ public class ReglasNegocioRepository {
 									"SS.DES_SERVICIO AS concepto",
 									"SDCPT.CAN_DET_PRESUP AS cantidad",
 									"SDCPT.ID_PROVEEDOR AS idProveedor",
-									"SP.NOM_PROVEEDOR AS nombreProveedor",
+									"SP.REF_PROVEEDOR AS nombreProveedor",
 									"0 AS esDonado",
 									"SDCPT.IMP_CARAC_PRESUP AS importeMonto",
 									"SDCPT.DES_PROVIENE AS proviene")
@@ -1167,10 +1167,10 @@ public class ReglasNegocioRepository {
 									"SDCPT.ID_INVE_ARTICULO AS idInventario",
 									"0 AS idServicio",
 									"SCA.DES_CATEGORIA_ARTICULO AS grupo",
-									"STA.DES_MODELO_ARTICULO AS concepto",
+									"STA.REF_MODELO_ARTICULO AS concepto",
 									"SDCPT.CAN_DET_PRESUP AS cantidad",
 									"SDCPT.ID_PROVEEDOR AS idProveedor",
-									"SP.NOM_PROVEEDOR AS nombreProveedor",
+									"SP.REF_PROVEEDOR AS nombreProveedor",
 									"(SELECT IFNULL(SDO.ID_DONACION_ORDEN_SERVICIO,0)  FROM SVC_DONACION_ORDEN_SERV_TEMP SDO "+ 
 									"WHERE SDO.ID_INVE_ARTICULO = SDCPT.ID_INVE_ARTICULO AND SDO.ID_ORDEN_SERVICIO="+idOrdenServicio+" AND SDO.IND_ACTIVO=1)"+ 
 									"AS esDonado",
@@ -1194,13 +1194,13 @@ public class ReglasNegocioRepository {
 		public String consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(Integer idDetalleCaracteristicasPresupuesto) {
 								SelectQueryUtil selectQueryUtilTrasladoServicio = new SelectQueryUtil();
 								selectQueryUtilTrasladoServicio.select("SCPTT.ID_CARAC_PRESU_TRASLADO AS idCaracteristicasPaqueteDetalleTraslado",
-										"SCPTT.DES_ORIGEN AS origen",
-										"SCPTT.DES_DESTINO AS destino",
+										"SCPTT.REF_ORIGEN AS origen",
+										"SCPTT.REF_DESTINO AS destino",
 										"SCPTT.CAN_TOTAL_KILOMETROS AS totalKilometros ",
-										"SCPTT.LATITUD_INICIAL AS latitudInicial",
-										"SCPTT.LATITUD_FINAl AS latitudFinal",
-										"SCPTT.LONGITUD_INICIAL AS longitudInicial",
-										"SCPTT.LONGITUD_FINAL AS longitudFinal")
+										"SCPTT.NUM_LATITUD_INICIAL AS latitudInicial",
+										"SCPTT.NUM_LATITUD_FINAL AS latitudFinal",
+										"SCPTT.NUM_LONGITUD_INICIAL AS longitudInicial",
+										"SCPTT.NUM_LONGITUD_FINAL AS longitudFinal")
 								.from("SVC_CARAC_PRESUP_TRAS_TEMP SCPTT")
 								.where("SCPTT.ID_DETALLE_CARACTERISTICAS = " + idDetalleCaracteristicasPresupuesto);
 								
