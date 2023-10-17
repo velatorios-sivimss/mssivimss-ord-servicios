@@ -361,7 +361,7 @@ public class ReglasNegocioConsultaODSRepository {
                 return str;
     }
 	public String actualizaCostoCancelacionPagoBitacora(CancelacionODSDto cancelacionODS, UsuarioDto usuario) {		
-		String str = "UPDATE SVT_PAGO_BITACORA SET DESC_VALOR = " + cancelacionODS.getCostoCancelacion() + ", CVE_ESTATUS_PAGO = 2, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() +", " + SET_CAMPO_FEC_MODIFICA
+		String str = "UPDATE SVT_PAGO_BITACORA SET IMP_VALOR = " + cancelacionODS.getCostoCancelacion() + ", CVE_ESTATUS_PAGO = 2, ID_USUARIO_MODIFICA = " + usuario.getIdUsuario() +", " + SET_CAMPO_FEC_MODIFICA
 				+ " WHERE ID_FLUJO_PAGOS = 1 AND ID_REGISTRO = " + cancelacionODS.getIdOrdenServicio() + " AND CVE_FOLIO = '" + cancelacionODS.getNumeroFolio() + "'" ;
 		log.info(str);
 		return str;
