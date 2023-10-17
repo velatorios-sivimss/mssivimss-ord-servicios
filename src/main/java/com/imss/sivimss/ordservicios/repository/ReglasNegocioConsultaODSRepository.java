@@ -195,7 +195,7 @@ public class ReglasNegocioConsultaODSRepository {
 				,"CONCAT(sv.DES_VELATORIO,' / ',sd.DES_CALLE,', ',sd.NUM_EXTERIOR,IFNULL(CONCAT(', INT ',sd.NUM_INTERIOR),''),IFNULL(CONCAT(', COL. ',sd.DES_COLONIA),''),IFNULL(CONCAT(', DEL. ',sd.DES_MUNICIPIO),''),IFNULL(CONCAT(', ',sd.DES_ESTADO),''))	AS velatorio"
 				, "DATE_FORMAT(sis.FEC_CORTEJO,'%d-%m-%Y') AS fechaCortejo"
 				, "TIME_FORMAT(sis.TIM_HORA_CORTEJO ,'%H:%i') AS horaCortejo"
-				, "sa.DES_MODELO_ARTICULO  AS modAtaud"
+				, "sa.REF_MODELO_ARTICULO  AS modAtaud"
 				, "sia.CVE_FOLIO_ARTICULO  AS noFolioAtaud"
 				, "CONCAT(su.NOM_USUARIO, ' ', su.NOM_APELLIDO_PATERNO, ' ', su.NOM_APELLIDO_MATERNO) AS operador"
 				, "su.CVE_MATRICULA AS matriculaOperador"
