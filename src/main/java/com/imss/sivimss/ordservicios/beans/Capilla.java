@@ -33,11 +33,11 @@ public class Capilla {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametro= new HashMap<>();
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
-		queryUtil.select("SC.ID_CAPILLA AS idCapilla","SC.NOM_CAPILLA AS nombreCapilla")
+		queryUtil.select("SC.ID_CAPILLA AS idCapilla","SC.DES_CAPILLA AS nombreCapilla")
 		.from("SVC_CAPILLA SC")
 		.where("SC.CVE_ESTATUS = 1","SC .ID_VELATORIO = :idVelatorio")
 		.setParameter("idVelatorio", idVelatorio)
-		.orderBy("SC.NOM_CAPILLA ASC");
+		.orderBy("SC.DES_CAPILLA ASC");
 		String query=queryUtil.build();
 
 		log.info(query);
