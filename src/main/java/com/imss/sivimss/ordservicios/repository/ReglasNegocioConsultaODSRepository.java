@@ -76,10 +76,10 @@ public class ReglasNegocioConsultaODSRepository {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sc.ID_CONTRATANTE AS idContratante, sc.CVE_MATRICULA AS matricula, sp.CVE_RFC AS rfc, sp.CVE_CURP AS curp"
 				+ ", sp.NOM_PERSONA AS nombreContratante, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido"
-				+ ", IFNULL(sp.NUM_SEXO,sp.DES_OTRO_SEXO) AS sexo, sp.FEC_NAC AS fechaNacimiento, sp3.DES_PAIS  AS nacionalidad, sp3.DES_PAIS  AS pais"
-				+ ", se.DES_ESTADO  AS lugarNacimiento, sp.DES_TELEFONO AS telefono, sp.DES_CORREO AS correoElectronico, sp2.DES_PARENTESCO AS  parentesco"
-				+ ", sd.DES_CALLE AS calle, sd.NUM_EXTERIOR AS numExterior, sd.NUM_INTERIOR AS numInterior, sd.DES_CP AS cp"
-				+ ", sd.DES_COLONIA AS colonia, sd.DES_MUNICIPIO AS municipio, sd.DES_ESTADO AS estado"
+				+ ", IFNULL(sp.NUM_SEXO,sp.REF_OTRO_SEXO) AS sexo, sp.FEC_NAC AS fechaNacimiento, sp3.DES_PAIS  AS nacionalidad, sp3.DES_PAIS  AS pais"
+				+ ", se.REF_ESTADO  AS lugarNacimiento, sp.REF_TELEFONO AS telefono, sp.REF_CORREO AS correoElectronico, sp2.DES_PARENTESCO AS  parentesco"
+				+ ", sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExterior, sd.NUM_INTERIOR AS numInterior, sd.REF_CP AS cp"
+				+ ", sd.REF_COLONIA AS colonia, sd.REF_MUNICIPIO AS municipio, sd.REF_ESTADO AS estado"
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoContratante")
 		.from(TABLA_SVC_PERSONA_SP)
 		.join(TABLA_SVC_CONTRATANTE_SC, "sc.ID_PERSONA  = sp.ID_PERSONA")
@@ -106,15 +106,15 @@ public class ReglasNegocioConsultaODSRepository {
 	public String obtenerFinado() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("sf.id_finado AS idFinado, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompletoFinado"
-				+ ", stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden, sf.DES_EXTREMIDAD AS servicioExtremidad, sf.DES_OBITO AS esObito, sf.CVE_MATRICULA AS matricula"
+				+ ", stos.DES_TIPO_ORDEN_SERVICIO AS tipoOrden, sf.REF_EXTREMIDAD AS servicioExtremidad, sf.REF_OBITO AS esObito, sf.CVE_MATRICULA AS matricula"
 				+ ", scp.DES_FOLIO AS contratoConvenio, sv.DES_VELATORIO AS velatorioPrevisionsp, sp.CVE_CURP AS curp, sp.CVE_NSS AS nss, sp.NOM_PERSONA AS nombres"
-				+ ", sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido, IFNULL(sp.NUM_SEXO,sp.DES_OTRO_SEXO) AS sexo"
+				+ ", sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido, IFNULL(sp.NUM_SEXO,sp.REF_OTRO_SEXO) AS sexo"
 				+ ", sp.FEC_NAC AS fechaNacimiento, YEAR (CURDATE()) - YEAR(sp.FEC_NAC) as edad, sp3.DES_PAIS AS nacionalidad"
-				+ ", sp3.DES_PAIS AS paisNacimiento, se.DES_ESTADO  AS lugarNacimiento, sd.DES_CALLE AS calle, sd.NUM_EXTERIOR AS numExterior"
-				+ ", sd.NUM_INTERIOR AS numInterior, sd.DES_CP AS cp, sd.DES_COLONIA AS colonia, sd.DES_MUNICIPIO AS municipio"
-				+ ", sd.DES_ESTADO AS estado, sf.FEC_DECESO AS fechaDefuncion, sf.DES_CAUSA_DECESO AS causaDeceso"
-				+ ", sf.DES_LUGAR_DECESO AS lugarDeceso, sf.TIM_HORA AS horaDeceso, sum2.DES_UNIDAD_MEDICA AS clinicaAdscripcion"
-				+ ", sum3.DES_UNIDAD_MEDICA AS unidadProcedencia, sf.DES_PROCEDENCIA_FINADO AS procedenciaFinado, stp.DES_PENSION AS pension ")
+				+ ", sp3.DES_PAIS AS paisNacimiento, se.REF_ESTADO  AS lugarNacimiento, sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExterior"
+				+ ", sd.NUM_INTERIOR AS numInterior, sd.REF_CP AS cp, sd.REF_COLONIA AS colonia, sd.REF_MUNICIPIO AS municipio"
+				+ ", sd.DES_ESTADO AS estado, sf.FEC_DECESO AS fechaDefuncion, sf.REF_CAUSA_DECESO AS causaDeceso"
+				+ ", sf.REF_LUGAR_DECESO AS lugarDeceso, sf.TIM_HORA AS horaDeceso, sum2.DES_UNIDAD_MEDICA AS clinicaAdscripcion"
+				+ ", sum3.DES_UNIDAD_MEDICA AS unidadProcedencia, sf.REF_PROCEDENCIA_FINADO AS procedenciaFinado, stp.DES_PENSION AS pension ")
 		.from(TABLA_SVC_PERSONA_SP)
 		.join(TABLA_SVC_FINADO_SF, "sf.ID_PERSONA = sp.ID_PERSONA")
 		.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
@@ -192,7 +192,7 @@ public class ReglasNegocioConsultaODSRepository {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("DISTINCT(sos.CVE_FOLIO) AS noFolioODS","DATE_FORMAT(sos.FEC_ALTA,'%d-%m-%Y') as fecha"
 				,"CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreFinado"
-				,"CONCAT(sv.DES_VELATORIO,' / ',sd.DES_CALLE,', ',sd.NUM_EXTERIOR,IFNULL(CONCAT(', INT ',sd.NUM_INTERIOR),''),IFNULL(CONCAT(', COL. ',sd.DES_COLONIA),''),IFNULL(CONCAT(', DEL. ',sd.DES_MUNICIPIO),''),IFNULL(CONCAT(', ',sd.DES_ESTADO),''))	AS velatorio"
+				,"CONCAT(sv.DES_VELATORIO,' / ',sd.REF_CALLE,', ',sd.NUM_EXTERIOR,IFNULL(CONCAT(', INT ',sd.NUM_INTERIOR),''),IFNULL(CONCAT(', COL. ',sd.REF_COLONIA),''),IFNULL(CONCAT(', DEL. ',sd.REF_MUNICIPIO),''),IFNULL(CONCAT(', ',sd.DES_ESTADO),''))	AS velatorio"
 				, "DATE_FORMAT(sis.FEC_CORTEJO,'%d-%m-%Y') AS fechaCortejo"
 				, "TIME_FORMAT(sis.TIM_HORA_CORTEJO ,'%H:%i') AS horaCortejo"
 				, "sa.REF_MODELO_ARTICULO  AS modAtaud"
@@ -238,7 +238,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO),'') AS nombreContratante "
 				+ ", IFNULL(CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO),'') AS nombreFinado "
 				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio "
-				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS,'') AS estatus, IFNULL(scp2.DES_NOTAS_SERVICIO,'') AS notasServicio "
+				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS,'') AS estatus, IFNULL(scp2.REF_NOTAS_SERVICIO,'') AS notasServicio "
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssd.ID_SALIDA_DONACION AS idSalidaDona, sd.ID_DONACION AS idDonacion"
 				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion ";
 	}
@@ -250,7 +250,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO), '') AS nombreContratante"
 				+ ", IFNULL(CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO), '') AS nombreFinado"
 				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO, '') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio"
-				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS, '') AS estatus, IFNULL(scpt.DES_NOTAS_SERVICIO, '') AS notasServicio"
+				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS, '') AS estatus, IFNULL(scpt.REF_NOTAS_SERVICIO, '') AS notasServicio"
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssdt.ID_SALIDA_DONACION AS idSalidaDona, sdost.ID_DONACION_ORDEN_SERVICIO AS idDonacion"
 				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion ";
 	}
@@ -274,7 +274,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN + " SVC_DONACION_ORDEN_SERV_TEMP sdost ON sdost.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad2 ON sad2.ID_DONACION = sdost.ID_DONACION_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_SALIDA_DONACION_TEMP ssdt ON ssdt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND ssdt.IND_ACTIVO = 1 "
-				+ LEFT_JOIN + " SVC_SALIDA_DONACION_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION ";
+				+ LEFT_JOIN + " SVC_SALIDA_DON_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		return str;
 	}

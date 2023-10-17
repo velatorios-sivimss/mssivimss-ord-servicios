@@ -138,8 +138,8 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("FEC_NAC", setValor(personaRequest.getFechaNac()));
 		q.agregarParametroValues("ID_PAIS", setValor(personaRequest.getIdPais()));
 		q.agregarParametroValues("ID_ESTADO", setValor(personaRequest.getIdEstado()));
-		q.agregarParametroValues("DES_TELEFONO", setValor(personaRequest.getTelefono()));
-		q.agregarParametroValues("DES_CORREO", setValor(personaRequest.getCorreo()));
+		q.agregarParametroValues("REF_TELEFONO", setValor(personaRequest.getTelefono()));
+		q.agregarParametroValues("REF_CORREO", setValor(personaRequest.getCorreo()));
 		q.agregarParametroValues(ID_USUARIO_ALTA, "" + idUsuarioAlta + "");
 		q.agregarParametroValues(FEC_ALTA, CURRENT_DATE);
 		query = q.obtenerQueryInsertar();
@@ -734,8 +734,8 @@ public class ReglasNegocioRepository {
 		q.agregarParametroValues("FEC_NAC", "'" + personaRequest.getFechaNac() + "'");
 		q.agregarParametroValues("ID_PAIS", "" + personaRequest.getIdPais() + "");
 		q.agregarParametroValues("ID_ESTADO", "" + personaRequest.getIdEstado() + "");
-		q.agregarParametroValues("DES_TELEFONO", "'" + personaRequest.getTelefono() + "'");
-		q.agregarParametroValues("DES_CORREO", "'" + personaRequest.getCorreo() + "'");
+		q.agregarParametroValues("REF_TELEFONO", "'" + personaRequest.getTelefono() + "'");
+		q.agregarParametroValues("REF_CORREO", "'" + personaRequest.getCorreo() + "'");
 		q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuario + "");
 		q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
 		q.addWhere("ID_PERSONA = " + personaRequest.getIdPersona());
