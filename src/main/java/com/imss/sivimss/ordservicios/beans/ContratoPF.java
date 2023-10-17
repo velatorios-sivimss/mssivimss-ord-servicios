@@ -128,13 +128,13 @@ public class ContratoPF {
 				"IFNULL(SPC.NOM_PRIMER_APELLIDO,'') AS primerApellido",
 				"IFNULL(SPC.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
 				"IFNULL(SPC.NUM_SEXO,'') AS sexo",
-				"IFNULL(SPC.DES_OTRO_SEXO,'') AS otroSexo",
+				"IFNULL(SPC.REF_OTRO_SEXO,'') AS otroSexo",
 				"SPC.FEC_NAC AS fechaNac",
 				"(CASE WHEN SPC.ID_PAIS = NULL OR SPC.ID_PAIS = 119  THEN 1 ELSE 2 END) AS nacionalidad",
 				"SPC.ID_PAIS AS idPais",
 				"SPC.ID_ESTADO AS idEstado",
-				"SPC.DES_TELEFONO AS telefono",
-				"SPC.DES_CORREO AS correo")
+				"SPC.REF_TELEFONO AS telefono",
+				"SPC.REF_CORREO AS correo")
 		.from("SVC_PERSONA SPC")
 		.leftJoin("SVC_CONTRATANTE SC", "SPC.ID_PERSONA =SC.ID_PERSONA")
 		.where("SPC.ID_PERSONA = " + idPersona);
