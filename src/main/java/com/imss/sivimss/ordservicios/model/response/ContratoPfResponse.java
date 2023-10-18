@@ -24,5 +24,7 @@ public class ContratoPfResponse {
 
 	private String vigencia;
 	
+	private Integer estatus;
+	
 	//private List<ContratantesContratoPfResponse>contratante; 
 }

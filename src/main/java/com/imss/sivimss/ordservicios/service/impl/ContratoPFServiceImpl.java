@@ -104,6 +104,7 @@ public class ContratoPFServiceImpl implements ContratoPFService{
 				contratoPfResponse.setIdVelatorio(rs.getInt(4)); 
 				contratoPfResponse.setNombreVelatorio(rs.getString(5)); 
 				contratoPfResponse.setVigencia(rs.getString(6)); 
+				contratoPfResponse.setEstatus(rs.getInt(7)); 
 			}
 			
 			if (contratoPfResponse.getIdTipoPrevision()!= null && contratoPfResponse.getIdTipoPrevision()==1) {

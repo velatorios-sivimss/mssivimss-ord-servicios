@@ -89,7 +89,7 @@ public class ContratoPF {
 	public String consultarFolio(ContratoPfRequest contratoPfRequest){
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
 		queryUtil.select("STC.ID_CONVENIO_PF AS idContratoPF", "STC.ID_TIPO_PREVISION AS tipoPrevision", "STC.IND_TIPO_CONTRATACION AS idTipoContrato",
-				"STC.ID_VELATORIO AS idVelatorio", "SV.DES_VELATORIO AS nombreVelatorio", "DATE_FORMAT(STC.FEC_VIGENCIA ,'%Y-%m-%d') AS vigencia")
+				"STC.ID_VELATORIO AS idVelatorio", "SV.DES_VELATORIO AS nombreVelatorio", "DATE_FORMAT(STC.FEC_VIGENCIA ,'%Y-%m-%d') AS vigencia","STC.ID_ESTATUS_CONVENIO AS estatus")
 		.from("SVT_CONVENIO_PF STC")
 		.innerJoin("SVC_VELATORIO SV", "SV.ID_VELATORIO = STC.ID_VELATORIO")
 		.where("STC.DES_FOLIO = :folio")
