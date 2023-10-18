@@ -315,7 +315,7 @@ public class OrdenActualizar {
 					finadoResponse= new FinadoResponse();
 					domicilioRequest= new DomicilioRequest();
 					finadoResponse.setIdFinado(rsc.getInt(1));
-					finadoResponse.setIdPersona(rsc.getInt(2));
+					finadoResponse.setIdPersona(rsc.getInt(2)==0?null:rsc.getInt(2));
 					finadoResponse.setIdTipoOrden(rsc.getInt(3));
 					finadoResponse.setExtremidad(rsc.getString(4));;
 					finadoResponse.setEsobito(rsc.getString(5));
