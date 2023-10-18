@@ -1125,7 +1125,7 @@ public class ReglasNegocioRepository {
 							"SCPT.REF_NOTAS_SERVICIO AS notasServicio")
 					.from("SVC_ORDEN_SERVICIO STO")
 					.innerJoin("SVC_CARAC_PRESUP_TEMP SCPT ", "SCPT.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO  ")
-					.innerJoin("SVT_PAQUETE SP", "SCPT.ID_PAQUETE=SP.ID_PAQUETE")
+					.leftJoin("SVT_PAQUETE SP", "SCPT.ID_PAQUETE=SP.ID_PAQUETE")
 					.where("STO.ID_ORDEN_SERVICIO = " + idOrdenServicio)
 					.and("SCPT.IND_ACTIVO = 1");
 			
