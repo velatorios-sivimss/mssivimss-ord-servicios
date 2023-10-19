@@ -29,76 +29,28 @@ public class ReglasNegocioGeneraReporteODSRepository {
 				+ JOIN + " SVC_DELEGACION sd ON sd.ID_DELEGACION = sv.ID_DELEGACION "
 				+ JOIN + " SVC_FINADO sf ON sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ JOIN + " SVC_TIPO_ORDEN_SERVICIO stos ON stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN "
-				+ JOIN + " SVC_ESTATUS_ORDEN_SERVICIO seos ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO ";
-				if(reporteDto.getIdVelatorio() != null) {
-					query = query + "WHERE sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
-					if(reporteDto.getIdDelegacion() != null)
-						query = query + " AND sd.ID_DELEGACION = " + reporteDto.getIdDelegacion();
-					if(reporteDto.getIdTipoODS() != null)
-						query = query + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
-					if(reporteDto.getIdEstatusODS() != null)
-						query = query + AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
-					if(reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
-					if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
-					else if(reporteDto.getFechaFin() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
-					else 
-						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
-							query = query +  ")";
-				}
-				else if(reporteDto.getIdDelegacion() != null) {
-					query = query + "WHERE sd.ID_DELEGACION = " + reporteDto.getIdDelegacion();
-					if(reporteDto.getIdTipoODS() != null)
-						query = query + " AND stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
-					if(reporteDto.getIdEstatusODS() != null)
-						query = query + AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
-					if(reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
-					if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
-					else if(reporteDto.getFechaFin() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
-					else 
-						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
-							query = query +  ")";
-				}
-				else if(reporteDto.getIdTipoODS() != null) {
-					query = query + " WHERE stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
-					if(reporteDto.getIdEstatusODS() != null)
-						query = query + AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
-					if(reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
-					if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
-					else if(reporteDto.getFechaFin() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
-					else 
-						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
-							query = query +  ")";
-				}
-				else if(reporteDto.getIdEstatusODS() != null) {
-					query = query + " WHERE seos.ID_ESTATUS_ORDEN_SERVICIO = " + reporteDto.getIdEstatusODS();
-					if(reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
-					if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
-					else if(reporteDto.getFechaFin() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
-					else 
-						if( reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
-							query = query +  ")";
-				}
-				else if(reporteDto.getFechaIni() != null) {
-					query = query + " WHERE (DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') >= '" + reporteDto.getFechaIni() + "' "; 
-					if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
-						query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
-					else 
-						query = query + ")";
-				}
-				else if(reporteDto.getFechaFin() != null) 
-					query = query + " WHERE DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '" + reporteDto.getFechaIni() + "'"; 
+				+ JOIN + " SVC_ESTATUS_ORDEN_SERVICIO seos ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO "
+		        + "WHERE sos.ID_ORDEN_SERVICIO > 0 ";
+		
+				if(reporteDto.getIdVelatorio() != null) 
+					query = query + "AND sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
+				if(reporteDto.getIdDelegacion() != null)
+					query = query + " AND sd.ID_DELEGACION = " + reporteDto.getIdDelegacion();
+				if(reporteDto.getIdTipoODS() != null)
+					query = reporteDto.getIdTipoODS()==3?" AND stos.ID_TIPO_ORDEN_SERVICIO IN(1,2) ":" AND stos.ID_TIPO_ORDEN_SERVICIO = "+reporteDto.getIdTipoODS()+" ";
+				if(reporteDto.getIdEstatusODS() != null)
+					query = query + AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
+				if(reporteDto.getFechaIni() != null)
+					query = query + AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
+				if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
+					query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
+				else if(reporteDto.getFechaFin() != null)
+					query = query + AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
+				else 
+				if(reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
+					query = query +  ")";
+				
+			
 		return query;
 	}
 
