@@ -33,11 +33,11 @@ public class ReglasNegocioGeneraReporteODSRepository {
 		        + "WHERE sos.ID_ORDEN_SERVICIO > 0 ";
 		
 				if(reporteDto.getIdVelatorio() != null) 
-					query += "AND sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
+					query += " AND sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
 				if(reporteDto.getIdDelegacion() != null)
 					query += " AND sd.ID_DELEGACION = " + reporteDto.getIdDelegacion();
 				if(reporteDto.getIdTipoODS() != null)
-					query = reporteDto.getIdTipoODS()==3?" AND stos.ID_TIPO_ORDEN_SERVICIO IN(1,2) ":" AND stos.ID_TIPO_ORDEN_SERVICIO = "+reporteDto.getIdTipoODS()+" ";
+					query += reporteDto.getIdTipoODS()==3?" AND stos.ID_TIPO_ORDEN_SERVICIO IN(1,2) ":" AND stos.ID_TIPO_ORDEN_SERVICIO = "+reporteDto.getIdTipoODS()+" ";
 				if(reporteDto.getIdEstatusODS() != null)
 					query += AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
 				if(reporteDto.getFechaIni() != null)
