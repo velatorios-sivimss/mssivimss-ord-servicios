@@ -1061,7 +1061,7 @@ public class ReglasNegocioRepository {
 						.leftJoin("SVC_TIPO_SERVICIO STS", "SS.ID_TIPO_SERVICIO =STS.ID_TIPO_SERVICIO ")
 						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
 						.where("SDCPT.ID_CARAC_PAQUETE = " + idCaracteristicasPaquete)
-						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_SERVICIO IS NOT NULL");
+						.and("ifnull(SDCPT.IND_ACTIVO,2) NOT IN(0)").and("SDCPT.ID_SERVICIO IS NOT NULL");
 						
 						selectQueryUtilArticulos.select(
 								"SDCPT.ID_DETALLE_CARAC AS idPaqueteDetalle",
@@ -1086,7 +1086,7 @@ public class ReglasNegocioRepository {
 						.leftJoin("SVC_CATEGORIA_ARTICULO SCA", "SCA.ID_CATEGORIA_ARTICULO = SDCPT.ID_CATEGORIA_PAQUETE ")
 						.leftJoin("SVT_PROVEEDOR SP", "SP.ID_PROVEEDOR = SDCPT.ID_PROVEEDOR  ")
 						.where("SDCPT.ID_CARAC_PAQUETE = " + idCaracteristicasPaquete)
-						.and("SDCPT.IND_ACTIVO = 1").and("SDCPT.ID_CATEGORIA_PAQUETE IS NOT NULL");
+						.and("ifnull(SDCPT.IND_ACTIVO,2) NOT IN(0)").and("SDCPT.ID_CATEGORIA_PAQUETE IS NOT NULL");
 				
 				query = selectQueryUtilServicios.union(selectQueryUtilArticulos);
 				log.info(query);
