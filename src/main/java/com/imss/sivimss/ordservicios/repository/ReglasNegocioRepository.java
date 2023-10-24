@@ -1051,7 +1051,7 @@ public class ReglasNegocioRepository {
 								"SP.REF_PROVEEDOR AS nombreProveedor",
 								"SDCPT.IMP_CARAC_PAQ AS importeMonto",
 								"SDCPT.IMP_CARAC_PAQ AS totalPaquete",
-								"CASE WHEN ("+selectQueryAgregadoServicio.and("SDCP.ID_SERVICIO = SDCPT.ID_SERVICIO ").build() + " ) > 0 THEN TRUE "+
+								"CASE WHEN ("+selectQueryAgregadoServicio.and("SDCP.ID_SERVICIO = SDCPT.ID_SERVICIO ").and("ifnull(SDCP.IND_ACTIVO,2) NOT IN(0)").build() + " ) > 0 THEN TRUE "+
 										" ELSE  FALSE END AS agregado ",
 										"0 AS idCategoriaPaquete "		
 								)
