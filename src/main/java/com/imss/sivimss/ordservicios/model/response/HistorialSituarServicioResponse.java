@@ -19,4 +19,5 @@ public class HistorialSituarServicioResponse {
 	private String fechaSolicitud;
 	private String desNotas;
 	private Integer estatus;
+	private Integer indCertificado;
 }

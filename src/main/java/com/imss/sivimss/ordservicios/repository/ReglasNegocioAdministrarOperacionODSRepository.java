@@ -123,7 +123,7 @@ public class ReglasNegocioAdministrarOperacionODSRepository {
 		selectQueryUtilOrdenes.select("SSO.ID_ORDENES_HISTORIAL_SERVICIO AS idHistorialServicio ",
 				"STS.DES_TIPO_SERVICIO AS nombreServicio  ",
 				"DATE_FORMAT(SSO.TIM_SERVICIO,'"+fecha+" %H:%i:%s') AS fechaSolicitud",
-				" SSO.REF_NOTAS AS desNotas", "SSO.IND_ACTIVO AS estatus")
+				" SSO.REF_NOTAS AS desNotas", "SSO.IND_ACTIVO AS estatus","SSO.IND_CERTIFICADO AS indCertificado")
 		.from("SVC_ORDENES_HIST_SERVICIOS SSO ")
 		.innerJoin("SVC_ORDEN_SERVICIO STO", "STO.ID_ORDEN_SERVICIO = SSO.ID_ORDEN_SERVICIO")
 		.innerJoin("SVC_CARAC_PRESUPUESTO SCP", "SCP.ID_ORDEN_SERVICIO = STO.ID_ORDEN_SERVICIO")
