@@ -42,12 +42,9 @@ public class ReglasNegocioGeneraReporteODSRepository {
 					query += AND_SEOS_ID_ESTATUS + reporteDto.getIdEstatusODS();
 				if(reporteDto.getFechaIni() != null)
 					query += AND_DATE_MAYOR + reporteDto.getFechaIni() + "' "; 
-				if(reporteDto.getFechaFin() != null && reporteDto.getFechaIni() != null)
-					query += AND_DATE_MENOR + reporteDto.getFechaIni() + "' )";
-				else if(reporteDto.getFechaFin() != null)
-					query += AND_DATE_MENOR + reporteDto.getFechaIni() + "'";
-				else 
-				if(reporteDto.getFechaIni() != null && reporteDto.getFechaFin() == null)
+				if(reporteDto.getFechaFin() != null)
+					query += AND_DATE_MENOR + reporteDto.getFechaFin() + "'";
+				if(reporteDto.getFechaIni() != null && reporteDto.getFechaFin()== null)
 					query +=  ")";
 				
 			
