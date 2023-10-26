@@ -30,7 +30,6 @@ public class ReportePagoProveedor {
 			condition.append(" AND SOS.FEC_ALTA <= '"+reporte.getFecFinConsulta()+"'");
 			envioDatos.put("fecFin", reporte.getFecha_final());
 		}
-		condition.append(" ORDER BY SOS.FEC_ALTA ASC");
 		log.info("reporte -> "+condition.toString());
 		envioDatos.put("condition", condition.toString());
 		envioDatos.put("rutaNombreReporte", reportePagoProv);
