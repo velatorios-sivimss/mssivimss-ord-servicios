@@ -46,6 +46,8 @@ public class ReglasNegocioGeneraReporteODSRepository {
 					query += AND_DATE_MENOR + reporteDto.getFechaFin() + "'";
 				if(reporteDto.getFechaIni() != null && reporteDto.getFechaFin()== null)
 					query +=  ")";
+				if(reporteDto.getFechaIni() != null && reporteDto.getFechaFin()!= null)
+					query +=  ")";
 				
 			
 		return query;
