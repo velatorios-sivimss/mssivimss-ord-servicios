@@ -23,6 +23,7 @@ import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
+import com.imss.sivimss.ordservicios.util.Utilidades;
 @Service
 public class GeneraReporte {
 
@@ -66,6 +67,7 @@ public class GeneraReporte {
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		String query = reporteODSRepository.generaReporteODSCU025(reporteDto);
 		envioDatos.put("query", query);
+		envioDatos.put("periodo", Utilidades.periodo(reporteDto.getFecha_inicial(), reporteDto.getFecha_final()));
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, generaReporteODS);
 		try {
@@ -121,6 +123,7 @@ public class GeneraReporte {
 		envioDatos.put("condicion", query);
 		envioDatos.put("fecIni", reporteDto.getFecha_inicial());
 		envioDatos.put("fecFin", reporteDto.getFecha_final());
+		envioDatos.put("periodo", Utilidades.periodo(reporteDto.getFecha_inicial(), reporteDto.getFecha_final()));
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporteDetalleIS);
 		try {
