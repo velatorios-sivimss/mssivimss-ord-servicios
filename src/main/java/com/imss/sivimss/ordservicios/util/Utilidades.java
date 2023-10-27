@@ -20,7 +20,7 @@ public class Utilidades {
 				String dateIni = formato.format(dateIni1);
 				Date dateFin1 = formato1.parse(fecFin);
 				String dateFin = formato.format(dateFin1);
-				str = str + "desde " + dateIni + " al " + dateFin;
+				str = str + "del " + dateIni + " al " + dateFin;
 			}
 			else if(fecIni != null ) {
 				Date dateIni1 = formato1.parse(fecIni);
