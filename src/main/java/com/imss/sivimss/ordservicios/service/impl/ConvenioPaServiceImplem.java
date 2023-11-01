@@ -57,6 +57,12 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 
 	private final String MENSAJE_158="158"; // El convenio de Plan de Servicios Funerarios que deseas utilizar cuenta con mensualidades pendientes de pago.
 
+	private final String TITULAR_SUBSTITUTO="titularSubstituto";
+	
+	private final String BENEFICIARIO1="beneficiario1";
+	
+	private final String BENEFICIARIO2="beneficiario2";
+	
 	private String []datosPersona= {"idPersona","idContratante","matricula","curp","nss","nomPersona","primerApellido","segundoApellido","tipo","sexo",
 			"otroSexo","fechaNac","nacionalidad","idPais","idEstado","idDomicilio","calle","numExterior","numInterior","cp",
 			"colonia","municipio","estado"};
@@ -101,14 +107,14 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 				convenioPAResponse.setContratante(beneficiariosResponse);
 				
 				
-				if (Objects.nonNull(resultSet.getInt("titularSubstituto")) && resultSet.getInt("titularSubstituto")>0) {
-					whereBeneficiarios.append(String.valueOf(resultSet.getInt("titularSubstituto")));
+				if (Objects.nonNull(resultSet.getInt(this.TITULAR_SUBSTITUTO)) && resultSet.getInt(this.TITULAR_SUBSTITUTO)>0) {
+					whereBeneficiarios.append(String.valueOf(resultSet.getInt(this.TITULAR_SUBSTITUTO)));
 				}
-				if (Objects.nonNull(resultSet.getInt("beneficiario1")) && resultSet.getInt("beneficiario1")>0) {
-					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt("beneficiario1"))):String.valueOf(resultSet.getInt("beneficiario1")));
+				if (Objects.nonNull(resultSet.getInt(this.BENEFICIARIO1)) && resultSet.getInt(this.BENEFICIARIO1)>0) {
+					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt(this.BENEFICIARIO1))):String.valueOf(resultSet.getInt(this.BENEFICIARIO1)));
 				}
-				if (Objects.nonNull(resultSet.getInt("beneficiario2")) && resultSet.getInt("beneficiario2")>0) {
-					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt("beneficiario2"))):String.valueOf(resultSet.getInt("beneficiario2")));
+				if (Objects.nonNull(resultSet.getInt(this.BENEFICIARIO2)) && resultSet.getInt(this.BENEFICIARIO2)>0) {
+					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt(this.BENEFICIARIO2))):String.valueOf(resultSet.getInt(this.BENEFICIARIO2)));
 
 				}
 				resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
