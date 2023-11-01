@@ -16,6 +16,8 @@ public class ContratanteResponse extends Persona{
 	private Integer idContratante;
 	
 	private String matricula;
+	
+	private String tipo;
 
 	private DomicilioRequest cp;
 }

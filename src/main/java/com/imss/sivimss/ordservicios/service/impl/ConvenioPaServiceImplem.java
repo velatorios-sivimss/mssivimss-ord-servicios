@@ -5,6 +5,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.bouncycastle.jcajce.provider.asymmetric.RSA;
@@ -41,10 +45,21 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 	
 	private Statement statement;
 	
+	private ContratanteResponse contratanteResponse;
+	
+	private DomicilioRequest domicilioRequest;
+	
 	private LogUtil logUtil;
 	
 	private static final Logger log = LoggerFactory.getLogger(ConvenioPaServiceImplem.class);
+	
+	private final String MENSAJE_45="45"; // No se encontró información relacionada a tu búsqueda. 
 
+	private final String MENSAJE_158="158"; // El convenio de Plan de Servicios Funerarios que deseas utilizar cuenta con mensualidades pendientes de pago.
+
+	private String []datosPersona= {"idPersona","idContratante","matricula","curp","nss","nomPersona","primerApellido","segundoApellido","tipo","sexo",
+			"otroSexo","fechaNac","nacionalidad","idPais","idEstado","idDomicilio","calle","numExterior","numInterior","cp",
+			"colonia","municipio","estado"};
 	
 	public ConvenioPaServiceImplem(Database database, LogUtil logUtil) {
 		super();
@@ -66,50 +81,48 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
             String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
             ConvenioPARequest convenioPARequest= gson.fromJson(datosJson, ConvenioPARequest.class);
             ConvenioPAResponse convenioPAResponse= new ConvenioPAResponse();
-            
-            resultSet= statement.executeQuery(convenioPA.obtenerTitularConvenio(convenioPARequest.getFolio()));
+            StringBuilder whereBeneficiarios=new StringBuilder();
+            resultSet= statement.executeQuery(convenioPA.validarConvenio(convenioPARequest.getFolio()));
             
             if (resultSet.next()) {
-            	ContratanteResponse contratanteResponse= new ContratanteResponse();
-				DomicilioRequest domicilioRequest= new DomicilioRequest();
+            
+            	if (Objects.nonNull(resultSet.getInt("estatus")) && resultSet.getInt("estatus")!=4) {
+					return new Response<>(false, HttpStatus.OK.value(), this.MENSAJE_158);	
+				}
+            	
+            	List<ContratanteResponse>beneficiariosResponse= new ArrayList<>();
+            	
             	convenioPAResponse.setIdConvenioPa(resultSet.getInt(1));
             	convenioPAResponse.setFolio(resultSet.getString(2));
 				convenioPAResponse.setIdVelatorio(resultSet.getInt(3));
 				convenioPAResponse.setNombreVelatorio(resultSet.getString(4));
-				contratanteResponse.setIdPersona(resultSet.getInt(5));
-				contratanteResponse.setIdContratante(resultSet.getInt(6));
-				contratanteResponse.setMatricula(resultSet.getString(7));
-				contratanteResponse.setCurp(resultSet.getString(8));
-				if (resultSet.getString(9).equals("null") || resultSet.getString(9).equals("")) {
-					contratanteResponse.setNss(null);
-				}else {
-					contratanteResponse.setNss(resultSet.getString(9));
+				
+				beneficiariosResponse.add(this.setContratanteResponse(datosPersona));
+				convenioPAResponse.setContratante(beneficiariosResponse);
+				
+				
+				if (Objects.nonNull(resultSet.getInt("titularSubstituto")) && resultSet.getInt("titularSubstituto")>0) {
+					whereBeneficiarios.append(String.valueOf(resultSet.getInt("titularSubstituto")));
 				}
-				contratanteResponse.setNomPersona(resultSet.getString(10));
-				contratanteResponse.setPrimerApellido(resultSet.getString(11));
-				contratanteResponse.setSegundoApellido(resultSet.getString(12));
-				contratanteResponse.setSexo(resultSet.getString(13));
-				contratanteResponse.setOtroSexo(resultSet.getString(14));
-				contratanteResponse.setFechaNac(resultSet.getString(15));
-				contratanteResponse.setNacionalidad(resultSet.getString(16));
-				contratanteResponse.setIdPais(resultSet.getString(17));
-				contratanteResponse.setIdEstado(resultSet.getString(18));
-				domicilioRequest.setIdDomicilio(resultSet.getInt(19));
-				domicilioRequest.setDesCalle(resultSet.getString(20));
-				domicilioRequest.setNumExterior(resultSet.getString(21));
-				domicilioRequest.setNumInterior(resultSet.getString(22));
-				domicilioRequest.setCodigoPostal(resultSet.getString(23));
-				domicilioRequest.setDesColonia(resultSet.getString(24));
-				domicilioRequest.setDesMunicipio(resultSet.getString(25));
-				domicilioRequest.setDesEstado(resultSet.getString(26));
-				contratanteResponse.setCp(domicilioRequest);
-				convenioPAResponse.setContratante(contratanteResponse);
+				if (Objects.nonNull(resultSet.getInt("beneficiario1")) && resultSet.getInt("beneficiario1")>0) {
+					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt("beneficiario1"))):String.valueOf(resultSet.getInt("beneficiario1")));
+				}
+				if (Objects.nonNull(resultSet.getInt("beneficiario2")) && resultSet.getInt("beneficiario2")>0) {
+					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt("beneficiario2"))):String.valueOf(resultSet.getInt("beneficiario2")));
+
+				}
+				resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+				
+				while (resultSet.next()) {
+					
+					beneficiariosResponse.add(this.setContratanteResponse(datosPersona));
+				}
 				
 				
 				
 				response= new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(convenioPAResponse));
 			}else {
-				response= new Response<>(false, HttpStatus.OK.value(), "158");				
+				response= new Response<>(false, HttpStatus.OK.value(), this.MENSAJE_45);				
 			}
             
             connection.commit();
@@ -131,6 +144,40 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 				statement.close();
 			}
 		}
+	}
+	
+	private ContratanteResponse setContratanteResponse(String... indices) throws SQLException {
+		this.contratanteResponse = new ContratanteResponse();
+		this.domicilioRequest= new DomicilioRequest();
+		contratanteResponse.setIdPersona(resultSet.getInt(indices[0]));
+		contratanteResponse.setIdContratante(resultSet.getInt(indices[1])==0?null:resultSet.getInt(indices[1]));
+		contratanteResponse.setMatricula(resultSet.getString(indices[2]));
+		contratanteResponse.setCurp(resultSet.getString(indices[3]));
+		if (resultSet.getString(indices[4]).equals("null") || resultSet.getString(indices[4]).equals("")) {
+			contratanteResponse.setNss(null);
+		}else {
+			contratanteResponse.setNss(resultSet.getString(indices[4]));
+		}
+		contratanteResponse.setNomPersona(resultSet.getString(indices[5]));
+		contratanteResponse.setPrimerApellido(resultSet.getString(indices[6]));
+		contratanteResponse.setSegundoApellido(resultSet.getString(indices[7]));
+		contratanteResponse.setTipo(resultSet.getString(indices[8]));
+		contratanteResponse.setSexo(resultSet.getString(indices[9]));
+		contratanteResponse.setOtroSexo(resultSet.getString(indices[10]));
+		contratanteResponse.setFechaNac(resultSet.getString(indices[11]));
+		contratanteResponse.setNacionalidad(resultSet.getString(indices[12]));
+		contratanteResponse.setIdPais(resultSet.getString(indices[13]));
+		contratanteResponse.setIdEstado(resultSet.getString(indices[14]));
+		domicilioRequest.setIdDomicilio(resultSet.getInt(indices[15]));
+		domicilioRequest.setDesCalle(resultSet.getString(indices[16]));
+		domicilioRequest.setNumExterior(resultSet.getString(indices[17]));
+		domicilioRequest.setNumInterior(resultSet.getString(indices[18]));
+		domicilioRequest.setCodigoPostal(resultSet.getString(indices[19]));
+		domicilioRequest.setDesColonia(resultSet.getString(indices[20]));
+		domicilioRequest.setDesMunicipio(resultSet.getString(indices[21]));
+		domicilioRequest.setDesEstado(resultSet.getString(indices[22]));
+		contratanteResponse.setCp(domicilioRequest);
+		return contratanteResponse;
 	}
 
 }

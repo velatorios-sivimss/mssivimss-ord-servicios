@@ -1,5 +1,7 @@
 package com.imss.sivimss.ordservicios.model.response;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -18,6 +20,6 @@ public class ConvenioPAResponse {
 	
 	private String nombreVelatorio;
 	
-	private ContratanteResponse contratante;
+	private List<ContratanteResponse> contratante;
 	
 }
