@@ -13,7 +13,8 @@ public class InformacionServicioResponse {
 	private String horaCortejo;
 	private String fechaRecoger;
 	private String horaRecoger;
-	private Integer idPanteon;
+	//private Integer idPanteon;
+	private PanteonResponse panteon;
 	private Integer idSala;
 	private String fechaCremacion;
 	private String horaCremacion;

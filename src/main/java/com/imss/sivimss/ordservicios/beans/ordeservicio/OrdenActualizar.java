@@ -36,6 +36,7 @@ import com.imss.sivimss.ordservicios.model.response.FinadoResponse;
 import com.imss.sivimss.ordservicios.model.response.InformacionServicioResponse;
 import com.imss.sivimss.ordservicios.model.response.InformacionServicioVelacionResponse;
 import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
+import com.imss.sivimss.ordservicios.model.response.PanteonResponse;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
@@ -518,6 +519,7 @@ public class OrdenActualizar {
 		
 		
 		ResultSet rscs=null;
+		ResultSet result=null;
 		try (Statement statementc= conn.createStatement();ResultSet rsc = statementc.executeQuery(reglasNegocioRepository.consultarInformacionServicioOrdenServicios(ordenesServicioRequest.getIdOrdenServicio()));) {
 			InformacionServicioResponse informacionServicioResponse=null;
 			log.info("consultarinformacionServicioResponse");
@@ -532,14 +534,34 @@ public class OrdenActualizar {
 				informacionServicioResponse.setHoraCortejo(rsc.getString(3));
 				informacionServicioResponse.setFechaRecoger(rsc.getString(4));
 				informacionServicioResponse.setHoraRecoger(rsc.getString(5));
-				informacionServicioResponse.setIdPanteon(OrdenesServicioUtil.setValor(rsc.getInt(6)));
+				
+				
+				
 				informacionServicioResponse.setIdSala(OrdenesServicioUtil.setValor(rsc.getInt(7)));
 				informacionServicioResponse.setFechaCremacion(rsc.getString(8));
 				informacionServicioResponse.setHoraCremacion(rsc.getString(9));
 				informacionServicioResponse.setIdPromotor(OrdenesServicioUtil.setValor(rsc.getInt(10)));
 				
 				InformacionServicioVelacionResponse informacionServicioVelacionResponse=null;
-				
+				if (Objects.nonNull(OrdenesServicioUtil.setValor(rsc.getInt(6)))) {
+					Integer idPanteon=rsc.getInt(6);
+					result = statementc.executeQuery(reglasNegocioRepository.consultarPanteon(idPanteon));
+					PanteonResponse panteonResponse= new PanteonResponse();
+					if (result.next()) {
+						panteonResponse.setIdPanteon(result.getInt("idPanteon"));
+						panteonResponse.setNombrePanteon(result.getString("nombrePanteon"));
+						panteonResponse.setDesCalle(result.getString("desCalle"));
+						panteonResponse.setNumExterior(result.getString("numExterior"));
+						panteonResponse.setNumInterior(result.getString("numInterior"));
+						panteonResponse.setDesColonia(result.getString("desColonia"));
+						panteonResponse.setCodigoPostal(result.getInt("codigoPostal"));
+						panteonResponse.setDesEstado(result.getString("desEstado"));
+						panteonResponse.setDesMunicipio(result.getString("desMunicipio"));
+						panteonResponse.setNombreContacto(result.getString("nombreContacto"));
+						panteonResponse.setNumTelefono(result.getString("numTelefono"));
+					}
+					informacionServicioResponse.setPanteon(panteonResponse);
+				}
 				
 				// informacion de servicio velacion 
 				rscs = statementc.executeQuery(reglasNegocioRepository.consultarInformacionServicioVelacionOrdenServicios(informacionServicioResponse.getIdInformacionServicio()));
@@ -572,6 +594,10 @@ public class OrdenActualizar {
 			
 			if (rscs != null) {
 				rscs.close();
+			}
+			
+			if (result != null) {
+				result.close();
 			}
 			
 		}

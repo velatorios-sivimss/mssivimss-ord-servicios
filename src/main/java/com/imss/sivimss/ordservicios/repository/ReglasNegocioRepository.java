@@ -1263,6 +1263,25 @@ public class ReglasNegocioRepository {
 						return query;
 		}
 		
+		public String consultarPanteon(Integer id) {
+			SelectQueryUtil selectQuery= new SelectQueryUtil();
+
+			selectQuery.select("SP.ID_PANTEON AS idPanteon",
+					"SP.REF_PANTEON AS nombrePanteon","STD.REF_CALLE AS desCalle","STD.NUM_EXTERIOR AS numExterior",
+					"STD.NUM_INTERIOR AS numInterior","SP.NOM_CONTACTO AS nombreContacto","SP.NUM_TELEFONO AS numTelefono",
+					"STD.REF_COLONIA desColonia","STD.REF_CP AS codigoPostal",
+					"STD.REF_MUNICIPIO AS desMunicipio","STD.REF_ESTADO AS desEstado")
+			.from("SVT_PANTEON SP")
+			.join("SVT_DOMICILIO STD", "SP.ID_DOMICILIO = STD.ID_DOMICILIO")
+			.where("SP.ID_PANTEON = "+id+"")
+			.and("SP.IND_ACTIVO = 1")
+			.orderBy("nombrePanteon ASC");
+		
+		    query=selectQuery.build();
+			log.info(query);
+			return query;
+		}
+		
 		private String setValor(String valor) {
 			if (valor==null || valor.equals("")) {
 				return "NULL";
