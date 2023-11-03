@@ -34,7 +34,7 @@ public class ReportePagoProveedor {
 		envioDatos.put("condition", condition.toString());
 		envioDatos.put("rutaNombreReporte", reportePagoProv);
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
-		if(reporte.getTipoReporte().equals("xls")) { 
+		if(reporte.getTipoReporte().equals("xls") || reporte.getTipoReporte().equals("csv")) { 
 			envioDatos.put("IS_IGNORE_PAGINATION", true); 
 			}
 		return envioDatos;
