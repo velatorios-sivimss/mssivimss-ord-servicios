@@ -100,7 +100,7 @@ public class ConvenioPA {
 				"IFNULL(SVD.REF_ESTADO,'') AS estado")
 		.from("SVT_TITULAR_BENEFICIARIOS STB  ")
 		.innerJoin("SVC_PERSONA SPC ", "STB.ID_PERSONA = SPC.ID_PERSONA ")
-		.innerJoin("SVT_DOMICILIO SVD  ", "STB.ID_DOMICILIO = SVD.ID_DOMICILIO ")
+		.leftJoin("SVT_DOMICILIO SVD  ", "STB.ID_DOMICILIO = SVD.ID_DOMICILIO ")
 		.where("STB.ID_TITULAR_BENEFICIARIOS IN ("+id+") ORDER BY STB.REF_PERSONA DESC");
 		
 		query=selectQueryUtil.build();

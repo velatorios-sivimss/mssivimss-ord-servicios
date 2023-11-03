@@ -174,15 +174,18 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 		contratanteResponse.setNacionalidad(resultSet.getString(indices[12]));
 		contratanteResponse.setIdPais(resultSet.getString(indices[13]));
 		contratanteResponse.setIdEstado(resultSet.getString(indices[14]));
-		domicilioRequest.setIdDomicilio(resultSet.getInt(indices[15]));
-		domicilioRequest.setDesCalle(resultSet.getString(indices[16]));
-		domicilioRequest.setNumExterior(resultSet.getString(indices[17]));
-		domicilioRequest.setNumInterior(resultSet.getString(indices[18]));
-		domicilioRequest.setCodigoPostal(resultSet.getString(indices[19]));
-		domicilioRequest.setDesColonia(resultSet.getString(indices[20]));
-		domicilioRequest.setDesMunicipio(resultSet.getString(indices[21]));
-		domicilioRequest.setDesEstado(resultSet.getString(indices[22]));
-		contratanteResponse.setCp(domicilioRequest);
+		if (Objects.nonNull(resultSet.getInt(indices[15]))) {
+			domicilioRequest.setIdDomicilio(resultSet.getInt(indices[15]));
+			domicilioRequest.setDesCalle(resultSet.getString(indices[16]));
+			domicilioRequest.setNumExterior(resultSet.getString(indices[17]));
+			domicilioRequest.setNumInterior(resultSet.getString(indices[18]));
+			domicilioRequest.setCodigoPostal(resultSet.getString(indices[19]));
+			domicilioRequest.setDesColonia(resultSet.getString(indices[20]));
+			domicilioRequest.setDesMunicipio(resultSet.getString(indices[21]));
+			domicilioRequest.setDesEstado(resultSet.getString(indices[22]));
+			contratanteResponse.setCp(domicilioRequest);
+		}
+		
 		return contratanteResponse;
 	}
 
