@@ -67,7 +67,7 @@ public class GeneraReporte {
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		String query = reporteODSRepository.generaReporteODSCU025(reporteDto);
 		envioDatos.put("query", query);
-		envioDatos.put("periodo", Utilidades.periodo(reporteDto.getFecha_inicial(), reporteDto.getFecha_final()));
+		envioDatos.put("periodo", Utilidades.periodo(reporteDto.getFechaIni(), reporteDto.getFechaFin()));
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, generaReporteODS);
 		try {
