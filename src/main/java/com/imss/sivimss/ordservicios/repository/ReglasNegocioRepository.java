@@ -716,6 +716,18 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+	
+	 // actualizar persona
+	public String actualizarContratante(ContratanteRequest contratanteRequest,Integer idUsuario) {
+			final QueryHelper q = new QueryHelper("UPDATE SVC_CONTRATANTE ");
+			q.agregarParametroValues("CVE_MATRICULA", setValor(contratanteRequest.getMatricula()));
+			q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuario + "");
+			q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
+			q.addWhere("ID_CONTRATANTE = " + contratanteRequest.getIdContratante());
+			query = q.obtenerQueryActualizarSinCoalesce();
+			log.info(query);
+			return query;
+	}
     // actualizar persona
 	public String actualizarPersona(Persona personaRequest, Integer idUsuario) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_PERSONA ");
