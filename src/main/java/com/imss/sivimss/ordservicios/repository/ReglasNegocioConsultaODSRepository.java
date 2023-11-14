@@ -240,7 +240,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio "
 				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS,'') AS estatus, IFNULL(scp2.REF_NOTAS_SERVICIO,'') AS notasServicio "
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssd.ID_SALIDA_DONACION AS idSalidaDona, sd.ID_DONACION AS idDonacion"
-				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion ";
+				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion, sf.ID_TIPO_ORDEN AS idTipoOrden ";
 	}
 
 	private String queryCamposConsultaODSTemp() {
@@ -252,7 +252,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO, '') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio"
 				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS, '') AS estatus, IFNULL(scpt.REF_NOTAS_SERVICIO, '') AS notasServicio"
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssdt.ID_SALIDA_DONACION AS idSalidaDona, sdost.ID_DONACION_ORDEN_SERVICIO AS idDonacion"
-				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion ";
+				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion, sf.ID_TIPO_ORDEN AS idTipoOrden ";
 	}
 	private String queryODSPreOrden(ReporteDto reporteDto) {
 		String str= queryCamposConsultaODSTemp() 
