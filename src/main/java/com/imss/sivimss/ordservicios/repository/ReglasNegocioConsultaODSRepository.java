@@ -237,7 +237,8 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(sv.DES_VELATORIO,'') AS velatorio , IFNULL(sos.CVE_FOLIO,'') AS numeroFolio "
 				+ ", IFNULL(CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO),'') AS nombreContratante "
 				+ ", IFNULL(CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO),'') AS nombreFinado "
-				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio "
+				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia"
+				+ ", CASE WHEN sf.ID_TIPO_ORDEN = 2 THEN IFNULL(scp.DES_FOLIO,'') WHEN sf.ID_TIPO_ORDEN = 4 THEN IFNULL(sps.NUM_FOLIO_PLAN_SFPA, '') ELSE '' END AS contratoConvenio"
 				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS,'') AS estatus, IFNULL(scp2.REF_NOTAS_SERVICIO,'') AS notasServicio "
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssd.ID_SALIDA_DONACION AS idSalidaDona, sd.ID_DONACION AS idDonacion"
 				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion, sf.ID_TIPO_ORDEN AS idTipoOrden ";
@@ -249,7 +250,8 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(sv.DES_VELATORIO, '') AS velatorio, IFNULL(sos.CVE_FOLIO, '') AS numeroFolio"
 				+ ", IFNULL(CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO), '') AS nombreContratante"
 				+ ", IFNULL(CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO), '') AS nombreFinado"
-				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO, '') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio"
+				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia"
+				+ ", CASE WHEN sf.ID_TIPO_ORDEN = 2 THEN IFNULL(scp.DES_FOLIO,'') WHEN sf.ID_TIPO_ORDEN = 4 THEN IFNULL(sps.NUM_FOLIO_PLAN_SFPA, '') ELSE '' END AS contratoConvenio"
 				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS, '') AS estatus, IFNULL(scpt.REF_NOTAS_SERVICIO, '') AS notasServicio"
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssdt.ID_SALIDA_DONACION AS idSalidaDona, sdost.ID_DONACION_ORDEN_SERVICIO AS idDonacion"
 				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion, sf.ID_TIPO_ORDEN AS idTipoOrden ";
@@ -274,7 +276,8 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN + " SVC_DONACION_ORDEN_SERV_TEMP sdost ON sdost.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad2 ON sad2.ID_DONACION = sdost.ID_DONACION_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_SALIDA_DONACION_TEMP ssdt ON ssdt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND ssdt.IND_ACTIVO = 1 "
-				+ LEFT_JOIN + " SVC_SALIDA_DON_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION ";
+				+ LEFT_JOIN + " SVC_SALIDA_DON_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION "
+				+ LEFT_JOIN + " SVT_PLAN_SFPA sps ON sps.ID_PLAN_SFPA = sf.ID_CONTRATO_PREVISION_PA ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		return str;
 	}
@@ -297,7 +300,8 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN + " SVC_DONACION sd ON sd.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad2 ON sad2.ID_DONACION = sd.ID_DONACION "
 				+ LEFT_JOIN + " SVC_SALIDA_DONACION_ATAUDES ssda ON sia.ID_INVE_ARTICULO = ssda.ID_INVE_ARTICULO "
-				+ LEFT_JOIN + " SVC_SALIDA_DONACION ssd ON ssd.ID_SALIDA_DONACION = ssda.ID_SALIDA_DONACION";
+				+ LEFT_JOIN + " SVC_SALIDA_DONACION ssd ON ssd.ID_SALIDA_DONACION = ssda.ID_SALIDA_DONACION"
+				+ LEFT_JOIN + " SVT_PLAN_SFPA sps ON sps.ID_PLAN_SFPA = sf.ID_CONTRATO_PREVISION_PA ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		return str;
 	}
