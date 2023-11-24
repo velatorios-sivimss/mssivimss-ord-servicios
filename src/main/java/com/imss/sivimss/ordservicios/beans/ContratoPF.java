@@ -89,11 +89,17 @@ public class ContratoPF {
 	public String consultarFolio(ContratoPfRequest contratoPfRequest){
 		SelectQueryUtil queryUtil= new SelectQueryUtil();
 		queryUtil.select("STC.ID_CONVENIO_PF AS idContratoPF", "STC.ID_TIPO_PREVISION AS tipoPrevision", "STC.IND_TIPO_CONTRATACION AS idTipoContrato",
-				"STC.ID_VELATORIO AS idVelatorio", "SV.DES_VELATORIO AS nombreVelatorio", "DATE_FORMAT(STC.FEC_VIGENCIA ,'%Y-%m-%d') AS vigencia","STC.ID_ESTATUS_CONVENIO AS estatus")
+				"STC.ID_VELATORIO AS idVelatorio", "SV.DES_VELATORIO AS nombreVelatorio", 
+				"CASE WHEN SRCP.FEC_VIGENCIA IS NULL "+
+				"then DATE_FORMAT(STC.FEC_VIGENCIA , '%Y-%m-%d') "+
+				"else DATE_FORMAT(SRCP.FEC_VIGENCIA , '%Y-%m-%d') "+ 
+				" end AS vigencia",
+				"STC.ID_ESTATUS_CONVENIO AS estatus")
 		.from("SVT_CONVENIO_PF STC")
 		.innerJoin("SVC_VELATORIO SV", "SV.ID_VELATORIO = STC.ID_VELATORIO")
+		.leftJoin("SVT_RENOVACION_CONVENIO_PF SRCP", "STC.ID_CONVENIO_PF = SRCP.ID_CONVENIO_PF  AND SRCP.ID_ESTATUS in (2)")
 		.where("STC.DES_FOLIO = :folio")
-		.and("DATE_FORMAT(STC.FEC_VIGENCIA ,'YY-MM-DD') >= DATE_FORMAT(CURRENT_DATE(),'YY-MM-DD')")
+		.and("DATE_FORMAT(IFNULL (SRCP.FEC_VIGENCIA,STC.FEC_VIGENCIA),'YY-MM-DD') >= DATE_FORMAT(CURRENT_DATE(), 'YY-MM-DD')")
 		.and("STC.ID_ESTATUS_CONVENIO in (2,4) ")
 		.setParameter("folio", contratoPfRequest.getFolio());
 		 query= queryUtil.build();
