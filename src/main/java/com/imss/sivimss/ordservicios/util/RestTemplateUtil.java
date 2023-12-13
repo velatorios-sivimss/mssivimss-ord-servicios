@@ -98,6 +98,22 @@ public class RestTemplateUtil {
 
 		return responseBody;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Response<Object> sendPostRequestByteArrayToken(String url, Object body, String subject,
+			Class<?> clazz) throws IOException {
+		Response<Object> responseBody;
+		HttpHeaders headers = RestTemplateUtil.createHttpHeadersToken(subject);
+
+		HttpEntity<Object> request = new HttpEntity<>(body, headers);
+		ResponseEntity<?> responseEntity = null;
+
+		responseEntity = restTemplate.postForEntity(url, request, clazz);
+
+		responseBody = (Response<Object>) responseEntity.getBody();
+
+		return responseBody;
+	}
 
 	/**
 	 * Crea los headers para la petici&oacute;n falta agregar el tema de seguridad

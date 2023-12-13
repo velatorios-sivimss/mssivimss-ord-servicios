@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalleTrasladoRequest;
+import com.imss.sivimss.ordservicios.model.request.ContratanteRequest;
 import com.imss.sivimss.ordservicios.model.request.DomicilioRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.TareasDTO;
@@ -42,6 +43,7 @@ import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
+import com.imss.sivimss.ordservicios.util.GeneraCredencialesUtil;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
@@ -109,9 +111,14 @@ public class OrdenActualizar {
 	
 	private DomicilioRequest domicilioRequest;
 	
+    private String user;
 	
+	private String contrasenia;
 	
 	private static final Logger log = LoggerFactory.getLogger(OrdenActualizar.class);
+	
+	@Autowired
+	private GeneraCredencialesUtil generaCredencialesUtil;
 
 	public Response<Object> actualizar(DatosRequest datosRequest, Authentication authentication)
 			throws IOException, SQLException {
@@ -615,6 +622,15 @@ public class OrdenActualizar {
 	        desactivarRegistrosTemp(ordenesServicioRequest, usuario);	  
 			response = insertarOrdenServicios(ordenesServicioRequest, usuario);
 
+			if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+				enviarCuenta(ordenesServicioRequest.getContratante(),connection);
+				if (Objects.nonNull(user)) {
+					generaCredencialesUtil.enviarCorreo(user, ordenesServicioRequest.getContratante().getCorreo(), ordenesServicioRequest.getContratante().getNomPersona(), ordenesServicioRequest.getContratante().getPrimerApellido(), ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+					
+				}
+				
+			}
+			
 			connection.commit();
 
 			// mandar a llamar el job con la clave tarea
@@ -632,6 +648,16 @@ public class OrdenActualizar {
 		} else {
 			// actualizar registro actual
 			actualizarOrdenServicios(ordenesServicioRequest, usuario,authentication);
+			
+			if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+				enviarCuenta(ordenesServicioRequest.getContratante(),connection);
+				if (Objects.nonNull(user)) {
+					generaCredencialesUtil.enviarCorreo(user, ordenesServicioRequest.getContratante().getCorreo(), ordenesServicioRequest.getContratante().getNomPersona(), ordenesServicioRequest.getContratante().getPrimerApellido(), ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+					
+				}
+				
+			}
+			
 			connection.commit();
 		}
 		return response;
@@ -646,6 +672,16 @@ public class OrdenActualizar {
 		if (Boolean.TRUE.equals(desactivado)) {
 			Integer idOrden = ordenesServicioRequest.getIdOrdenServicio();
 			response = insertarVentaArticulo(ordenesServicioRequest, usuario);
+			
+			if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+				enviarCuenta(ordenesServicioRequest.getContratante(),connection);
+				if (Objects.nonNull(user)) {
+					generaCredencialesUtil.enviarCorreo(user, ordenesServicioRequest.getContratante().getCorreo(), ordenesServicioRequest.getContratante().getNomPersona(), ordenesServicioRequest.getContratante().getPrimerApellido(), ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+					
+				}
+				
+			}
+			
 			connection.commit();
 
 			
@@ -659,9 +695,18 @@ public class OrdenActualizar {
 				return response;
 
 			}
+			
 		} else {
 			// actualizar registro actual
 			actualizarVentaArticulo(ordenesServicioRequest, usuario,authentication);
+			if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+				enviarCuenta(ordenesServicioRequest.getContratante(),connection);
+				if (Objects.nonNull(user)) {
+					generaCredencialesUtil.enviarCorreo(user, ordenesServicioRequest.getContratante().getCorreo(), ordenesServicioRequest.getContratante().getNomPersona(), ordenesServicioRequest.getContratante().getPrimerApellido(), ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+					
+				}
+				
+			}
 			connection.commit();
 		}
 		return response;
@@ -887,6 +932,24 @@ public class OrdenActualizar {
 		}
 
 		return response;
+	}
+	
+	private void enviarCuenta(ContratanteRequest contratanteRequest,Connection conn) throws SQLException, IOException {
+		try(Statement statementc= conn.createStatement();ResultSet resultSet=statementc.executeQuery(reglasNegocioRepository.consultarUsuario(contratanteRequest.getIdPersona()))) {
+			// validar usuario no existe
+			if (!resultSet.next()) {
+				log.info("{}",resultSet.getRow());
+				// insertar el usuario
+			    contrasenia= generaCredencialesUtil.generarContrasenia(contratanteRequest.getNomPersona(),
+						contratanteRequest.getPrimerApellido());
+				user = generaCredencialesUtil.insertarUser(contratanteRequest.getIdPersona(),
+						contratanteRequest.getNomPersona(), contratanteRequest.getPrimerApellido(), contrasenia, contratanteRequest.getIdPersona(), statementc);
+				
+				
+									
+			}
+		} 
+		
 	}
 	
 	private Response<Object> actualizarVentaArticulo(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,Authentication authentication)

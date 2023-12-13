@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.exception.BadRequestException;
+import com.imss.sivimss.ordservicios.model.request.ContratanteRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.TareasDTO;
 import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
@@ -27,6 +28,7 @@ import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
+import com.imss.sivimss.ordservicios.util.GeneraCredencialesUtil;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
@@ -83,6 +85,13 @@ public class OrdenGuardar {
 	private String cveTarea;
 	
 	private static final String EXITO="47"; // La Orden de Servicio se ha generado exitosamente.
+	
+	@Autowired
+	private GeneraCredencialesUtil generaCredencialesUtil;
+	
+	private String user;
+	
+	private String contrasenia;
 	
 	public Response<Object> agregarOrden(DatosRequest datosRequest, Authentication authentication) throws IOException, SQLException{
 		
@@ -194,6 +203,15 @@ public class OrdenGuardar {
        
 		response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		
+		if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+			enviarCuenta(ordenesServicioRequest.getContratante(),connection);
+			if (Objects.nonNull(user)) {
+				generaCredencialesUtil.enviarCorreo(user, ordenesServicioRequest.getContratante().getCorreo(), ordenesServicioRequest.getContratante().getNomPersona(), ordenesServicioRequest.getContratante().getPrimerApellido(), ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+				
+			}
+			
+		}
+		
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
@@ -206,9 +224,30 @@ public class OrdenGuardar {
 			
 			
 		}
+		
+		
+		
 		return response;
 	}
 	
+	private void enviarCuenta(ContratanteRequest contratanteRequest,Connection conn) throws SQLException, IOException {
+		try(Statement statementc= conn.createStatement();ResultSet resultSet=statementc.executeQuery(reglasNegocioRepository.consultarUsuario(contratanteRequest.getIdPersona()))) {
+			// validar usuario no existe
+			if (!resultSet.next()) {
+				log.info("{}",resultSet.getRow());
+				// insertar el usuario
+			    contrasenia= generaCredencialesUtil.generarContrasenia(contratanteRequest.getNomPersona(),
+						contratanteRequest.getPrimerApellido());
+				user = generaCredencialesUtil.insertarUser(contratanteRequest.getIdPersona(),
+						contratanteRequest.getNomPersona(), contratanteRequest.getPrimerApellido(), contrasenia, contratanteRequest.getIdPersona(), statementc);
+				
+				
+									
+			}
+		} 
+		
+	}
+
 	private Response<Object> ventaArticulos(OrdenesServicioRequest ordenesServicioRequest, UsuarioDto usuario,Authentication authentication) throws SQLException, IOException{
 		connection = database.getConnection();
 		connection.setAutoCommit(false);
