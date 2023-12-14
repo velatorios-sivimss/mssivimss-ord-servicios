@@ -1292,7 +1292,7 @@ public class ReglasNegocioRepository {
 		
 		public String consultarUsuario(Integer idPersona) {
 			SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-			selectQueryUtil.select("SU.ID_USUARIO as idUsuario, SU.CVE_USUARIO as usuario  ")
+			selectQueryUtil.select("SU.ID_USUARIO as idUsuario", "SU.CVE_USUARIO as usuario  ")
 			.from("SVT_USUARIOS SU ")
 			.innerJoin("SVC_PERSONA SP ", "SP.ID_PERSONA = SU.ID_PERSONA ")
 			.innerJoin("SVC_CONTRATANTE SC", "SP.ID_PERSONA = SC.ID_PERSONA ")
