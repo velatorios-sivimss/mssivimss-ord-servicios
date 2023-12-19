@@ -9,6 +9,7 @@ public class ReglasNegocioGeneraReporteODSRepository {
 
 
 	private static final String JOIN = " JOIN ";
+	private static final String LEFT_JOIN = " LEFT JOIN ";
 	private static final String AND_SEOS_ID_ESTATUS = " AND seos.ID_ESTATUS_ORDEN_SERVICIO = ";
 	private static final String AND_DATE_MAYOR = " AND (DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') >= '";
 	private static final String AND_DATE_MENOR = " AND DATE_FORMAT(sos.FEC_ALTA,'%Y-%m-%d') <= '";
@@ -19,17 +20,19 @@ public class ReglasNegocioGeneraReporteODSRepository {
 				+ ",IFNULL(sd.DES_DELEGACION,'') AS delegacion "
 				+ ",IFNULL(sv.DES_VELATORIO,'') AS velatorio "
 				+ ",IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoODS "
-				+ ",CONCAT('$ ' , IFNULL(FORMAT((SELECT SUM (sdcp1.IMP_CARAC_PRESUP) FROM SVC_DETALLE_CARAC_PRESUP sdcp1 WHERE sdcp1.ID_CARAC_PRESUPUESTO = scp.ID_CARAC_PRESUPUESTO GROUP BY sdcp1.ID_CARAC_PRESUPUESTO),2),0.00)) AS montoTotalODS "
+				+ ",CONCAT('$ ' , IFNULL(FORMAT(sdcp.IMP_CARAC_PRESUP,2),0.00)) AS montoTotalODS "
 				+ ",IFNULL(seos.DES_ESTATUS,'') AS estatus "
-				+ ",CONCAT('$ ', IFNULL(FORMAT(scp.CAN_PRESUPUESTO,2),0.00)) AS folioFactura "
+				+ ",IFNULL(sf2.ID_FACTURA,'') AS folioFactura "
 				+ " FROM SVC_ORDEN_SERVICIO sos "
-				+ JOIN + " SVC_CARAC_PRESUPUESTO scp  on scp.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND scp.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
-				+ JOIN + " SVC_DETALLE_CARAC_PRESUP sdcp on sdcp.ID_CARAC_PRESUPUESTO = scp.ID_CARAC_PRESUPUESTO "
+				+ LEFT_JOIN + " SVC_CARAC_PRESUPUESTO scp  on scp.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND scp.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
+				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PRESUP sdcp on sdcp.ID_CARAC_PRESUPUESTO = scp.ID_CARAC_PRESUPUESTO "
 				+ JOIN + " SVC_VELATORIO sv ON sv.ID_VELATORIO = sos.ID_VELATORIO "
 				+ JOIN + " SVC_DELEGACION sd ON sd.ID_DELEGACION = sv.ID_DELEGACION "
-				+ " LEFT "+JOIN + " SVC_FINADO sf ON sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
+				+ LEFT_JOIN + " SVC_FINADO sf ON sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ JOIN + " SVC_TIPO_ORDEN_SERVICIO stos ON stos.ID_TIPO_ORDEN_SERVICIO = sf.ID_TIPO_ORDEN "
 				+ JOIN + " SVC_ESTATUS_ORDEN_SERVICIO seos ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO "
+				+ LEFT_JOIN + " SVT_PAGO_BITACORA spb ON spb.ID_REGISTRO = sos.ID_ORDEN_SERVICIO "
+				+ LEFT_JOIN +" SVC_FACTURA sf2 ON sf2.ID_PAGO = spb.ID_PAGO_BITACORA  AND sf2.CVE_FOLIO = sos.CVE_FOLIO "
 		        + "WHERE sos.ID_ORDEN_SERVICIO > 0 ";
 		
 				if(reporteDto.getIdVelatorio() != null) 
