@@ -995,7 +995,7 @@ public class ReglasNegocioRepository {
 						"TIME_FORMAT(STF.TIM_HORA,'%H:%i') AS hora",
 						"STF.ID_CLINICA_ADSCRIPCION AS idClinicaAdscripcion",
 						"STF.ID_UNIDAD_PROCEDENCIA AS idUnidadProcedencia",
-						"STF.REF_LUGAR_DECESO AS procedenciaFinado",
+						"STF.REF_PROCEDENCIA_FINADO AS procedenciaFinado",
 						"STF.ID_TIPO_PENSION AS idTipoPension",
 						"STF.ID_CONTRATO_PREVISION AS idContratoPrevision",
 						"STF.ID_VELATORIO AS idVelatorioContratoPrevision",
