@@ -484,7 +484,7 @@ public class OrdenActualizar {
 					paqueteDetallePresupuesto.setGrupo(resultSetDetallePresupuesto.getString(7));
 					paqueteDetallePresupuesto.setConcepto(resultSetDetallePresupuesto.getString(8));
 					paqueteDetallePresupuesto.setCantidad(resultSetDetallePresupuesto.getInt(9));
-					paqueteDetallePresupuesto.setIdProveedor(resultSetDetallePresupuesto.getInt(10));
+					paqueteDetallePresupuesto.setIdProveedor(resultSetDetallePresupuesto.getInt(10)==0?null:resultSetDetallePresupuesto.getInt(10));
 					paqueteDetallePresupuesto.setNombreProveedor(resultSetDetallePresupuesto.getString(11));
 					paqueteDetallePresupuesto.setEsDonado(resultSetDetallePresupuesto.getInt(12));
 					paqueteDetallePresupuesto.setImporteMonto(resultSetDetallePresupuesto.getDouble(13));
