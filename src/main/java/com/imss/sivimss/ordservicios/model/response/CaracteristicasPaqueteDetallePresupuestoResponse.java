@@ -16,6 +16,7 @@ public class CaracteristicasPaqueteDetallePresupuestoResponse {
 	private Integer idArticulo;
 	private Integer idInventario;
 	private Integer idServicio;
+	private Integer idTipoServicio;
 	private String grupo;
 	private String concepto;
 	private Integer cantidad;
