@@ -960,6 +960,7 @@ public class ReglasNegocioRepository {
 	// consultar finado
 	public String consultarFinadoOrdenServicios(Integer idOrdenServicio) {
 				SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+				String consultaVelatorio=" (SELECT SV.DES_VELATORIO  FROM SVC_VELATORIO SV WHERE SV.ID_VELATORIO=STF.ID_VELATORIO) ";
 				selectQueryUtil.select(
 						"STF.ID_FINADO AS idFinado",
 						"SPF.ID_PERSONA AS idPersona",
@@ -998,6 +999,12 @@ public class ReglasNegocioRepository {
 						"STF.REF_PROCEDENCIA_FINADO AS procedenciaFinado",
 						"STF.ID_TIPO_PENSION AS idTipoPension",
 						"STF.ID_CONTRATO_PREVISION AS idContratoPrevision",
+						" CASE WHEN STF.ID_CONTRATO_PREVISION IS NOT NULL "
+						+ " THEN "
+						+ " ( SELECT SV.DES_VELATORIO  FROM SVC_VELATORIO SV WHERE SV.ID_VELATORIO = STF.ID_VELATORIO ) "
+						+" WHEN STF.ID_CONTRATO_PREVISION_PA IS NOT NULL "
+						+ " THEN "
+						+ " ( SELECT SV.DES_VELATORIO  FROM SVC_VELATORIO SV WHERE SV.ID_VELATORIO = SPLA.ID_VELATORIO ) ELSE '' END AS nombreVelatorio ",
 						"STF.ID_VELATORIO AS idVelatorioContratoPrevision",
 						"STF.ID_CONTRATO_PREVISION_PA AS idConvenioPrevision",
 						"SPC.DES_FOLIO AS folioContrato",

@@ -21,6 +21,7 @@ public class FinadoResponse extends  Persona{
 	private String folioContrato;
 	private String folioConvenioPa;
 	private Integer idContratoPrevision;
+	private String nombreVelatorio;
 	private Integer idConvenioPrevision;
 	private Integer idVelatorioContratoPrevision;
 	private DomicilioRequest cp;
