@@ -66,8 +66,11 @@ public class GeneraReporte {
 		Map<String, Object> envioDatos = new HashMap<>();
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		String query = reporteODSRepository.generaReporteODSCU025(reporteDto);
+		if (reporteDto.getTipoReporte().equals("xls")) {
+			envioDatos.put("IS_IGNORE_PAGINATION", true);
+		}
 		envioDatos.put("query", query);
-		envioDatos.put("periodo", Utilidades.periodo(reporteDto.getFecha_inicial(), reporteDto.getFecha_final()));
+		envioDatos.put("periodo", Utilidades.periodo(reporteDto.getFechaIni(), reporteDto.getFechaFin()));
 		envioDatos.put(TIPO_REPORTE, reporteDto.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, generaReporteODS);
 		try {

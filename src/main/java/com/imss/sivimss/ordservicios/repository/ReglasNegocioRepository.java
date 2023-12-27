@@ -716,6 +716,18 @@ public class ReglasNegocioRepository {
 		log.info(query);
 		return query;
 	}
+	
+	 // actualizar persona
+	public String actualizarContratante(ContratanteRequest contratanteRequest,Integer idUsuario) {
+			final QueryHelper q = new QueryHelper("UPDATE SVC_CONTRATANTE ");
+			q.agregarParametroValues("CVE_MATRICULA", setValor(contratanteRequest.getMatricula()));
+			q.agregarParametroValues(ID_USUARIO_MODIFICA, "" + idUsuario + "");
+			q.agregarParametroValues(FEC_ACTUALIZACION, CURRENT_DATE);
+			q.addWhere("ID_CONTRATANTE = " + contratanteRequest.getIdContratante());
+			query = q.obtenerQueryActualizarSinCoalesce();
+			log.info(query);
+			return query;
+	}
     // actualizar persona
 	public String actualizarPersona(Persona personaRequest, Integer idUsuario) {
 		final QueryHelper q = new QueryHelper("UPDATE SVC_PERSONA ");
@@ -948,6 +960,7 @@ public class ReglasNegocioRepository {
 	// consultar finado
 	public String consultarFinadoOrdenServicios(Integer idOrdenServicio) {
 				SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+				String consultaVelatorio=" (SELECT SV.DES_VELATORIO  FROM SVC_VELATORIO SV WHERE SV.ID_VELATORIO=STF.ID_VELATORIO) ";
 				selectQueryUtil.select(
 						"STF.ID_FINADO AS idFinado",
 						"SPF.ID_PERSONA AS idPersona",
@@ -983,9 +996,15 @@ public class ReglasNegocioRepository {
 						"TIME_FORMAT(STF.TIM_HORA,'%H:%i') AS hora",
 						"STF.ID_CLINICA_ADSCRIPCION AS idClinicaAdscripcion",
 						"STF.ID_UNIDAD_PROCEDENCIA AS idUnidadProcedencia",
-						"STF.REF_LUGAR_DECESO AS procedenciaFinado",
+						"STF.REF_PROCEDENCIA_FINADO AS procedenciaFinado",
 						"STF.ID_TIPO_PENSION AS idTipoPension",
 						"STF.ID_CONTRATO_PREVISION AS idContratoPrevision",
+						" CASE WHEN STF.ID_CONTRATO_PREVISION IS NOT NULL "
+						+ " THEN "
+						+ " ( SELECT SV.DES_VELATORIO  FROM SVC_VELATORIO SV WHERE SV.ID_VELATORIO = STF.ID_VELATORIO ) "
+						+" WHEN STF.ID_CONTRATO_PREVISION_PA IS NOT NULL "
+						+ " THEN "
+						+ " ( SELECT SV.DES_VELATORIO  FROM SVC_VELATORIO SV WHERE SV.ID_VELATORIO = SPLA.ID_VELATORIO ) ELSE '' END AS nombreVelatorio ",
 						"STF.ID_VELATORIO AS idVelatorioContratoPrevision",
 						"STF.ID_CONTRATO_PREVISION_PA AS idConvenioPrevision",
 						"SPC.DES_FOLIO AS folioContrato",
@@ -1145,6 +1164,7 @@ public class ReglasNegocioRepository {
 									"0 AS idArticulo",
 									"0 AS idInventario",
 									"SDCPT.ID_SERVICIO AS idServicio",
+									"SS.ID_TIPO_SERVICIO AS idTipoServicio",
 									"STS.DES_TIPO_SERVICIO AS grupo",
 									"SS.DES_SERVICIO AS concepto",
 									"SDCPT.CAN_DET_PRESUP AS cantidad",
@@ -1166,6 +1186,7 @@ public class ReglasNegocioRepository {
 									"SDCPT.ID_ARTICULO AS idArticulo",
 									"SDCPT.ID_INVE_ARTICULO AS idInventario",
 									"0 AS idServicio",
+									"0 AS idTipoServicio",
 									"SCA.DES_CATEGORIA_ARTICULO AS grupo",
 									"STA.REF_MODELO_ARTICULO AS concepto",
 									"SDCPT.CAN_DET_PRESUP AS cantidad",

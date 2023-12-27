@@ -237,10 +237,11 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(sv.DES_VELATORIO,'') AS velatorio , IFNULL(sos.CVE_FOLIO,'') AS numeroFolio "
 				+ ", IFNULL(CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO),'') AS nombreContratante "
 				+ ", IFNULL(CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO),'') AS nombreFinado "
-				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio "
+				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia"
+				+ ", CASE WHEN sf.ID_TIPO_ORDEN = 2 THEN IFNULL(scp.DES_FOLIO,'') WHEN sf.ID_TIPO_ORDEN = 4 THEN IFNULL(sps.NUM_FOLIO_PLAN_SFPA, '') ELSE '' END AS contratoConvenio"
 				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS,'') AS estatus, IFNULL(scp2.REF_NOTAS_SERVICIO,'') AS notasServicio "
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssd.ID_SALIDA_DONACION AS idSalidaDona, sd.ID_DONACION AS idDonacion"
-				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion ";
+				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion, sf.ID_TIPO_ORDEN AS idTipoOrden ";
 	}
 
 	private String queryCamposConsultaODSTemp() {
@@ -249,16 +250,17 @@ public class ReglasNegocioConsultaODSRepository {
 				+ ", IFNULL(sv.DES_VELATORIO, '') AS velatorio, IFNULL(sos.CVE_FOLIO, '') AS numeroFolio"
 				+ ", IFNULL(CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO), '') AS nombreContratante"
 				+ ", IFNULL(CONCAT(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO), '') AS nombreFinado"
-				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO, '') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia, IFNULL(scp.DES_FOLIO, '') AS contratoConvenio"
+				+ ", IFNULL(stos.DES_TIPO_ORDEN_SERVICIO,'') AS tipoOrden, IFNULL(sum2.DES_UNIDAD_MEDICA, '') AS unidadProcedencia"
+				+ ", CASE WHEN sf.ID_TIPO_ORDEN = 2 THEN IFNULL(scp.DES_FOLIO,'') WHEN sf.ID_TIPO_ORDEN = 4 THEN IFNULL(sps.NUM_FOLIO_PLAN_SFPA, '') ELSE '' END AS contratoConvenio"
 				+ ", seos.ID_ESTATUS_ORDEN_SERVICIO AS idEstatus, IFNULL(seos.DES_ESTATUS, '') AS estatus, IFNULL(scpt.REF_NOTAS_SERVICIO, '') AS notasServicio"
 				+ ", TIMESTAMPDIFF(hour , sos.FEC_ALTA, now()) AS tiempoGeneracionODSHrs, ssdt.ID_SALIDA_DONACION AS idSalidaDona, sdost.ID_DONACION_ORDEN_SERVICIO AS idDonacion"
-				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion ";
+				+ ", sad2.ID_ATAUD_DONACION AS idAtaudDonacion, sf.ID_TIPO_ORDEN AS idTipoOrden ";
 	}
 	private String queryODSPreOrden(ReporteDto reporteDto) {
 		String str= queryCamposConsultaODSTemp() 
 				+ "FROM "
 				+ " SVC_ORDEN_SERVICIO sos "
-				+ JOIN + " SVC_CARAC_PRESUP_TEMP scpt ON scpt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
+				+ JOIN + " SVC_CARAC_PRESUP_TEMP scpt ON scpt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO  AND scpt.IND_ACTIVO = 1 "
 				+ JOIN + " SVC_VELATORIO sv ON sv.ID_VELATORIO = sos.ID_VELATORIO "
 				+ JOIN + " SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE "
 				+ LEFT_JOIN + " SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA "
@@ -268,20 +270,21 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN + " SVC_UNIDAD_MEDICA sum2 ON sum2.ID_UNIDAD_MEDICA = IFNULL(sf.ID_UNIDAD_PROCEDENCIA, sf.ID_CLINICA_ADSCRIPCION) "
 				+ LEFT_JOIN + " SVT_CONVENIO_PF scp ON scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION "
 				+ JOIN + " SVC_ESTATUS_ORDEN_SERVICIO seos ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO "
-				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PRESUP_TEMP sdcpt ON scpt.ID_CARAC_PRESUPUESTO = sdcpt.ID_CARAC_PRESUPUESTO "
+				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PRESUP_TEMP sdcpt ON scpt.ID_CARAC_PRESUPUESTO = sdcpt.ID_CARAC_PRESUPUESTO AND sdcpt.IND_ACTIVO = 1"
 				+ LEFT_JOIN + " SVT_INVENTARIO_ARTICULO sia ON sdcpt.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO AND sia.ID_TIPO_ASIGNACION_ART IN (3, 4) "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad ON sad.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO "
 				+ LEFT_JOIN + " SVC_DONACION_ORDEN_SERV_TEMP sdost ON sdost.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad2 ON sad2.ID_DONACION = sdost.ID_DONACION_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_SALIDA_DONACION_TEMP ssdt ON ssdt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND ssdt.IND_ACTIVO = 1 "
-				+ LEFT_JOIN + " SVC_SALIDA_DON_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION ";
+				+ LEFT_JOIN + " SVC_SALIDA_DON_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION "
+				+ LEFT_JOIN + " SVT_PLAN_SFPA sps ON sps.ID_PLAN_SFPA = sf.ID_CONTRATO_PREVISION_PA ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		return str;
 	}
 	private String queryODSGen(ReporteDto reporteDto) {
 		String str= queryCamposConsultaODS()
 				+ " FROM SVC_ORDEN_SERVICIO sos "
-				+ JOIN + " SVC_CARAC_PRESUPUESTO scp2 ON scp2.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
+				+ JOIN + " SVC_CARAC_PRESUPUESTO scp2 ON scp2.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND scp2.IND_ACTIVO = 1 "
 				+ JOIN + " SVC_VELATORIO sv ON sv.ID_VELATORIO = sos.ID_VELATORIO "
 				+ JOIN + " SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE "
 				+ LEFT_JOIN + " SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA "
@@ -291,13 +294,14 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN + " SVC_UNIDAD_MEDICA sum2 ON sum2.ID_UNIDAD_MEDICA = IFNULL(sf.ID_UNIDAD_PROCEDENCIA, sf.ID_CLINICA_ADSCRIPCION) "
 				+ LEFT_JOIN + " SVT_CONVENIO_PF scp ON scp.ID_CONVENIO_PF = sf.ID_CONTRATO_PREVISION "
 				+ JOIN + " SVC_ESTATUS_ORDEN_SERVICIO seos ON seos.ID_ESTATUS_ORDEN_SERVICIO = sos.ID_ESTATUS_ORDEN_SERVICIO "
-				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PRESUP sdcp ON scp2.ID_CARAC_PRESUPUESTO = sdcp.ID_CARAC_PRESUPUESTO "
+				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PRESUP sdcp ON scp2.ID_CARAC_PRESUPUESTO = sdcp.ID_CARAC_PRESUPUESTO AND sdcp.IND_ACTIVO = 1"
 				+ LEFT_JOIN + " SVT_INVENTARIO_ARTICULO sia ON sdcp.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO AND sia.ID_TIPO_ASIGNACION_ART IN (3,4) "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad ON sad.ID_INVE_ARTICULO = sia.ID_INVE_ARTICULO "
 				+ LEFT_JOIN + " SVC_DONACION sd ON sd.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ LEFT_JOIN + " SVC_ATAUDES_DONADOS sad2 ON sad2.ID_DONACION = sd.ID_DONACION "
 				+ LEFT_JOIN + " SVC_SALIDA_DONACION_ATAUDES ssda ON sia.ID_INVE_ARTICULO = ssda.ID_INVE_ARTICULO "
-				+ LEFT_JOIN + " SVC_SALIDA_DONACION ssd ON ssd.ID_SALIDA_DONACION = ssda.ID_SALIDA_DONACION";
+				+ LEFT_JOIN + " SVC_SALIDA_DONACION ssd ON ssd.ID_SALIDA_DONACION = ssda.ID_SALIDA_DONACION"
+				+ LEFT_JOIN + " SVT_PLAN_SFPA sps ON sps.ID_PLAN_SFPA = sf.ID_CONTRATO_PREVISION_PA ";
 		str = str + generaReporteConsultaODS(reporteDto);
 		return str;
 	}

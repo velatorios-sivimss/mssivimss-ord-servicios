@@ -364,10 +364,11 @@ public class OrdenActualizar {
 					finadoResponse.setProcedenciaFinado(rsc.getString(35));
 					finadoResponse.setIdTipoPension(rsc.getInt(36)==0?null:rsc.getInt(36));
 					finadoResponse.setIdContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(37)));
-					finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(38)));
-					finadoResponse.setIdConvenioPrevision(OrdenesServicioUtil.setValor(rsc.getInt(39)));
-					finadoResponse.setFolioContrato(rsc.getString(40));
-					finadoResponse.setFolioConvenioPa(rsc.getString(41));
+					finadoResponse.setNombreVelatorio(rsc.getString(38));					
+					finadoResponse.setIdVelatorioContratoPrevision(OrdenesServicioUtil.setValor(rsc.getInt(39)));
+					finadoResponse.setIdConvenioPrevision(OrdenesServicioUtil.setValor(rsc.getInt(40)));
+					finadoResponse.setFolioContrato(rsc.getString(41));
+					finadoResponse.setFolioConvenioPa(rsc.getString(42));
 	
 					
 			}
@@ -488,14 +489,15 @@ public class OrdenActualizar {
 					paqueteDetallePresupuesto.setIdArticulo(resultSetDetallePresupuesto.getInt(3)==0?null:resultSetDetallePresupuesto.getInt(3));
 					paqueteDetallePresupuesto.setIdInventario(resultSetDetallePresupuesto.getInt(4)==0?null:resultSetDetallePresupuesto.getInt(4));
 					paqueteDetallePresupuesto.setIdServicio(resultSetDetallePresupuesto.getInt(5)==0?null:resultSetDetallePresupuesto.getInt(5));
-					paqueteDetallePresupuesto.setGrupo(resultSetDetallePresupuesto.getString(6));
-					paqueteDetallePresupuesto.setConcepto(resultSetDetallePresupuesto.getString(7));
-					paqueteDetallePresupuesto.setCantidad(resultSetDetallePresupuesto.getInt(8));
-					paqueteDetallePresupuesto.setIdProveedor(resultSetDetallePresupuesto.getInt(9));
-					paqueteDetallePresupuesto.setNombreProveedor(resultSetDetallePresupuesto.getString(10));
-					paqueteDetallePresupuesto.setEsDonado(resultSetDetallePresupuesto.getInt(11));
-					paqueteDetallePresupuesto.setImporteMonto(resultSetDetallePresupuesto.getDouble(12));
-					paqueteDetallePresupuesto.setProviene(resultSetDetallePresupuesto.getString(13));
+					paqueteDetallePresupuesto.setIdTipoServicio(resultSetDetallePresupuesto.getInt(6)==0?null:resultSetDetallePresupuesto.getInt(6));
+					paqueteDetallePresupuesto.setGrupo(resultSetDetallePresupuesto.getString(7));
+					paqueteDetallePresupuesto.setConcepto(resultSetDetallePresupuesto.getString(8));
+					paqueteDetallePresupuesto.setCantidad(resultSetDetallePresupuesto.getInt(9));
+					paqueteDetallePresupuesto.setIdProveedor(resultSetDetallePresupuesto.getInt(10)==0?null:resultSetDetallePresupuesto.getInt(10));
+					paqueteDetallePresupuesto.setNombreProveedor(resultSetDetallePresupuesto.getString(11));
+					paqueteDetallePresupuesto.setEsDonado(resultSetDetallePresupuesto.getInt(12));
+					paqueteDetallePresupuesto.setImporteMonto(resultSetDetallePresupuesto.getDouble(13));
+					paqueteDetallePresupuesto.setProviene(resultSetDetallePresupuesto.getString(14));
 					
 					try(ResultSet resultSetDetallePresupuestoTraslado = statementc.executeQuery(
 							reglasNegocioRepository.consultarCaracteristicasPresupuestoDetallePresupuestoTrasladoTempOrdenServicios(paqueteDetallePresupuesto.getIdPaqueteDetallePresupuesto()));){

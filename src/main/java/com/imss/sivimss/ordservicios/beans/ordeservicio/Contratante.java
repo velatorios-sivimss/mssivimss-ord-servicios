@@ -67,6 +67,10 @@ public class Contratante {
 					}		
 				}
 				
+				statement.executeUpdate(reglasNegocioRepository.actualizarContratante(contratanteRequest, idUsuarioAlta),
+						Statement.RETURN_GENERATED_KEYS);
+				
+				
 				return contratanteRequest.getIdContratante();
 			}
 
@@ -92,6 +96,9 @@ public class Contratante {
 					Statement.RETURN_GENERATED_KEYS);
 
 			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(contratanteRequest, idUsuarioAlta),
+					Statement.RETURN_GENERATED_KEYS);
+			
+			statement.executeUpdate(reglasNegocioRepository.actualizarContratante(contratanteRequest, idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
 			
 			return contratanteRequest.getIdContratante();

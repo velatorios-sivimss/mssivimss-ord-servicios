@@ -11,7 +11,7 @@ public class Utilidades {
 	    throw new IllegalStateException("Utilidades class");
 	  }
 	public static String periodo (String fecIni, String fecFin) {
-		String str= "Periodo: ";
+		String str= "";
 		SimpleDateFormat formato1 = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy",new Locale("es", "MX"));
 		try {
@@ -35,6 +35,6 @@ public class Utilidades {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		return str;
+		return str.equals("")?"":"Periodo: " + str;
 	}
 }
