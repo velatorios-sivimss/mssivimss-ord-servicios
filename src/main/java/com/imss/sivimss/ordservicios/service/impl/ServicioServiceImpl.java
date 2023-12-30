@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Servicio;
 import com.imss.sivimss.ordservicios.model.request.ProveedorServicioRequest;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.response.ProveedorServicioResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
 import com.imss.sivimss.ordservicios.service.ServicioService;
@@ -57,16 +58,19 @@ public class ServicioServiceImpl implements ServicioService{
 	public Response<Object> consultarProvedorServicios(DatosRequest request, Authentication authentication)
 			throws IOException {
 		ProveedorServicioRequest proveedorServicioRequest= new ProveedorServicioRequest();
+		Integer idVelatorio = 0;
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarProvedorServicios", AppConstantes.CONSULTA, authentication);
-
+Gson gson1 = new Gson();
+			UsuarioDto usuario = gson1.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			idVelatorio = usuario.getIdVelatorio();
 			Gson gson= new Gson();
 			String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 			proveedorServicioRequest=gson.fromJson(datosJson, ProveedorServicioRequest.class);
-			Response<Object>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			Response<Object>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio()).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 			 log.error(e.getMessage());
