@@ -27,6 +27,7 @@ import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 
 @Service
 public class ServicioServiceImpl implements ServicioService {
@@ -60,6 +61,7 @@ public class ServicioServiceImpl implements ServicioService {
 			Gson gson1 = new Gson();
 			UsuarioDto usuario = gson1.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 			idVelatorio = usuario.getIdVelatorio();
+			
 			Gson gson = new Gson();
 			String datosJson = request.getDatos().get(AppConstantes.DATOS).toString();
 			proveedorServicioRequest = gson.fromJson(datosJson, ProveedorServicioRequest.class);
