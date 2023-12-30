@@ -45,8 +45,11 @@ public class ServicioServiceImpl implements ServicioService {
 
 	private static final Logger log = LoggerFactory.getLogger(ServicioServiceImpl.class);
 
-	public ServicioServiceImpl(Provide
-
+	public ServicioServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper,
+			LogUtil logUtil) {
+		this.providerServiceRestTemplate = providerServiceRestTemplate;
+		this.modelMapper = modelMapper;
+		this.logUtil = logUtil;
 	}
 
 	@Override
@@ -61,17 +64,16 @@ public class ServicioServiceImpl implements ServicioService {
 			Gson gson1 = new Gson();
 			UsuarioDto usuario = gson1.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 			idVelatorio = usuario.getIdVelatorio();
-			
 			Gson gson = new Gson();
 			String datosJson = request.getDatos().get(AppConstantes.DATOS).toString();
 			proveedorServicioRequest = gson.fromJson(datosJson, ProveedorServicioRequest.class);
 			Response<Object> response = providerServiceRestTemplate.consumirServicio(
-					servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos(),
+					servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(), idVelatorio).getDatos(),
 					urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos()
-					.get(AppConstantes.QUERY).toString();
+			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(), idVelatorio)
+					.getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 			log.error(e.getMessage());
@@ -85,22 +87,26 @@ public class ServicioServiceImpl implements ServicioService {
 
 	@Override
 	public Response<Object> consultarServiciosVigentes(DatosRequest request, Authentication authentication)
-		
-
+			throws IOException {
+		Response<Object> response;
 		try {
-            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarServiciosVigentes", AppConstantes.CONSULTA, authentication);
-			response=providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication) ;
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultarServiciosVigentes", AppConstantes.CONSULTA,
+					authentication);
+			response = providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(),
+					urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
 			String consulta = servicio.obtenerServiciosVigentes().getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 			log.error(e.getMessage());
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded,
+					AppConstantes.CONSULTA, authentication);
 			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
-		
-		
+
 	}
 
 }
