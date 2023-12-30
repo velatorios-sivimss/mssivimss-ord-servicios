@@ -57,7 +57,7 @@ public class Servicio {
 		return datosRequest;
 	}
 
-	public DatosRequest obtenerProveedorServicio(Integer idServicio,  Integer idVelatorio){
+	public DatosRequest obtenerProveedorServicio(Integer idServicio, Integer idVelatorio) {
 		DatosRequest datosRequest = new DatosRequest();
 		Map<String, Object> parametros = new HashMap<>();
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
@@ -73,10 +73,10 @@ public class Servicio {
 				.and("SS.ID_SERVICIO = " + idServicio)
 				.and("SC.ID_VELATORIO = " + idVelatorio)
 				.and("DATE_FORMAT(SC.FEC_FIN_VIG,\"YY-MM-DD\") >= DATE_FORMAT(CURRENT_DATE(),\"YY-MM-DD\")")
-				.and("DATE_FORMAT(SP.FEC_VIGENCIA
+				.and("DATE_FORMAT(SP.FEC_VIGENCIA,\"YY-MM-DD\") >= DATE_FORMAT(CURRENT_DATE(),\"YY-MM-DD\")")
+				.orderBy("SP.REF_PROVEEDOR ASC");
 
-		  
-		String query=selectQueryUtil.build();
+		String query = selectQueryUtil.build();
 		log.info(query);
 
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
