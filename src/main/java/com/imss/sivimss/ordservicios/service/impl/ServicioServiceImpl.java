@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Servicio;
 import com.imss.sivimss.ordservicios.model.request.ProveedorServicioRequest;
-import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.response.ProveedorServicioResponse;
 import com.imss.sivimss.ordservicios.model.response.ServicioResponse;
 import com.imss.sivimss.ordservicios.service.ServicioService;
@@ -26,83 +25,76 @@ import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
-import com.imss.sivimss.ordservicios.util.ProviderS
+import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
+import com.imss.sivimss.ordservicios.util.Response;
 
+@Service
+public class ServicioServiceImpl implements ServicioService {
 
-@Service 
-public class ServicioServiceImpl implements ServicioService{
+	@Value("${endpoints.mod-catalogos}")
+	private String urlDominio;
 
-	@Value("${endpoints.mod-ca
+	private Servicio servicio = Servicio.getInstancia();
 
-	  
+	private final ProviderServiceRestTemplate providerServiceRestTemplate;
 
-	
+	private final ModelMapper modelMapper;
 
-	
+	private final LogUtil logUtil;
 
-	
-
-	
 	private static final Logger log = LoggerFactory.getLogger(ServicioServiceImpl.class);
 
-			
-	public ServicioServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper, LogUtil logUtil) {
-		this.providerServiceRestTemplate = providerServiceRestTemplate;
-		this.modelMa p per = modelMapper;
-		
+	public ServicioServiceImpl(Provide
 
-	
+	}
+
 	@Override
 	public Response<Object> consultarProvedorServicios(DatosRequest request, Authentication authentication)
-			throws IOException { 
-		Prove
-			Velatorio = 0;
-					
-					
+			throws IOException {
+		ProveedorServicioRequest proveedorServicioRequest = new ProveedorServicioRequest();
+		Integer idVelatorio = 0;
 		try {
-             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarProvedorServicios", AppConstantes.CONSULTA, authentication);
-Gson gson1 = new Gs o n();
-			UsuarioDto usuario = gso n 1.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
-			idVelatorio = us uario.ge t IdVelatorio();
-					
-					
-			Gson gson= new Gson();
-			String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
-			proveedorServicioRequest=gson.fromJson(datosJson, ProveedorServicioRequest.class);
-					
-			Response<Object>response=providerServiceRestTemplate.consumirServicio(servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-			return MensajeResponseUtil.mensajeConsultaResponseObj
-			catch (Exception e) {
-			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getId
-					ervicio(),idVelatorio).getDatos().get(AppConstantes.QUERY).toString();
-					
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultarProvedorServicios", AppConstantes.CONSULTA,
+					authentication);
+			Gson gson1 = new Gson();
+			UsuarioDto usuario = gson1.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			idVelatorio = usuario.getIdVelatorio();
+			Gson gson = new Gson();
+			String datosJson = request.getDatos().get(AppConstantes.DATOS).toString();
+			proveedorServicioRequest = gson.fromJson(datosJson, ProveedorServicioRequest.class);
+			Response<Object> response = providerServiceRestTemplate.consumirServicio(
+					servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos(),
+					urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+		} catch (Exception e) {
+			String consulta = servicio.obtenerProveedorServicio(proveedorServicioRequest.getIdServicio(),idVelatorio).getDatos()
+					.get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			
-
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
+			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+			log.error(e.getMessage());
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded,
+					AppConstantes.CONSULTA, authentication);
 			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
-		
+
 	}
- 
-	@Overr
-			onse<Object> consultarServiciosVigentes(DatosRequest request, Authentication au
-					hentication)
-					
-			throws I O Exception {
-					
-		Response<Object>response;
+
+	@Override
+	public Response<Object> consultarServiciosVigentes(DatosRequest request, Authentication authentication)
+		
+
 		try {
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarServiciosVigentes", AppConstantes.CONSULTA, authentication);
 			response=providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication) ;
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = servicio.obtenerServiciosVigentes().getDatos().get(AppConstantes
-					QUERY).toString();
-					
+			String consulta = servicio.obtenerServiciosVigentes().getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			
-
+			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+			log.error(e.getMessage());
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
 			throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
 		
