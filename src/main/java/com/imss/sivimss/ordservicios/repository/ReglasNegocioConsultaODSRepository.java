@@ -236,7 +236,8 @@ public class ReglasNegocioConsultaODSRepository {
 	}
 
 	public String obtenerODS(ReporteDto reporteDto) {
-		String str = queryODSGen(reporteDto) + " UNION " + queryODSPreOrden(reporteDto);
+		String str="SELECT * FROM ("
+		 + queryODSGen(reporteDto) + " UNION " + queryODSPreOrden(reporteDto)+") TEMP ORDER BY TEMP.idOrdenServicio, TEMP.numeroFolio ";
 		log.info(str);
 		return str;
 	}
