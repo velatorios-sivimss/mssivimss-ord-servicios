@@ -186,9 +186,10 @@ public class ReglasNegocioConsultaODSRepository {
 	public String obtenerOperadores() {
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil.select("so.ID_OPERADOR as idOperador",
-				"concat(su.NOM_USUARIO, ' ', su.NOM_APELLIDO_PATERNO, ' ', su.NOM_APELLIDO_MATERNO) as nombreOperador")
+				"concat(p.NOM_PERSONA, ' ', p.NOM_PRIMER_APELLIDO, ' ', p.NOM_SEGUNDO_APELLIDO) as nombreOperador")
 				.from(TABLA_SVT_OPERADORES_SO)
-				.join(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO = so.ID_USUARIO");
+				.join(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO = so.ID_USUARIO")
+				.join("SVC_PERSONA p ", "p.ID_PERSONA= su.ID_PERSONA");
 		query = selectQueryUtil.build();
 		log.info(query);
 		return query;
@@ -202,7 +203,7 @@ public class ReglasNegocioConsultaODSRepository {
 				"DATE_FORMAT(sis.FEC_CORTEJO,'%d-%m-%Y') AS fechaCortejo",
 				"TIME_FORMAT(sis.TIM_HORA_CORTEJO ,'%H:%i') AS horaCortejo", "sa.REF_MODELO_ARTICULO  AS modAtaud",
 				"sia.CVE_FOLIO_ARTICULO  AS noFolioAtaud",
-				"CONCAT(su.NOM_USUARIO, ' ', su.NOM_APELLIDO_PATERNO, ' ', su.NOM_APELLIDO_MATERNO) AS operador",
+				"concat(pe.NOM_PERSONA, ' ', pe.NOM_PRIMER_APELLIDO, ' ', pe.NOM_SEGUNDO_APELLIDO) AS operador",
 				"su.CVE_MATRICULA AS matriculaOperador", "'" + usuario.getNombre() + "' AS nombreAdmin")
 				.from(TABLA_SVT_OPERADORES_SO)
 				.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_OPERADOR = so.ID_OPERADOR")
@@ -211,7 +212,8 @@ public class ReglasNegocioConsultaODSRepository {
 				.join(TABLA_SVC_VELATORIO_SV, "sv.ID_VELATORIO = sos.ID_VELATORIO")
 				.join(TABLA_SVT_DOMICILIO_SD, "sd.ID_DOMICILIO = sv.ID_DOMICILIO ")
 				.join(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
-				.leftJoin(TABLA_SVT_USUARIOS_SU, "su.id_usuario = so.ID_USUARIO")
+				.leftJoin(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO = so.ID_USUARIO")
+				.leftJoin("SVC_PERSONA pe ", "pe.ID_PERSONA = su.ID_PERSONA")
 				.join("SVT_INVENTARIO_ARTICULO sia",
 						"ID_INVE_ARTICULO  = (SELECT sdcp.ID_INVE_ARTICULO FROM SVC_CARAC_PRESUPUESTO scp "
 								+ JOIN
