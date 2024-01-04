@@ -277,7 +277,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ "FROM "
 				+ " SVC_ORDEN_SERVICIO sos "
 				+ LEFT_JOIN
-				+ " SVC_CARAC_PRESUP_TEMP scpt ON scpt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO  AND scpt.IND_ACTIVO = 1 AND sos.ID_ESTATUS_ORDEN_SERVICIO = 1 "
+				+ " SVC_CARAC_PRESUP_TEMP scpt ON scpt.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO  AND scpt.IND_ACTIVO = 1 "
 				+ JOIN + " SVC_VELATORIO sv ON sv.ID_VELATORIO = sos.ID_VELATORIO "
 				+ JOIN + " SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE "
 				+ LEFT_JOIN + " SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA "
@@ -514,7 +514,7 @@ public class ReglasNegocioConsultaODSRepository {
 				condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
 		} else if (reporteDto.getCveConvenio() != null)
 			condicion = " WHERE scp.DES_FOLIO = '" + reporteDto.getCveConvenio() + "'";
-		condicion = condicion + " GROUP BY 1";
+		condicion = condicion + " AND sos.ID_ESTATUS_ORDEN_SERVICIO = 1 GROUP BY 1";
 		log.info(condicion);
 		return condicion;
 	}
