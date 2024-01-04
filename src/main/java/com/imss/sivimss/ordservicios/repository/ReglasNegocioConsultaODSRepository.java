@@ -301,7 +301,7 @@ public class ReglasNegocioConsultaODSRepository {
 				+ LEFT_JOIN
 				+ " SVC_SALIDA_DON_ATAUDES_TEMP ssdat ON ssdat.ID_SALIDA_DONACION  = ssdt.ID_SALIDA_DONACION "
 				+ LEFT_JOIN + " SVT_PLAN_SFPA sps ON sps.ID_PLAN_SFPA = sf.ID_CONTRATO_PREVISION_PA ";
-		str = str + generaReporteConsultaODS(reporteDto);
+		str = str + generaReporteConsultaODSPreorden(reporteDto);
 		return str;
 	}
 
@@ -514,9 +514,99 @@ public class ReglasNegocioConsultaODSRepository {
 				condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
 		} else if (reporteDto.getCveConvenio() != null)
 			condicion = " WHERE scp.DES_FOLIO = '" + reporteDto.getCveConvenio() + "'";
-		condicion = condicion + " AND sos.ID_ESTATUS_ORDEN_SERVICIO = 1 GROUP BY 1";
+		condicion = condicion + " GROUP BY 1";
 		log.info(condicion);
 		return condicion;
 	}
+
+	// Bloque Generacion Reportes
+		public String generaReporteConsultaODSPreorden(ReporteDto reporteDto) {
+			String condicion = "";
+			if (reporteDto.getIdEstatusODS() != null) {
+				condicion = " WHERE sos.ID_ESTATUS_ORDEN_SERVICIO = " + reporteDto.getIdEstatusODS();
+				if (reporteDto.getIdVelatorio() != null)
+					condicion = condicion + " AND sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
+				if (reporteDto.getCveFolio() != null)
+					condicion = condicion + " AND sos.CVE_FOLIO LIKE '%" + reporteDto.getCveFolio() + "%'";
+				if (reporteDto.getNombreContratante() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA + reporteDto.getNombreContratante() + "%' ";
+				}
+				if (reporteDto.getNombreFinado() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA2 + reporteDto.getNombreFinado() + "%' ";
+				}
+				if (reporteDto.getIdTipoODS() != null)
+					condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
+				if (reporteDto.getIdUnidadMedica() != null)
+					condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getIdVelatorio() != null) {
+				condicion = condicion + " WHERE sv.ID_VELATORIO = " + reporteDto.getIdVelatorio();
+				if (reporteDto.getCveFolio() != null)
+					condicion = condicion + " AND sos.CVE_FOLIO LIKE '%" + reporteDto.getCveFolio() + "%'";
+				if (reporteDto.getNombreContratante() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA + reporteDto.getNombreContratante() + "%' ";
+				}
+				if (reporteDto.getNombreFinado() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA2 + reporteDto.getNombreFinado() + "%' ";
+				}
+				if (reporteDto.getIdTipoODS() != null)
+					condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
+				if (reporteDto.getIdUnidadMedica() != null)
+					condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getCveFolio() != null) {
+				condicion = condicion + " WHERE sos.CVE_FOLIO LIKE '%" + reporteDto.getCveFolio() + "%'";
+				if (reporteDto.getNombreContratante() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA + reporteDto.getNombreContratante() + "%' ";
+				}
+				if (reporteDto.getNombreFinado() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA2 + reporteDto.getNombreFinado() + "%' ";
+				}
+				if (reporteDto.getIdTipoODS() != null)
+					condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
+				if (reporteDto.getIdUnidadMedica() != null)
+					condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getNombreContratante() != null) {
+				condicion = " WHERE "
+						+ "CONCAT(IFNULL(sp.NOM_PERSONA,''), ' ', IFNULL(sp.NOM_PRIMER_APELLIDO,''), ' ', IFNULL(sp.NOM_SEGUNDO_APELLIDO,'')) LIKE '%"
+						+ reporteDto.getNombreContratante() + "%' ";
+				if (reporteDto.getNombreFinado() != null) {
+					condicion = condicion + AND_NOMBRE_PERSONA2 + reporteDto.getNombreFinado() + "%' ";
+				}
+				if (reporteDto.getIdTipoODS() != null)
+					condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
+				if (reporteDto.getIdUnidadMedica() != null)
+					condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " ='" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getNombreFinado() != null) {
+				condicion = " WHERE CONCAT(IFNULL(sp2.NOM_PERSONA,''), ' ', IFNULL(sp2.NOM_PRIMER_APELLIDO,''), ' ', IFNULL(sp2.NOM_SEGUNDO_APELLIDO,'')) LIKE '%"
+						+ reporteDto.getNombreFinado() + "%' ";
+				if (reporteDto.getIdTipoODS() != null)
+					condicion = condicion + AND_ID_TIPO_ORDEN_SERVICIO + reporteDto.getIdTipoODS();
+				if (reporteDto.getIdUnidadMedica() != null)
+					condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getIdTipoODS() != null) {
+				condicion = " WHERE stos.ID_TIPO_ORDEN_SERVICIO = " + reporteDto.getIdTipoODS();
+				if (reporteDto.getIdUnidadMedica() != null)
+					condicion = condicion + AND_ID_UNIDAD_MEDICA + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " ='" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getIdUnidadMedica() != null) {
+				condicion = " WHERE sum2.ID_UNIDAD_MEDICA = " + reporteDto.getIdUnidadMedica();
+				if (reporteDto.getCveConvenio() != null)
+					condicion = condicion + AND_DES_FOLIO_CONVENIO_PF + " = '" + reporteDto.getCveConvenio() + "'";
+			} else if (reporteDto.getCveConvenio() != null)
+				condicion = " WHERE scp.DES_FOLIO = '" + reporteDto.getCveConvenio() + "'";
+			condicion = condicion + " AND sos.ID_ESTATUS_ORDEN_SERVICIO = 1 GROUP BY 1";
+			log.info(condicion);
+			return condicion;
+		}
 
 }
