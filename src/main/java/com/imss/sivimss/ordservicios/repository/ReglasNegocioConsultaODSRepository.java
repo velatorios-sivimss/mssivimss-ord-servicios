@@ -309,7 +309,7 @@ public class ReglasNegocioConsultaODSRepository {
 		String str = queryCamposConsultaODS()
 				+ " FROM SVC_ORDEN_SERVICIO sos "
 				+ LEFT_JOIN
-				+ " SVC_CARAC_PRESUPUESTO scp2 ON scp2.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO AND scp2.IND_ACTIVO = 1 "
+				+ " SVC_CARAC_PRESUPUESTO scp2 ON scp2.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
 				+ JOIN + " SVC_VELATORIO sv ON sv.ID_VELATORIO = sos.ID_VELATORIO "
 				+ JOIN + " SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE "
 				+ LEFT_JOIN + " SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA "
