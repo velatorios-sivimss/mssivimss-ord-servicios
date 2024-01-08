@@ -44,6 +44,8 @@ public class ServicioServiceImpl implements ServicioService {
 	private final LogUtil logUtil;
 
 	private static final Logger log = LoggerFactory.getLogger(ServicioServiceImpl.class);
+	
+	private Integer idVelatorio = 0;
 
 	public ServicioServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper modelMapper,
 			LogUtil logUtil) {
@@ -56,7 +58,7 @@ public class ServicioServiceImpl implements ServicioService {
 	public Response<Object> consultarProvedorServicios(DatosRequest request, Authentication authentication)
 			throws IOException {
 		ProveedorServicioRequest proveedorServicioRequest = new ProveedorServicioRequest();
-		Integer idVelatorio = 0;
+		idVelatorio = 0;
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "consultarProvedorServicios", AppConstantes.CONSULTA,
@@ -89,15 +91,20 @@ public class ServicioServiceImpl implements ServicioService {
 	public Response<Object> consultarServiciosVigentes(DatosRequest request, Authentication authentication)
 			throws IOException {
 		Response<Object> response;
+		idVelatorio = 0;
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "consultarServiciosVigentes", AppConstantes.CONSULTA,
 					authentication);
-			response = providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes().getDatos(),
+			
+			Gson gson1 = new Gson();
+			UsuarioDto usuario = gson1.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			idVelatorio = usuario.getIdVelatorio();
+			response = providerServiceRestTemplate.consumirServicio(servicio.obtenerServiciosVigentes(idVelatorio).getDatos(),
 					urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = servicio.obtenerServiciosVigentes().getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = servicio.obtenerServiciosVigentes(idVelatorio).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 			log.error(e.getMessage());
