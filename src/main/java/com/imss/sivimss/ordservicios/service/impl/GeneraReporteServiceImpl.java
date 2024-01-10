@@ -175,7 +175,7 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		envioDatos.put("municipioCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getMunicipioCliente()));
 		envioDatos.put("estadoCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getEstadoCliente()));
 		envioDatos.put("importeTotalOds", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getImporteTotalOds()));
-		envioDatos.put("importeLetraTotalOds", ConsultaConstantes.validar(numeroLetras.Convertir(contratoServicioInmediatoRequest.getImporteTotalOds(), true)));
+		envioDatos.put("importeLetraTotalOds", ConsultaConstantes.validar(numeroLetras.Convertir(contratoServicioInmediatoRequest.getImporteTotalOds().replaceAll(",",""), true)));
 		envioDatos.put("nombreVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCalleVelatorio()));
 		envioDatos.put("calleVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreFinado()));
 		envioDatos.put("numInteriorVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumInteriorVelatorio()));
