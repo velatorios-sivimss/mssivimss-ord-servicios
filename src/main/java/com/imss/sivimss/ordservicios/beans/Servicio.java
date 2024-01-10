@@ -30,7 +30,7 @@ public class Servicio {
 		return instancia;
 	}
 
-	public DatosRequest obtenerServiciosVigentes() {
+	public DatosRequest obtenerServiciosVigentes(Integer idVelatorio) {
 		DatosRequest datosRequest = new DatosRequest();
 		Map<String, Object> parametros = new HashMap<>();
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
@@ -44,6 +44,7 @@ public class Servicio {
 				.innerJoin("SVT_CONTRATO SC", "SCS.ID_CONTRATO =SC.ID_CONTRATO")
 				.where("SS.IND_ACTIVO =1")
 				.and("SC.IND_ACTIVO=1")
+				.and("SC.ID_VELATORIO = "+idVelatorio)
 				.and("DATE_FORMAT(SC.FEC_FIN_VIG,\"YY-MM-DD\") >= DATE_FORMAT(CURRENT_DATE(),\"YY-MM-DD\")")
 				.orderBy("nombreServicio ASC");
 
