@@ -32,7 +32,7 @@ public class ContratoServicioInmediatoResponse {
 	private String estadoVelatorio;
 	private String nombreFinado;
 	private Integer diaOds;
-	private Integer mesOds;
+	private String mesOds;
 	private Integer anioOds;
 	private String nombrePaquete;
 	private String precioPaquete;
