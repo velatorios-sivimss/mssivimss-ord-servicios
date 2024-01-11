@@ -60,7 +60,7 @@ endpoints:
    
 reporte: 
   contrato_servicio_inmediato: ${msit_CONTRATO_SERVICIO_INMEDIATO}
-  contrato_servicio_inmediato_temp: reportes/generales/ANEXO3_TEMP_CONTRATO _SER INMEDIATOS.jrxml
+  contrato_servicio_inmediato_temp: reportes/generales/ANEXO4_CONTRATO _SER INMEDIATOS.jrxml
   orden_servicio_temp: ${msit_ORDEN_SERVICIO_TEMP}
   orden_servicio: ${msit_ORDEN_SERVICIO}
   consulta_ODS: ${msit_CONSULTA_ODS}

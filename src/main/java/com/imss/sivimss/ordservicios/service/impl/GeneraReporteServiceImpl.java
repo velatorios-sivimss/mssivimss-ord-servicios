@@ -176,15 +176,15 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 		envioDatos.put("estadoCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getEstadoCliente()));
 		envioDatos.put("importeTotalOds", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getImporteTotalOds()));
 		envioDatos.put("importeLetraTotalOds", ConsultaConstantes.validar(numeroLetras.Convertir(contratoServicioInmediatoRequest.getImporteTotalOds().replaceAll(",",""), true)));
-		envioDatos.put("nombreVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCalleVelatorio()));
-		envioDatos.put("calleVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreFinado()));
+		envioDatos.put("nombreVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreVelatorio()));
+		envioDatos.put("calleVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCalleVelatorio()));
+		envioDatos.put("nombreFinado", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreFinado()));
 		envioDatos.put("numInteriorVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumInteriorVelatorio()));
 		envioDatos.put("numExteriorVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumExteriorVelatorio()));
 		envioDatos.put("coloniaVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getColoniaVelatorio()));
 		envioDatos.put("cpVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCpVelatorio()));
 		envioDatos.put("municipioVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getMunicipioVelatorio()));
 		envioDatos.put("estadoVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getEstadoVelatorio()));
-		envioDatos.put("nombreFinado", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreFinado()));
 		envioDatos.put("diaOds", contratoServicioInmediatoRequest.getDiaOds());
 		envioDatos.put("mesOds", contratoServicioInmediatoRequest.getMesOds());
 		envioDatos.put("anioOds", contratoServicioInmediatoRequest.getAnioOds());
