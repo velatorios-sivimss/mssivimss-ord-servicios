@@ -71,6 +71,7 @@ public class Servicio {
 				.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
 				.where("SP.IND_ACTIVO =1")
 				.and("SC.IND_ACTIVO=1")
+				.and("SP.ID_TIPO_PROVEEDOR in (1,3) ")
 				.and("SS.ID_SERVICIO = " + idServicio)
 				.and("SC.ID_VELATORIO = " + idVelatorio)
 				.and("DATE_FORMAT(SC.FEC_FIN_VIG,\"YY-MM-DD\") >= DATE_FORMAT(CURRENT_DATE(),\"YY-MM-DD\")")
