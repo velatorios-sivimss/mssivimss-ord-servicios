@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Reporte;
 import com.imss.sivimss.ordservicios.model.request.ContratoServicioInmediatoRequest;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.response.ContratoServicioInmediatoResponse;
 import com.imss.sivimss.ordservicios.model.response.ReporteControlSalidaDonacionResponse;
 import com.imss.sivimss.ordservicios.model.response.ReporteDonacionResponse;
@@ -32,6 +33,7 @@ import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
 import com.imss.sivimss.ordservicios.util.LogUtil;
 import com.imss.sivimss.ordservicios.util.MensajeResponseUtil;
+import com.imss.sivimss.ordservicios.util.NumeroLetras;
 import com.imss.sivimss.ordservicios.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.ordservicios.util.Response;
 
@@ -56,6 +58,9 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 
 	@Value("${reporte.contrato_servicio_inmediato}")
 	private String contratoServicioInmediato;
+	
+	@Value("${reporte.contrato_servicio_inmediato_temp}")
+	private String contratoServicioInmediatoTemp;
 	
 	@Value("${reporte.control-salida-ataudes-donacion}")
 	private String nombrePdfControlSalida;
@@ -86,8 +91,10 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 	public Response<Object> generarDocumentoContratoServInmediato(DatosRequest request, Authentication authentication)
 			throws IOException {
 		try {
+			UsuarioDto usuario = new Gson().fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 			ContratoServicioInmediatoRequest contratoServicioInmediatoRequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), ContratoServicioInmediatoRequest.class);
-            List<ContratoServicioInmediatoResponse>contratoServicioInmediatoResponse;
+			contratoServicioInmediatoRequest.setIdVelatorio(usuario.getIdVelatorio());
+			List<ContratoServicioInmediatoResponse>contratoServicioInmediatoResponse;
             if(contratoServicioInmediatoRequest.getGeneraReporte() == 1) {
             	logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "generar documento contrato servicio inmediato", AppConstantes.CONSULTA, authentication);
                 response = providerRestTemplate.consumirServicio(new Reporte().consultarContratoServicioInmediato(request, contratoServicioInmediatoRequest).getDatos(),urlConsultar.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
@@ -103,12 +110,13 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
                 if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
                 	contratoServicioInmediatoResponse = Arrays.asList(modelMapper.map(response.getDatos(), ContratoServicioInmediatoResponse[].class));
                 	generarMap(contratoServicioInmediatoRequest, contratoServicioInmediatoResponse);
-                	Map<String, Object> envioDatos = generaReporteContratoServicioInmediato(contratoServicioInmediatoRequest,contratoServicioInmediato);
+                	Map<String, Object> envioDatos = generaReporteContratoServicioInmediato(contratoServicioInmediatoRequest,contratoServicioInmediatoTemp);
             		return MensajeResponseUtil.mensajeResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication), ERROR_AL_DESCARGAR_DOCUMENTO);
                 }
             }
             return MensajeResponseUtil.mensajeResponse(response, SIN_INFORMACION);
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.error("Error.. {}", e.getMessage());
             logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el reporte : " + e.getMessage(), CONSULTA, authentication);
             throw new IOException("64", e.getCause());
@@ -117,56 +125,71 @@ public class GeneraReporteServiceImpl  implements GeneraReporteService {
 
 	private void generarMap(ContratoServicioInmediatoRequest contratoServicioInmediatoRequest,
 			List<ContratoServicioInmediatoResponse> contratoServicioInmediatoResponse) {
-		contratoServicioInmediatoRequest.setFolioOds(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getFolioOds()));
-		contratoServicioInmediatoRequest.setNombreFibeso(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombreFibeso()));
-		contratoServicioInmediatoRequest.setNombreContratante(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombreContratante()));
-		contratoServicioInmediatoRequest.setCorreoFibeso(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCorreoFibeso()));
-		contratoServicioInmediatoRequest.setTelefonoQuejas(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getTelefonoQuejas()));
-		contratoServicioInmediatoRequest.setDireccionCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getDireccionCliente()));
-		contratoServicioInmediatoRequest.setRfcCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getRfcCliente()));
-		contratoServicioInmediatoRequest.setTelefonoCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getTelefonoCliente()));
+		contratoServicioInmediatoRequest.setNombreCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombreCliente()));
+		contratoServicioInmediatoRequest.setNacionalidadCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNacionalidadCliente()));
 		contratoServicioInmediatoRequest.setCorreoCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCorreoCliente()));
-		contratoServicioInmediatoRequest.setDireccionVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getDireccionVelatorio()));
-		contratoServicioInmediatoRequest.setFechaOds(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getFechaOds()));
-		contratoServicioInmediatoRequest.setHorarioInicio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getHorarioInicio()));
-		contratoServicioInmediatoRequest.setHorarioFin(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getHorarioFin()));
-		contratoServicioInmediatoRequest.setCapillaVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCapillaVelatorio()));
+		contratoServicioInmediatoRequest.setTelefonoCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getTelefonoCliente()));
+		contratoServicioInmediatoRequest.setRfcCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getRfcCliente()));
+		contratoServicioInmediatoRequest.setCalleCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCalleCliente()));
+		contratoServicioInmediatoRequest.setNumInteriorCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNumInteriorCliente()));
+		contratoServicioInmediatoRequest.setNumExteriorCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNumExteriorCliente()));
+		contratoServicioInmediatoRequest.setColoniaCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getColoniaCliente()));
+		contratoServicioInmediatoRequest.setCpCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCpCliente()));
+		contratoServicioInmediatoRequest.setMunicipioCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getMunicipioCliente()));
+		contratoServicioInmediatoRequest.setEstadoCliente(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getEstadoCliente()));
+		contratoServicioInmediatoRequest.setImporteTotalOds(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getImporteTotalOds()));
+		contratoServicioInmediatoRequest.setNombreVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombreVelatorio()));
+		contratoServicioInmediatoRequest.setCalleVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCalleVelatorio()));
+		contratoServicioInmediatoRequest.setNumInteriorVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNumInteriorVelatorio()));
+		contratoServicioInmediatoRequest.setNumExteriorVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNumExteriorVelatorio()));
+		contratoServicioInmediatoRequest.setColoniaVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getColoniaVelatorio()));
+		contratoServicioInmediatoRequest.setCpVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getCpVelatorio()));
+		contratoServicioInmediatoRequest.setMunicipioVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getMunicipioVelatorio()));
+		contratoServicioInmediatoRequest.setEstadoVelatorio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getEstadoVelatorio()));
 		contratoServicioInmediatoRequest.setNombreFinado(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombreFinado()));
-		contratoServicioInmediatoRequest.setLugarExpedicion(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getLugarExpedicion()));
-		contratoServicioInmediatoRequest.setHorarioServicio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getHorarioServicio()));
-		contratoServicioInmediatoRequest.setDescripcionServicio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getDescripcionServicio()));
-		contratoServicioInmediatoRequest.setTotalOds(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getTotalOds()));
-		contratoServicioInmediatoRequest.setNombrePanteon(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombrePanteon()));
-		contratoServicioInmediatoRequest.setFechaServicio(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getFechaServicio()));
+		contratoServicioInmediatoRequest.setDiaOds(contratoServicioInmediatoResponse.get(0).getDiaOds());
+		contratoServicioInmediatoRequest.setMesOds(contratoServicioInmediatoResponse.get(0).getMesOds());
+		contratoServicioInmediatoRequest.setAnioOds(contratoServicioInmediatoResponse.get(0).getAnioOds());
+		contratoServicioInmediatoRequest.setNombrePaquete(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getNombrePaquete()));
+		contratoServicioInmediatoRequest.setPrecioPaquete(ConsultaConstantes.validar(contratoServicioInmediatoResponse.get(0).getPrecioPaquete()));
+
 	}
 
 	private Map<String, Object> generaReporteContratoServicioInmediato(ContratoServicioInmediatoRequest contratoServicioInmediatoRequest, String contratoServicioInmediato) {
 		log.info(" INICIO - generaReporteContratoServicioInmediato");
 		 
 		Map<String, Object> envioDatos = new HashMap<>();
+		NumeroLetras numeroLetras = new NumeroLetras();
 		
-		envioDatos.put("version", contratoServicioInmediatoRequest.getVersion());
-		envioDatos.put("folioODS", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getFolioOds()));
-		envioDatos.put("nombreFibeso", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreFibeso()));
-		envioDatos.put("nombreContratante", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreContratante()));
-		envioDatos.put("correoFibeso", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCorreoFibeso()));
-		envioDatos.put("telefonoQuejas", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getTelefonoQuejas()));
-		envioDatos.put("direccionCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getDireccionCliente()));
-		envioDatos.put("rfcCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getRfcCliente()));
-		envioDatos.put("telefonoCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getTelefonoCliente()));
+		envioDatos.put("idOrdenServicio", contratoServicioInmediatoRequest.getIdOrdenServicio());
+		envioDatos.put("nombreCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreCliente()));
+		envioDatos.put("nacionalidadCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNacionalidadCliente()));
 		envioDatos.put("correoCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCorreoCliente()));
-		envioDatos.put("direccionVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getDireccionVelatorio()));
-		envioDatos.put("fechaODS", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getFechaOds()));
-		envioDatos.put("horarioInicio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getHorarioInicio()));
-		envioDatos.put("horarioFin", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getHorarioFin()));
-		envioDatos.put("capillaVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCapillaVelatorio()));
+		envioDatos.put("telefonoCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getTelefonoCliente()));
+		envioDatos.put("rfcCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getRfcCliente()));
+		envioDatos.put("calleCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCalleCliente()));
+		envioDatos.put("numInteriorCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumInteriorCliente()));
+		envioDatos.put("numExteriorCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumExteriorCliente()));
+		envioDatos.put("coloniaCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getColoniaCliente()));
+		envioDatos.put("cpCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCpCliente()));
+		envioDatos.put("municipioCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getMunicipioCliente()));
+		envioDatos.put("estadoCliente", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getEstadoCliente()));
+		envioDatos.put("importeTotalOds", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getImporteTotalOds()));
+		envioDatos.put("importeLetraTotalOds", ConsultaConstantes.validar(numeroLetras.Convertir(contratoServicioInmediatoRequest.getImporteTotalOds().replaceAll(",",""), true)));
+		envioDatos.put("nombreVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreVelatorio()));
+		envioDatos.put("calleVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCalleVelatorio()));
 		envioDatos.put("nombreFinado", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombreFinado()));
-		envioDatos.put("lugarExpedicion", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getLugarExpedicion()));
-		envioDatos.put("horarioServicio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getHorarioServicio()));
-		envioDatos.put("descripcionServicio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getDescripcionServicio()));
-		envioDatos.put("totalODS", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getTotalOds()));
-		envioDatos.put("nombrePanteon", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombrePanteon()));
-		envioDatos.put("fechaSer", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getFechaServicio()));
+		envioDatos.put("numInteriorVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumInteriorVelatorio()));
+		envioDatos.put("numExteriorVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNumExteriorVelatorio()));
+		envioDatos.put("coloniaVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getColoniaVelatorio()));
+		envioDatos.put("cpVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getCpVelatorio()));
+		envioDatos.put("municipioVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getMunicipioVelatorio()));
+		envioDatos.put("estadoVelatorio", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getEstadoVelatorio()));
+		envioDatos.put("diaOds", contratoServicioInmediatoRequest.getDiaOds());
+		envioDatos.put("mesOds", contratoServicioInmediatoRequest.getMesOds());
+		envioDatos.put("anioOds", contratoServicioInmediatoRequest.getAnioOds());
+		envioDatos.put("nombrePaquete", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getNombrePaquete()));
+		envioDatos.put("precioPaquete", ConsultaConstantes.validar(contratoServicioInmediatoRequest.getPrecioPaquete()));
 		envioDatos.put("tipoReporte", contratoServicioInmediatoRequest.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", contratoServicioInmediato);
 		

@@ -9,26 +9,32 @@ import lombok.Setter;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContratoServicioInmediatoResponse {
-	private String folioOds;
-	private String nombreFibeso;
-	private String nombreContratante;
-	private String correoFibeso;
-	private String telefonoQuejas;
-	private String direccionCliente;
-	private String rfcCliente;
-	private String telefonoCliente;
+	private String nombreCliente;
+	private String nacionalidadCliente;
 	private String correoCliente;
-	private String direccionVelatorio;
-	private String fechaOds;
-	private String horarioInicio;
-	private String horarioFin;
-	private String capillaVelatorio;
+	private String telefonoCliente;
+	private String rfcCliente;
+	private String calleCliente;
+	private String numInteriorCliente;
+	private String numExteriorCliente;
+	private String coloniaCliente;
+	private String cpCliente;
+	private String municipioCliente;
+	private String estadoCliente;
+	private String importeTotalOds;
+	private String nombreVelatorio;
+	private String calleVelatorio;
+	private String numInteriorVelatorio;
+	private String numExteriorVelatorio;
+	private String coloniaVelatorio;
+	private String cpVelatorio;
+	private String municipioVelatorio;
+	private String estadoVelatorio;
 	private String nombreFinado;
-	private String lugarExpedicion;
-	private String horarioServicio;
-	private String descripcionServicio; 
-	private String totalOds;
-	private String nombrePanteon;
-	private String fechaServicio;
+	private Integer diaOds;
+	private String mesOds;
+	private Integer anioOds;
+	private String nombrePaquete;
+	private String precioPaquete;
 
 }
