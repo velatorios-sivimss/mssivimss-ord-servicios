@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.imss.sivimss.ordservicios.beans.Kilometraje;
 import com.imss.sivimss.ordservicios.model.request.KilometrajeRequest;
 import com.imss.sivimss.ordservicios.model.request.PaqueteRequest;
+import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.service.KilometrajeService;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
@@ -40,6 +41,7 @@ public class KilometrajeServiceImpl implements KilometrajeService{
 	
 	private static final Logger log = LoggerFactory.getLogger(KilometrajeServiceImpl.class);
 
+	private Integer idVelatorio = 0;
 	
 	public KilometrajeServiceImpl(ProviderServiceRestTemplate providerServiceRestTemplate, ModelMapper mapper,
 			LogUtil logUtil) {
@@ -55,12 +57,14 @@ public class KilometrajeServiceImpl implements KilometrajeService{
 		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
 		PaqueteRequest paqueteRequest= new PaqueteRequest();
 		try {
+			UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			idVelatorio = usuario.getIdVelatorio();
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarKilometrajePorPaquete", AppConstantes.CONSULTA, authentication);
             paqueteRequest=gson.fromJson(datosJson, PaqueteRequest.class);
-            Response<Object>response=providerServiceRestTemplate.consumirServicio(kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete(),paqueteRequest.getIdProveedor()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+            Response<Object>response=providerServiceRestTemplate.consumirServicio(kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete(),paqueteRequest.getIdProveedor(),idVelatorio).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
             return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete(),paqueteRequest.getIdProveedor()).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = kilometraje.obtenerKilometrajePorPaquete(paqueteRequest.getIdPaquete(),paqueteRequest.getIdProveedor(),idVelatorio).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        log.error(e.getMessage());
@@ -77,13 +81,15 @@ public class KilometrajeServiceImpl implements KilometrajeService{
 		KilometrajeRequest kilometrajeRequest= new KilometrajeRequest();
 		Gson gson= new Gson();
 		try {
+			UsuarioDto usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			idVelatorio = usuario.getIdVelatorio();
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarKilometrajePorServicio", AppConstantes.CONSULTA, authentication);
             String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
             kilometrajeRequest= gson.fromJson(datosJson, KilometrajeRequest.class);
-            response=providerServiceRestTemplate.consumirServicio(kilometraje.obtenerKilometrajePorServicio(kilometrajeRequest.getIdServicio(), kilometrajeRequest.getIdProveedor()).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+            response=providerServiceRestTemplate.consumirServicio(kilometraje.obtenerKilometrajePorServicio(kilometrajeRequest.getIdServicio(), kilometrajeRequest.getIdProveedor(),idVelatorio).getDatos(), urlDominio.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
             return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
 		} catch (Exception e) {
-			String consulta = kilometraje.obtenerKilometrajePorServicio(kilometrajeRequest.getIdServicio(),kilometrajeRequest.getIdProveedor()).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = kilometraje.obtenerKilometrajePorServicio(kilometrajeRequest.getIdServicio(),kilometrajeRequest.getIdProveedor(),idVelatorio).getDatos().get(AppConstantes.QUERY).toString();
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
 	        log.error(e.getMessage());
