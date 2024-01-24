@@ -56,7 +56,7 @@ public class Paquete {
 		.innerJoin("SVT_PAQUETE_SERVICIO SPS", "SPS.ID_SERVICIO = SS.ID_SERVICIO")
 		.where("SP.IND_ACTIVO =1 ")
 		.and("SPS.IND_ACTIVO = 1")
-		.and("SP.ID_TIPO_PROVEEDOR =1")
+		.and("SP.ID_TIPO_PROVEEDOR in (1,3)")
 		.and("SC.FEC_FIN_VIG >= CURRENT_DATE()")
 		.and("SP.FEC_VIGENCIA >= CURRENT_DATE()")
 		.and("SC.IND_ACTIVO =1");

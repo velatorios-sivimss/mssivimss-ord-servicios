@@ -27,7 +27,7 @@ public class Kilometraje {
 		return instancia;
 	}
 	
-	public DatosRequest obtenerKilometrajePorPaquete(Integer idPaquete, Integer idProveedor) throws UnsupportedEncodingException {
+	public DatosRequest obtenerKilometrajePorPaquete(Integer idPaquete, Integer idProveedor, Integer idVelatorio) throws UnsupportedEncodingException {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
@@ -38,7 +38,7 @@ public class Kilometraje {
 		.innerJoin("SVT_PROVEEDOR SP", "SC.ID_PROVEEDOR = SP.ID_PROVEEDOR")
 		.innerJoin("SVT_CONTRATO_SERVICIO SCS", "SC.ID_CONTRATO = SCS.ID_CONTRATO")
 		.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
-		.where("SC.ID_PROVEEDOR ="+idProveedor).and("SS.ID_TIPO_SERVICIO = 4");
+		.where("SC.ID_PROVEEDOR ="+idProveedor).and("SC.ID_VELATORIO="+idVelatorio).and("SS.ID_TIPO_SERVICIO = 4 LIMIT 1");
 		
 		selectQueryUtil.select("DISTINCT SCT.NUM_KILOMETRO AS numKilometraje","("+selectQueryUtilCosto.build()+") AS costoPorKilometraje")
 		.from("SVT_PAQUETE SPA")
@@ -55,7 +55,7 @@ public class Kilometraje {
 		return datosRequest;
 	}
 	
-	public DatosRequest obtenerKilometrajePorServicio(Integer idServicio, Integer idProveedor) throws UnsupportedEncodingException {
+	public DatosRequest obtenerKilometrajePorServicio(Integer idServicio, Integer idProveedor,Integer idVelatorio) throws UnsupportedEncodingException {
 		DatosRequest datosRequest= new DatosRequest();
 		Map<String, Object>parametros= new HashMap<>();
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
@@ -66,7 +66,8 @@ public class Kilometraje {
 		.innerJoin("SVT_SERVICIO SS", "SCS.ID_SERVICIO = SS.ID_SERVICIO")
 		.where(" SC.ID_PROVEEDOR = :idProveedor")
 		.and("SCS.ID_SERVICIO = :idServicio")
-		.and("SS.ID_TIPO_SERVICIO =4")
+		.and("SC.ID_VELATORIO="+idVelatorio)
+		.and("SS.ID_TIPO_SERVICIO =4 LIMIT 1")
 		.setParameter("idProveedor", idProveedor)
 		.setParameter("idServicio", idServicio);
 		String query=selectQueryUtil.build();

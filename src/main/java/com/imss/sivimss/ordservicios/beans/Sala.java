@@ -16,30 +16,32 @@ import com.imss.sivimss.ordservicios.util.SelectQueryUtil;
 public class Sala {
 
 	private static Sala instancia;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(Sala.class);
 
-	private Sala() {}
-	
+	private Sala() {
+	}
+
 	public static Sala getInstancia() {
-		if (instancia==null) {
-			instancia= new Sala();
-		} 
-		
+		if (instancia == null) {
+			instancia = new Sala();
+		}
+
 		return instancia;
 	}
-	
-	public DatosRequest obtenerSala(Integer idVelatorio){
-		DatosRequest datosRequest= new DatosRequest();
-		Map<String, Object>parametros= new HashMap<>();
-		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
-		selectQueryUtil.select("SS.ID_SALA AS idSala","SS.DES_SALA AS nombreSala")
-		.from("SVC_SALA SS")
-		.where("SS.IND_ACTIVO = 1","SS.ID_VELATORIO = :idVelatorio")
-		.setParameter("idVelatorio", idVelatorio)
-		.orderBy("SS.DES_SALA ASC");
-		
-		String query=selectQueryUtil.build();
+
+	public DatosRequest obtenerSala(Integer idVelatorio) {
+		DatosRequest datosRequest = new DatosRequest();
+		Map<String, Object> parametros = new HashMap<>();
+		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
+		selectQueryUtil.select("SS.ID_SALA AS idSala", "SS.DES_SALA AS nombreSala")
+				.from("SVC_SALA SS")
+				.where("SS.IND_ACTIVO = 1", "SS.ID_VELATORIO = :idVelatorio",
+						"SS.IND_TIPO_SALA = 0")
+				.setParameter("idVelatorio", idVelatorio)
+				.orderBy("SS.DES_SALA ASC");
+
+		String query = selectQueryUtil.build();
 		log.info(query);
 
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
