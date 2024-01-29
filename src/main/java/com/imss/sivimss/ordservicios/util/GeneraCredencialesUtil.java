@@ -98,7 +98,7 @@ public class GeneraCredencialesUtil {
 	public Response<Object> enviarCorreo(String user, String correo, String nombre, String paterno, String materno,
 			String contrasenia) throws IOException {
 		try {
-			log.info("envioCorreo "+urlEnvioCorreo);
+			log.info("envioCorreo {} "+urlEnvioCorreo);
 			String nombreUser = nombre.toUpperCase()+" "+paterno.toUpperCase()+" "+materno.toUpperCase(); 
 			String credenciales = "<b>Nombre completo del Usuario:</b> "+nombreUser+"<br> <b>Clave de usuario: </b>"+user.toUpperCase() +"<br> <b>Contraseña: </b>"+contrasenia;
 		

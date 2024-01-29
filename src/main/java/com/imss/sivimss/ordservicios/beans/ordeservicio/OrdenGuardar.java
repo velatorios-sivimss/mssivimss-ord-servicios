@@ -234,7 +234,7 @@ public class OrdenGuardar {
 		try(Statement statementc= conn.createStatement();ResultSet resultSet=statementc.executeQuery(reglasNegocioRepository.consultarUsuario(contratanteRequest.getIdPersona()))) {
 			// validar usuario no existe
 			if (!resultSet.next()) {
-				log.info("{}",resultSet.getRow());
+				log.info("enviarCuenta registrar el usuario {}",resultSet.getRow());
 				// insertar el usuario
 			    contrasenia= generaCredencialesUtil.generarContrasenia(contratanteRequest.getNomPersona(),
 						contratanteRequest.getPrimerApellido());
@@ -244,6 +244,7 @@ public class OrdenGuardar {
 				
 									
 			}
+			log.info("enviarCuenta {}",resultSet.getRow());
 		} 
 		
 	}
