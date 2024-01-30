@@ -114,7 +114,7 @@ public class OrdenGuardar {
 				response=guardarOrdenServicio(ordenesServicioRequest, usuario,authentication);
 				break;
 			case 3:
-	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "articulosComplementarios", AppConstantes.ALTA, authentication);
+	            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "ventaArticulos", AppConstantes.ALTA, authentication);
 
 				response=ventaArticulos(ordenesServicioRequest, usuario,authentication);
 				break;
@@ -206,7 +206,11 @@ public class OrdenGuardar {
 		if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
 			enviarCuenta(ordenesServicioRequest.getContratante(),connection);
 			if (Objects.nonNull(user)) {
-				generaCredencialesUtil.enviarCorreo(user, ordenesServicioRequest.getContratante().getCorreo(), ordenesServicioRequest.getContratante().getNomPersona(), ordenesServicioRequest.getContratante().getPrimerApellido(), ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+				generaCredencialesUtil.enviarCorreo(user, 
+						ordenesServicioRequest.getContratante().getCorreo(), 
+						ordenesServicioRequest.getContratante().getNomPersona(), 
+						ordenesServicioRequest.getContratante().getPrimerApellido(), 
+						ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
 				
 			}
 			
@@ -300,6 +304,19 @@ public class OrdenGuardar {
         
 	    response=consultarOrden(ordenesServicioRequest.getIdOrdenServicio(), connection);
 		
+	    if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
+			enviarCuenta(ordenesServicioRequest.getContratante(),connection);
+			if (Objects.nonNull(user)) {
+				generaCredencialesUtil.enviarCorreo(user, 
+						ordenesServicioRequest.getContratante().getCorreo(), 
+						ordenesServicioRequest.getContratante().getNomPersona(), 
+						ordenesServicioRequest.getContratante().getPrimerApellido(), 
+						ordenesServicioRequest.getContratante().getSegundoApellido(), contrasenia);
+				
+			}
+			
+		}
+	    
 		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
