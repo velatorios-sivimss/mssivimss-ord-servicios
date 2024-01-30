@@ -237,6 +237,7 @@ public class OrdenGuardar {
 	private void enviarCuenta(ContratanteRequest contratanteRequest,Connection conn) throws SQLException, IOException {
 		try(Statement statementc= conn.createStatement();ResultSet resultSet=statementc.executeQuery(reglasNegocioRepository.consultarUsuario(contratanteRequest.getIdPersona()))) {
 			// validar usuario no existe
+			user=null;
 			if (!resultSet.next()) {
 				log.info("enviarCuenta registrar el usuario {}",resultSet.getRow());
 				// insertar el usuario
@@ -317,7 +318,7 @@ public class OrdenGuardar {
 			
 		}
 	    
-		connection.commit();
+		//connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
 		if (ordenesServicioRequest.getIdEstatus()==1 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
