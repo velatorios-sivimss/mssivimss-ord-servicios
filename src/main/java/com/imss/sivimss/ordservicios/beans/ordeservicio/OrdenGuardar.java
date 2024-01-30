@@ -307,7 +307,7 @@ public class OrdenGuardar {
 		
 	    if (ordenesServicioRequest.getIdEstatus()==2 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
 			enviarCuenta(ordenesServicioRequest.getContratante(),connection);
-			if (Objects.nonNull(user)) {
+			if (Objects.nonNull(user) || user!=null) {
 				generaCredencialesUtil.enviarCorreo(user, 
 						ordenesServicioRequest.getContratante().getCorreo(), 
 						ordenesServicioRequest.getContratante().getNomPersona(), 
@@ -318,7 +318,7 @@ public class OrdenGuardar {
 			
 		}
 	    
-		//connection.commit();
+		connection.commit();
 		
 		// mandar a llamar el job con la clave tarea
 		if (ordenesServicioRequest.getIdEstatus()==1 && ordenesServicioRequest.getIdOrdenServicio()!=null) {
