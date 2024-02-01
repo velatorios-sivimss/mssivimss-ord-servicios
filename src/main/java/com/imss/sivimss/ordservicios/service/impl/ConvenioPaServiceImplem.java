@@ -117,7 +117,10 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt(this.BENEFICIARIO2))):String.valueOf(resultSet.getInt(this.BENEFICIARIO2)));
 
 				}
-				resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+				if(whereBeneficiarios.length()>0) {
+					resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+				}
+				
 				
 				while (resultSet.next()) {
 					
