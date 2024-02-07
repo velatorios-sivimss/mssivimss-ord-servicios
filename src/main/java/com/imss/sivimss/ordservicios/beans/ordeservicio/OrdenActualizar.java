@@ -939,6 +939,7 @@ public class OrdenActualizar {
 	private void enviarCuenta(ContratanteRequest contratanteRequest,Connection conn) throws SQLException, IOException {
 		try(Statement statementc= conn.createStatement();ResultSet resultSet=statementc.executeQuery(reglasNegocioRepository.consultarUsuario(contratanteRequest.getIdPersona()))) {
 			// validar usuario no existe
+			user=null;
 			if (!resultSet.next()) {
 				log.info("{}",resultSet.getRow());
 				// insertar el usuario
