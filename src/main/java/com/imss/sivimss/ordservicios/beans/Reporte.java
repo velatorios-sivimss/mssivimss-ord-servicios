@@ -98,6 +98,7 @@ public class Reporte {
 		.innerJoin(ConsultaConstantes.SVC_VELATORIO_SV, ConsultaConstantes.SOS_ID_VELATORIO_SV_ID_VELATORIO)
 		.innerJoin(ConsultaConstantes.SVC_DELEGACION_SD, ConsultaConstantes.SD_ID_DELEGACION_SV_ID_DELEGACION)
 		.leftJoin(ConsultaConstantes.SVT_USUARIOS_SU, ConsultaConstantes.SU_ID_USUARIO_SV_ID_USUARIO_ADMIN)
+		.innerJoin("SVC_PERSONA PE", "SU.ID_PERSONA=PE.ID_PERSONA")
 		.where(ConsultaConstantes.SOS_ID_ORDEN_SERVICIO_ID_ORDEN_SERVICIO).setParameter(ConsultaConstantes.ID_ORDEN_SERVICIO, idOrdenServicio).and("SSD.IND_ACTIVO = 1");
 		query = selectQueryUtil.build();
 		log.info(query);
@@ -128,6 +129,8 @@ public class Reporte {
 		.innerJoin(ConsultaConstantes.SVC_VELATORIO_SV, ConsultaConstantes.SOS_ID_VELATORIO_SV_ID_VELATORIO)
 		.innerJoin(ConsultaConstantes.SVC_DELEGACION_SD,ConsultaConstantes. SD_ID_DELEGACION_SV_ID_DELEGACION)
 		.leftJoin(ConsultaConstantes.SVT_USUARIOS_SU, ConsultaConstantes.SU_ID_USUARIO_SV_ID_USUARIO_ADMIN)
+		.innerJoin("SVC_PERSONA PE", "SU.ID_PERSONA=PE.ID_PERSONA")
+
 		.where(ConsultaConstantes.SOS_ID_ORDEN_SERVICIO_ID_ORDEN_SERVICIO).setParameter(ConsultaConstantes.ID_ORDEN_SERVICIO, idOrdenServicio).and("SSD.IND_ACTIVO = 1");
 		query = selectQueryUtil.build();
 		log.info(query);
@@ -155,6 +158,8 @@ public class Reporte {
 		.innerJoin(ConsultaConstantes.SVC_VELATORIO_SV, ConsultaConstantes.SOS_ID_VELATORIO_SV_ID_VELATORIO)
 		.innerJoin(ConsultaConstantes.SVC_DELEGACION_SD, ConsultaConstantes.SD_ID_DELEGACION_SV_ID_DELEGACION)
 		.leftJoin(ConsultaConstantes.SVT_USUARIOS_SU, ConsultaConstantes.SU_ID_USUARIO_SV_ID_USUARIO_ADMIN)
+		.innerJoin("SVC_PERSONA PE", "SU.ID_PERSONA=PE.ID_PERSONA")
+
 		.where(ConsultaConstantes.SOS_ID_ORDEN_SERVICIO_ID_ORDEN_SERVICIO).setParameter(ConsultaConstantes.ID_ORDEN_SERVICIO, idOrdenServicio).and("SDN.IND_ACTIVO = 1");
 		
 		query = selectQueryUtil.build();
@@ -181,6 +186,7 @@ public class Reporte {
 		.innerJoin(ConsultaConstantes.SVC_VELATORIO_SV, ConsultaConstantes.SOS_ID_VELATORIO_SV_ID_VELATORIO)
 		.innerJoin(ConsultaConstantes.SVC_DELEGACION_SD, ConsultaConstantes.SD_ID_DELEGACION_SV_ID_DELEGACION)
 		.leftJoin(ConsultaConstantes.SVT_USUARIOS_SU, ConsultaConstantes.SU_ID_USUARIO_SV_ID_USUARIO_ADMIN)
+		.innerJoin("SVC_PERSONA PE", "SU.ID_PERSONA=PE.ID_PERSONA")
 		.where(ConsultaConstantes.SOS_ID_ORDEN_SERVICIO_ID_ORDEN_SERVICIO).setParameter(ConsultaConstantes.ID_ORDEN_SERVICIO, idOrdenServicio).and("SDN.IND_ACTIVO = 1");
 		
 		query = selectQueryUtil.build();
