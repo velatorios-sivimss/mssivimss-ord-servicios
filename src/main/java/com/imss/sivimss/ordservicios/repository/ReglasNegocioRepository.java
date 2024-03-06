@@ -36,7 +36,7 @@ public class ReglasNegocioRepository {
 
 	private static final String ID_ORDEN_SERVICIO = "ID_ORDEN_SERVICIO";
 
-	private static final String CURRENT_DATE = "CURRENT_DATE()";
+	private static final String CURRENT_DATE = "CURRENT_TIMESTAMP()";
 	
 	@Value("${formato_fecha}")
 	private String fecha;
