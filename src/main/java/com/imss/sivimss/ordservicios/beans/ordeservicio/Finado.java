@@ -17,6 +17,7 @@ import com.imss.sivimss.ordservicios.model.request.FinadoRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
+import com.imss.sivimss.ordservicios.util.BitacoraUtil;
 
 @Service
 public class Finado {
@@ -52,7 +53,9 @@ public class Finado {
         			rs=statement.getGeneratedKeys();
         			if (rs.next()) {
         				finadoRequest.setIdPersona(rs.getInt(1));
-        			} 
+        			}
+        			String persona= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona());
+    				BitacoraUtil.insertarInformacion(connection, "SVC_PERSONA", 1, null, persona, idUsuarioAlta);
     			}
     			
         		
@@ -61,10 +64,17 @@ public class Finado {
 				if (rs.next()) {
     		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
 				}
+				String domicilio= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+				BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, null, domicilio, idUsuarioAlta);
             }else {
             	if (finadoRequest.getIdPersona()!=null) {
+    				String personaAnterior= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+
 					statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
+					String personaActual= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+
+					BitacoraUtil.insertarInformacion(connection, "SVC_PERSONA", 1, personaAnterior, personaActual, idUsuarioAlta);
 				    if (Objects.nonNull(finadoRequest.getCp())) {
 		    			if (finadoRequest.getCp().getIdDomicilio()==null) {
 		    				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
@@ -72,9 +82,15 @@ public class Finado {
 							if (rs.next()) {
 			    		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
 							}
-		    				
+							String domicilio= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+							BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, null, domicilio, idUsuarioAlta);
 						}else {
+							String domicilioAnterior= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+
 							statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+							String domicilioActual= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+							BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, domicilioAnterior, domicilioActual, idUsuarioAlta);
+
 						}		
 					}
 				}	
@@ -84,7 +100,11 @@ public class Finado {
 			statement.executeUpdate(reglasNegocioRepository.insertarFinado(finadoRequest,ordenServcio.getIdOrdenServicio(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
 			if (rs.next()) {
-				return rs.getInt(1);
+				Integer idFinado=rs.getInt(1);
+				String finado= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+idFinado);
+				BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 1, null, finado, idUsuarioAlta);
+
+				return idFinado;
 			}
 				
     	
@@ -110,7 +130,11 @@ public class Finado {
         		
 			rs=statement.getGeneratedKeys();
     		if (rs.next()) {
-    			return rs.getInt(1);
+    			Integer idFinado=rs.getInt(1);
+				String finado= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+idFinado);
+				BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 1, null, finado, idUsuarioAlta);
+
+    			return idFinado;
     		}
 		} finally {
 			if (statement!=null) {

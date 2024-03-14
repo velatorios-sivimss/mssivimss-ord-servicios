@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.imss.sivimss.ordservicios.model.request.InformacionServicioRequest;
 import com.imss.sivimss.ordservicios.model.request.InformacionServicioVelacionRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
+import com.imss.sivimss.ordservicios.util.BitacoraUtil;
 
 
 
@@ -31,7 +32,10 @@ public class InformacionServicio {
 			statement.executeUpdate(reglasNegocioRepository.insertarInformacionServicio(informacionServicioRequest, idOrdenServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
 			if (rs.next()) {
-				informacionServicioRequest.setIdInformacionServicio(rs.getInt(1));
+				Integer id=rs.getInt(1);
+				String contratante= BitacoraUtil.consultarInformacion(connection, "SVC_INFORMACION_SERVICIO", "ID_INFORMACION_SERVICIO = " + id);
+				BitacoraUtil.insertarInformacion(connection, "SVC_INFORMACION_SERVICIO", 1, null, contratante, idUsuarioAlta);
+				informacionServicioRequest.setIdInformacionServicio(id);
 			}
 			
 			if (informacionServicioRequest.getInformacionServicioVelacion()!=null) {
@@ -56,7 +60,10 @@ public class InformacionServicio {
 				statement.executeUpdate(reglasNegocioRepository.insertarDomicilio(informacionServicioVelacionRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 				rs=statement.getGeneratedKeys();
 				if (rs.next()) {
-				informacionServicioVelacionRequest.getCp().setIdDomicilio(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String contratante= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = " + id);
+					BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, null, contratante, idUsuarioAlta);
+				    informacionServicioVelacionRequest.getCp().setIdDomicilio(id);
 				}
 			}
 			
@@ -64,7 +71,10 @@ public class InformacionServicio {
 			statement.executeUpdate(reglasNegocioRepository.insertarInformacionServicioVelacion(informacionServicioVelacionRequest, idInformacionServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
 			if (rs.next()) {
-				informacionServicioVelacionRequest.setIdInformacionServicioVelacion(rs.getInt(1));
+				Integer idInformacionSer=rs.getInt(1);
+				String contratante= BitacoraUtil.consultarInformacion(connection, "SVC_INF_SERVICIO_VELACION", "ID_INF_SERVICIO_VELACION = " + idInformacionSer);
+				BitacoraUtil.insertarInformacion(connection, "SVC_INF_SERVICIO_VELACION", 1, null, contratante, idUsuarioAlta);
+				informacionServicioVelacionRequest.setIdInformacionServicioVelacion(idInformacionSer);
 			}
 		} finally {
 			if (statement!=null) {

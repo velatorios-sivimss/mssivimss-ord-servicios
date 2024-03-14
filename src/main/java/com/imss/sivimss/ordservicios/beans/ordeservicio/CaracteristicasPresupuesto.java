@@ -13,6 +13,7 @@ import com.imss.sivimss.ordservicios.model.request.CaracteristicasPaqueteDetalle
 import com.imss.sivimss.ordservicios.model.request.CaracteristicasPresupuestoRequest;
 import com.imss.sivimss.ordservicios.model.request.OrdenesServicioRequest;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
+import com.imss.sivimss.ordservicios.util.BitacoraUtil;
 
 @Service
 public class CaracteristicasPresupuesto {
@@ -87,7 +88,11 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					caracteristicasPresupuestoRequest.getCaracteristicasPaquete().setIdCaracteristicasPaquete(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String contratante= BitacoraUtil.consultarInformacion(connection, "SVC_CARACTERISTICAS_PAQUETE", "ID_CARAC_PAQUETE = "+ id);
+					BitacoraUtil.insertarInformacion(connection, "SVC_CARACTERISTICAS_PAQUETE", 1, null, contratante, idUsuarioAlta);
+
+					caracteristicasPresupuestoRequest.getCaracteristicasPaquete().setIdCaracteristicasPaquete(id);
 				}
 				// detalle caracteristicas paquete
 				detalleCaracteristicasPaquete(caracteristicasPresupuestoRequest, idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta);
@@ -103,7 +108,11 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().setIdCaracteristicasPresupuesto(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String contratante= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PRESUPUESTO", "ID_CARAC_PRESUPUESTO = " + id);
+					BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUPUESTO", 1, null, contratante, idUsuarioAlta);
+
+					caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().setIdCaracteristicasPresupuesto(id);
 				}
 				// detalle caracteristicas presupuesto
 				detalleCaracteristicasPresupuesto(caracteristicasPresupuestoRequest, idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta);
@@ -166,7 +175,11 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					detalleRequest.setIdPaqueteDetalle(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PAQ", "ID_DETALLE_CARAC = " + id);
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PAQ", 1, null, detalle, idUsuarioAlta);
+
+					detalleRequest.setIdPaqueteDetalle(id);
 				}
 				if ((detalleRequest.getIdTipoServicio()!=null && detalleRequest.getIdTipoServicio()==4) && 
 						detalleRequest.getServicioDetalleTraslado()!=null) {
@@ -177,7 +190,11 @@ public class CaracteristicasPresupuesto {
 							Statement.RETURN_GENERATED_KEYS);
 					rs = statement.getGeneratedKeys();
 					if (rs.next()) {
-						detalleRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(rs.getInt(1));
+						Integer idTraslado=rs.getInt(1);
+						String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_CARAC_PAQ_TRAS", "ID_CARAC_PRESUP_TRASLADO = "+ idTraslado);
+						BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_CARAC_PAQ_TRAS", 1, null, detalle, idUsuarioAlta);
+
+						detalleRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(idTraslado);
 						detalleRequest.getServicioDetalleTraslado().setIdDetalleCaracteristicas(detalleRequest.getIdPaqueteDetalle());
 					}
 				}
@@ -252,7 +269,11 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					detallePresupuestoRequest.setIdPaqueteDetallePresupuesto(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PRESUP", " ID_DETALLE_CARACTERISTICAS = " + String.valueOf(id));
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PRESUP", 1, null, detalle, idUsuarioAlta);
+
+					detallePresupuestoRequest.setIdPaqueteDetallePresupuesto(id);
 				}
 				if ((detallePresupuestoRequest.getEsDonado()!=null && detallePresupuestoRequest.getEsDonado()==1) 
 						&& detallePresupuestoRequest.getIdCategoria()==1) {
@@ -319,7 +340,10 @@ public class CaracteristicasPresupuesto {
 					Statement.RETURN_GENERATED_KEYS);
 			rs = statement.getGeneratedKeys();
 			if (rs.next()) {
-				detallePresupuestoRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(rs.getInt(1));
+				Integer id=rs.getInt(1);
+				String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_CARAC_PRESUP_TRASLADO", " ID_CARAC_PRESUP_TRASLADO = " + id);
+				BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_CARAC_PRESUP_TRASLADO", 1, null, detalle, idUsuarioAlta);
+				detallePresupuestoRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(id);
 				detallePresupuestoRequest.getServicioDetalleTraslado().setIdDetalleCaracteristicas(detallePresupuestoRequest.getIdPaqueteDetallePresupuesto());
 			}
 		}
