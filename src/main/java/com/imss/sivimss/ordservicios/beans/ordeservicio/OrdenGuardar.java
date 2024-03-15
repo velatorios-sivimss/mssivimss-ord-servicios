@@ -25,6 +25,7 @@ import com.imss.sivimss.ordservicios.model.request.UsuarioDto;
 import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
+import com.imss.sivimss.ordservicios.util.BitacoraUtil;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
@@ -387,7 +388,11 @@ public class OrdenGuardar {
 					ordenesServicioRequest.getIdEstatus(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
 			if (rs.next()) {
-				ordenesServicioRequest.setIdOrdenServicio(rs.getInt(1));
+				Integer id=rs.getInt(1);
+				String orden= BitacoraUtil.consultarInformacion(connection, "SVC_ORDEN_SERVICIO", "ID_ORDEN_SERVICIO = "+id);
+				BitacoraUtil.insertarInformacion(connection, "SVC_ORDEN_SERVICIO", 1, null, orden, idUsuarioAlta);
+
+				ordenesServicioRequest.setIdOrdenServicio(id);
 			}
 		} finally {
 			if (statement!=null) {
