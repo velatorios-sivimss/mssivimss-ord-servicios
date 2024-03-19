@@ -410,7 +410,8 @@ public class CaracteristicasPresupuesto {
 								"SVC_SALIDA_DON_FINADOS_TEMP", ordenesServicioRequest.getFinado().getNomPersona(),
 								ordenesServicioRequest.getFinado().getPrimerApellido(),
 								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
-								idUsuarioAlta));
+								idUsuarioAlta),
+								Statement.RETURN_GENERATED_KEYS);
 						rs = statement.getGeneratedKeys();
 						if (rs.next()) {
 						     Integer idSalidaDonacionFinados = rs.getInt(1);
@@ -467,7 +468,8 @@ public class CaracteristicasPresupuesto {
 								"SVC_SALIDA_DONACION_FINADOS", ordenesServicioRequest.getFinado().getNomPersona(),
 								ordenesServicioRequest.getFinado().getPrimerApellido(),
 								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
-								idUsuarioAlta));
+								idUsuarioAlta),
+								Statement.RETURN_GENERATED_KEYS);
 						rs = statement.getGeneratedKeys();
 						if (rs.next()) {
 						     Integer idSalidaDonacionFinados = rs.getInt(1);
@@ -477,6 +479,8 @@ public class CaracteristicasPresupuesto {
 					}
 				}
 
+				String ataud =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVT_INVENTARIO_ARTICULO", "ID_INVE_ARTICULO = "+ idInventario);
+				BitacoraUtil.insertarInformacion(statement.getConnection(), "SVT_INVENTARIO_ARTICULO", 1, null, ataud, idUsuarioAlta);
 				statement.executeUpdate(
 						reglasNegocioRepository.actualizarAtaudTipoAsignacion(idInventario, 4, idUsuarioAlta, null),
 						Statement.RETURN_GENERATED_KEYS);
