@@ -41,7 +41,10 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					caracteristicasPresupuestoRequest.getCaracteristicasPaquete().setIdCaracteristicasPaquete(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String contratante= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", "ID_CARAC_PAQUETE = "+ id);
+					BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 1, null, contratante, idUsuarioAlta);
+					caracteristicasPresupuestoRequest.getCaracteristicasPaquete().setIdCaracteristicasPaquete(id);
 				}
 				// detalle caracteristicas paquete temp
 				detalleCaracteristicasPaqueteTemp(caracteristicasPresupuestoRequest, idUsuarioAlta);
@@ -53,7 +56,10 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().setIdCaracteristicasPresupuesto(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String contratante= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", "ID_CARAC_PRESUPUESTO = " + id);
+					BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 1, null, contratante, idUsuarioAlta);
+					caracteristicasPresupuestoRequest.getCaracteristicasDelPresupuesto().setIdCaracteristicasPresupuesto(id);
 				}
 				// detalle caracteristicas presupuesto temp
 				detalleCaracteristicasPresupuestoTemp(caracteristicasPresupuestoRequest, idOrdenServicio.getIdOrdenServicio(), idUsuarioAlta);
@@ -148,14 +154,21 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					detalleRequest.setIdPaqueteDetalle(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PAQ_TEMP", "ID_DETALLE_CARAC = " + id);
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PAQ_TEMP", 1, null, detalle, idUsuarioAlta);
+					detalleRequest.setIdPaqueteDetalle(id);
 				}
 				if ((detalleRequest.getIdTipoServicio()!=null && detalleRequest.getIdTipoServicio()==4) && detalleRequest.getServicioDetalleTraslado()!=null) {
 					statement.executeUpdate(reglasNegocioRepository.insertarDetalleCaracteristicasPaqueteTraslado("SVC_CARAC_PAQ_TRAS_TEMP", detalleRequest.getServicioDetalleTraslado(), detalleRequest.getIdPaqueteDetalle(), idUsuarioAlta),
 							Statement.RETURN_GENERATED_KEYS);
 					rs = statement.getGeneratedKeys();
 					if (rs.next()) {
-						detalleRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(rs.getInt(1));
+						Integer idTraslado=rs.getInt(1);
+						String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_CARAC_PAQ_TRAS_TEMP", "ID_CARAC_PRESU_TRASLADO = "+ idTraslado);
+						BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_CARAC_PAQ_TRAS_TEMP", 1, null, detalle, idUsuarioAlta);
+
+						detalleRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(idTraslado);
 						detalleRequest.getServicioDetalleTraslado().setIdDetalleCaracteristicas(detalleRequest.getIdPaqueteDetalle());
 					}
 				}
@@ -215,7 +228,11 @@ public class CaracteristicasPresupuesto {
 						Statement.RETURN_GENERATED_KEYS);
 				rs = statement.getGeneratedKeys();
 				if (rs.next()) {
-					detallePresupuestoRequest.setIdPaqueteDetallePresupuesto(rs.getInt(1));
+					Integer id=rs.getInt(1);
+					String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PRESUP_TEMP", "ID_DETALLE_CARACTERISTICAS = " + id);
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_DETALLE_CARAC_PRESUP_TEMP", 1, null, detalle, idUsuarioAlta);
+
+					detallePresupuestoRequest.setIdPaqueteDetallePresupuesto(id);
 				}
 				if ((detallePresupuestoRequest.getEsDonado()!=null && detallePresupuestoRequest.getEsDonado()==1) 
 						&& detallePresupuestoRequest.getIdCategoria()==1) {
@@ -250,7 +267,10 @@ public class CaracteristicasPresupuesto {
 					Statement.RETURN_GENERATED_KEYS);
 			rs = statement.getGeneratedKeys();
 			if (rs.next()) {
-				detallePresupuestoRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(rs.getInt(1));
+				Integer idTraslado=rs.getInt(1);
+				String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_CARAC_PRESUP_TRAS_TEMP", "ID_CARAC_PRESU_TRASLADO = "+ idTraslado);
+				BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_CARAC_PRESUP_TRAS_TEMP", 1, null, detalle, idUsuarioAlta);
+				detallePresupuestoRequest.getServicioDetalleTraslado().setIdCaracteristicasPaqueteDetalleTraslado(idTraslado);
 				detallePresupuestoRequest.getServicioDetalleTraslado().setIdDetalleCaracteristicas(detallePresupuestoRequest.getIdPaqueteDetallePresupuesto());
 			}
 		}
@@ -367,15 +387,23 @@ public class CaracteristicasPresupuesto {
 												.getCaracteristicasPaquete().getOtorgamiento(),
 										ordenesServicioRequest.getContratante().getIdContratante(), idUsuarioAlta),
 								Statement.RETURN_GENERATED_KEYS);
+				
+
 				rs = statement.getGeneratedKeys();
 
 				if (rs.next()) {
 					Integer idSalidaDonacion = rs.getInt(1);
+					String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION_TEMP", "ID_SALIDA_DONACION = "+ idSalidaDonacion);
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION_TEMP", 1, null, detalle, idUsuarioAlta);
 
 					statement.executeUpdate(
 							reglasNegocioRepository.insertarSalidaDonacionAtaud("SVC_SALIDA_DON_ATAUDES_TEMP",
 									idSalidaDonacion, idInventario, idUsuarioAlta),
-							Statement.RETURN_GENERATED_KEYS);
+							Statement.RETURN_GENERATED_KEYS);	
+					
+					String detalleDonacion =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_SALIDA_DON_ATAUDES_TEMP", "ID_SALIDA_DONACION = "+ idSalidaDonacion);
+				    BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_SALIDA_DON_ATAUDES_TEMP", 1, null, detalleDonacion, idUsuarioAlta);
+
 					rs = statement.getGeneratedKeys();
 					if (rs.next()) {
 						statement.executeUpdate(reglasNegocioRepository.insertarSalidaDonacionFinado(
@@ -383,6 +411,12 @@ public class CaracteristicasPresupuesto {
 								ordenesServicioRequest.getFinado().getPrimerApellido(),
 								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
 								idUsuarioAlta));
+						rs = statement.getGeneratedKeys();
+						if (rs.next()) {
+						     Integer idSalidaDonacionFinados = rs.getInt(1);
+						     String detalleDonacionFinados =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_SALIDA_DON_FINADOS_TEMP", "ID_SALIDA_DONACION_FINADOS = "+ idSalidaDonacionFinados);
+						     BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_SALIDA_DON_FINADOS_TEMP", 1, null, detalleDonacionFinados, idUsuarioAlta);
+						}
 					}
 				}
 			}
@@ -415,19 +449,31 @@ public class CaracteristicasPresupuesto {
 
 				if (rs.next()) {
 					Integer idSalidaDonacion = rs.getInt(1);
-
+					String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION", "ID_SALIDA_DONACION = "+ idSalidaDonacion);
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION", 1, null, detalle, idUsuarioAlta);
 					statement
 							.executeUpdate(
 									reglasNegocioRepository.insertarSalidaDonacionAtaud("SVC_SALIDA_DONACION_ATAUDES",
 											idSalidaDonacion, idInventario, idUsuarioAlta),
 									Statement.RETURN_GENERATED_KEYS);
+					
+					String detalleDonacion =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION_ATAUDES", "ID_SALIDA_DONACION = "+ idSalidaDonacion);
+					BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION_ATAUDES", 1, null, detalleDonacion, idUsuarioAlta);
+
 					rs = statement.getGeneratedKeys();
 					if (rs.next()) {
+						
 						statement.executeUpdate(reglasNegocioRepository.insertarSalidaDonacionFinado(
 								"SVC_SALIDA_DONACION_FINADOS", ordenesServicioRequest.getFinado().getNomPersona(),
 								ordenesServicioRequest.getFinado().getPrimerApellido(),
 								ordenesServicioRequest.getFinado().getSegundoApellido(), idSalidaDonacion,
 								idUsuarioAlta));
+						rs = statement.getGeneratedKeys();
+						if (rs.next()) {
+						     Integer idSalidaDonacionFinados = rs.getInt(1);
+						     String detalleDonacionFinados =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION_FINADOS", "ID_SALIDA_DONACION_FINADOS = "+ idSalidaDonacionFinados);
+						     BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_SALIDA_DONACION_FINADOS", 1, null, detalleDonacionFinados, idUsuarioAlta);
+						}
 					}
 				}
 

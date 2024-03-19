@@ -415,7 +415,11 @@ public class OrdenGuardar {
 					ordenesServicioRequest.getCaracteristicasPresupuesto().getCaracteristicasDelPresupuesto().getTotalPresupuesto(),
 					ordenesServicioRequest.getIdEstatus(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
 			rs=statement.getGeneratedKeys();
-			
+			if (rs.next()) {
+				Integer id=rs.getInt(1);
+				String orden= BitacoraUtil.consultarInformacion(connection, "SVT_PAGO_BITACORA", "ID_PAGO_BITACORA = "+id);
+				BitacoraUtil.insertarInformacion(connection, "SVT_PAGO_BITACORA", 1, null, orden, idUsuarioAlta);
+			}
 		
 		} finally {
 			if (statement!=null) {
