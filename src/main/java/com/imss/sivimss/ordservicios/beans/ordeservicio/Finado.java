@@ -174,15 +174,14 @@ public class Finado {
 				BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, domicilio, domicilioActual, idUsuarioAlta);
 
 			}
-			String finado= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+finadoRequest.getIdFinado());
-
+		
 			statement.executeUpdate(reglasNegocioRepository.insertarFinadoPa(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
         		
 			rs=statement.getGeneratedKeys();
     		if (rs.next()) {
     			Integer idFinado=rs.getInt(1);
     			String finadoActual= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+idFinado);
-    			BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 2, finado, finadoActual, idUsuarioAlta);
+    			BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 2, null, finadoActual, idUsuarioAlta);
     			return idFinado;
     		}
 		} finally {

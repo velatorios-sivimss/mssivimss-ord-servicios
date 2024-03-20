@@ -1065,37 +1065,37 @@ public class OrdenActualizar {
 			// actualizarCaracteristicasPaqueteTemporal
 			String carcatPaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 
 					"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 1, null, carcatPaqueteTemp, usuario.getIdUsuario());
+			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 2, null, carcatPaqueteTemp, usuario.getIdUsuario());
 			
 			// actualizarCaracteristicasPaqueteDetalleTemp
 			String carcatDetallePaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 
 					"ID_CARAC_PAQUETE="+" (SELECT DISTINCT ID_CARAC_PAQUETE "
 							+ " FROM SVC_CARAC_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + ordenesServicioRequest.getIdOrdenServicio() + ")"+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 1, null, carcatDetallePaqueteTemp, usuario.getIdUsuario());
+			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 2, null, carcatDetallePaqueteTemp, usuario.getIdUsuario());
 			
 			// actualizarCaracteristicasPresupuestoTemporal
 			String carcatPresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 
 					"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 1, null, carcatPresupuestoTemp, usuario.getIdUsuario());
+			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 2, null, carcatPresupuestoTemp, usuario.getIdUsuario());
 			
 			// actualizarCaracteristicasPresuestoDetalleTemp
 			String carcatDetallePresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 
-					"ID_CARAC_PRESUPUESTO="+" (SELECT DISTINCT ID_CARAC_PAQUETE "
+					"ID_CARAC_PRESUPUESTO="+" (SELECT DISTINCT ID_CARAC_PRESUPUESTO "
 							+ " FROM SVC_CARAC_PRESUP_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + ordenesServicioRequest.getIdOrdenServicio() + ")"+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 1, null, carcatDetallePresupuestoTemp, usuario.getIdUsuario());
+			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 2, null, carcatDetallePresupuestoTemp, usuario.getIdUsuario());
 			
 			// actualizarDonacionTemporal
 			String donacion= BitacoraUtil.consultarInformacion(connection, "SVC_DONACION_ORDEN_SERV_TEMP", 
-					"ID_ORDEN_SERVICIO="+ ordenesServicioRequest.getIdOrdenServicio() +" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_DONACION_ORDEN_SERV_TEMP", 1, null, donacion, usuario.getIdUsuario());
+					"ID_ORDEN_SERVICIO = "+ ordenesServicioRequest.getIdOrdenServicio() +" AND IND_ACTIVO = 1");
+			BitacoraUtil.insertarInformacion(connection, "SVC_DONACION_ORDEN_SERV_TEMP", 2, null, donacion, usuario.getIdUsuario());
 			
 			// desactivarInformacionServicio
 			String informacion= BitacoraUtil.consultarInformacion(connection, "SVC_INFORMACION_SERVICIO", "ID_INFORMACION_SERVICIO = " + ordenesServicioRequest.getIdOrdenServicio());
-			BitacoraUtil.insertarInformacion(connection, "SVC_INFORMACION_SERVICIO", 1, null, informacion, usuario.getIdUsuario());
+			BitacoraUtil.insertarInformacion(connection, "SVC_INFORMACION_SERVICIO", 2, null, informacion, usuario.getIdUsuario());
 			
 			// desactivarSalidaDonacionTemp
 			String salidaDonacion= BitacoraUtil.consultarInformacion(connection, "SVC_SALIDA_DONACION_TEMP", "ID_ORDEN_SERVICIO = " + ordenesServicioRequest.getIdOrdenServicio());
-			BitacoraUtil.insertarInformacion(connection, "SVC_SALIDA_DONACION_TEMP", 1, null, salidaDonacion, usuario.getIdUsuario());
+			BitacoraUtil.insertarInformacion(connection, "SVC_SALIDA_DONACION_TEMP", 2, null, salidaDonacion, usuario.getIdUsuario());
 			
 			statementc = connection.createStatement();
 			statementc.executeUpdate(reglasNegocioRepository
