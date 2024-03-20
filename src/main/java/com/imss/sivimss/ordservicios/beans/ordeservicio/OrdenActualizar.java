@@ -40,6 +40,7 @@ import com.imss.sivimss.ordservicios.model.response.OrdenServicioResponse;
 import com.imss.sivimss.ordservicios.model.response.PanteonResponse;
 import com.imss.sivimss.ordservicios.repository.ReglasNegocioRepository;
 import com.imss.sivimss.ordservicios.util.AppConstantes;
+import com.imss.sivimss.ordservicios.util.BitacoraUtil;
 import com.imss.sivimss.ordservicios.util.ConvertirGenerico;
 import com.imss.sivimss.ordservicios.util.Database;
 import com.imss.sivimss.ordservicios.util.DatosRequest;
@@ -1032,10 +1033,19 @@ public class OrdenActualizar {
 		try {
 			if (!(Objects.equals(ordenesServicioRequest.getFinado().getIdTipoOrden(), idEstatusTipoOrden))) {
 				statement = connection.createStatement();
+				
 				desactivarRegistrosTemp(ordenesServicioRequest, usuario);
+				
+				String detalle =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_ORDEN_SERVICIO", "ID_ORDEN_SERVICIO = " + ordenesServicioRequest.getIdOrdenServicio());
+				
 				statement.executeUpdate(
 						reglasNegocioRepository.actualizarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio()));
+				String detalleOrden =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVC_ORDEN_SERVICIO", "ID_ORDEN_SERVICIO = " + ordenesServicioRequest.getIdOrdenServicio());
+				BitacoraUtil.insertarInformacion(statement.getConnection(), "SVC_ORDEN_SERVICIO", 1, detalle, detalleOrden, usuario.getIdUsuario());
 				desactivado = true;
+				
+				
+
 			}
 		} finally {
 			if (statement != null) {
@@ -1052,6 +1062,40 @@ public class OrdenActualizar {
 		consultarEstatusOrden(ordenesServicioRequest.getIdOrdenServicio());
 		Statement statementc=null;
 		try {
+			// actualizarCaracteristicasPaqueteTemporal
+			String carcatPaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 
+					"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
+			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 1, null, carcatPaqueteTemp, usuario.getIdUsuario());
+			
+			// actualizarCaracteristicasPaqueteDetalleTemp
+			String carcatDetallePaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 
+					"ID_CARAC_PAQUETE="+" (SELECT DISTINCT ID_CARAC_PAQUETE "
+							+ " FROM SVC_CARAC_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + ordenesServicioRequest.getIdOrdenServicio() + ")"+" AND IND_ACTIVO = 1");
+			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 1, null, carcatDetallePaqueteTemp, usuario.getIdUsuario());
+			
+			// actualizarCaracteristicasPresupuestoTemporal
+			String carcatPresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 
+					"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
+			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 1, null, carcatPresupuestoTemp, usuario.getIdUsuario());
+			
+			// actualizarCaracteristicasPresuestoDetalleTemp
+			String carcatDetallePresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 
+					"ID_CARAC_PRESUPUESTO="+" (SELECT DISTINCT ID_CARAC_PAQUETE "
+							+ " FROM SVC_CARAC_PRESUP_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + ordenesServicioRequest.getIdOrdenServicio() + ")"+" AND IND_ACTIVO = 1");
+			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 1, null, carcatDetallePresupuestoTemp, usuario.getIdUsuario());
+			
+			// actualizarDonacionTemporal
+			String donacion= BitacoraUtil.consultarInformacion(connection, "SVC_DONACION_ORDEN_SERV_TEMP", 
+					"ID_ORDEN_SERVICIO="+ ordenesServicioRequest.getIdOrdenServicio() +" AND IND_ACTIVO = 1");
+			BitacoraUtil.insertarInformacion(connection, "SVC_DONACION_ORDEN_SERV_TEMP", 1, null, donacion, usuario.getIdUsuario());
+			
+			// desactivarInformacionServicio
+			String informacion= BitacoraUtil.consultarInformacion(connection, "SVC_INFORMACION_SERVICIO", "ID_INFORMACION_SERVICIO = " + ordenesServicioRequest.getIdOrdenServicio());
+			BitacoraUtil.insertarInformacion(connection, "SVC_INFORMACION_SERVICIO", 1, null, informacion, usuario.getIdUsuario());
+			
+			// desactivarSalidaDonacionTemp
+			String salidaDonacion= BitacoraUtil.consultarInformacion(connection, "SVC_SALIDA_DONACION_TEMP", "ID_ORDEN_SERVICIO = " + ordenesServicioRequest.getIdOrdenServicio());
+			BitacoraUtil.insertarInformacion(connection, "SVC_SALIDA_DONACION_TEMP", 1, null, salidaDonacion, usuario.getIdUsuario());
 			
 			statementc = connection.createStatement();
 			statementc.executeUpdate(reglasNegocioRepository
@@ -1158,10 +1202,15 @@ public class OrdenActualizar {
 			Connection con) throws SQLException {
 		try {
 			statement = con.createStatement();
+			String orden= BitacoraUtil.consultarInformacion(connection, "SVC_ORDEN_SERVICIO", "ID_ORDEN_SERVICIO = "+ordenesServicioRequest.getIdOrdenServicio());
+
 			statement.executeUpdate(reglasNegocioRepository.actualizarOrdenServicio(
 					ordenesServicioRequest.getIdOrdenServicio(), ordenesServicioRequest.getFolio(),
 					ordenesServicioRequest.getIdParentesco(), ordenesServicioRequest.getIdContratantePf(),
 					ordenesServicioRequest.getIdEstatus(), idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+			String ordenActual= BitacoraUtil.consultarInformacion(connection, "SVC_ORDEN_SERVICIO", "ID_ORDEN_SERVICIO = "+ordenesServicioRequest.getIdOrdenServicio());
+			BitacoraUtil.insertarInformacion(connection, "SVC_ORDEN_SERVICIO", 2, orden, ordenActual, idUsuarioAlta);
+
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -1188,6 +1237,11 @@ public class OrdenActualizar {
 							ordenesServicioRequest.getIdEstatus(), idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
 			rs = statement.getGeneratedKeys();
+			if (rs.next()) {
+				Integer id=rs.getInt(1);
+				String orden= BitacoraUtil.consultarInformacion(connection, "SVT_PAGO_BITACORA", "ID_PAGO_BITACORA = "+id);
+				BitacoraUtil.insertarInformacion(connection, "SVT_PAGO_BITACORA", 1, null, orden, idUsuarioAlta);
+			}
 
 		} finally {
 			if (statement != null) {

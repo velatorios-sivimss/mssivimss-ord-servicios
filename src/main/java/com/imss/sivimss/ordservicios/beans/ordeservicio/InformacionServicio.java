@@ -90,9 +90,11 @@ public class InformacionServicio {
 	public void actualizarInformacionServicio(InformacionServicioRequest informacionServicioRequest, Integer idOrdenServicio, Integer idUsuarioAlta, Connection connection) throws SQLException {
 		try {
 			statement=connection.createStatement();
-
+			String informacion= BitacoraUtil.consultarInformacion(connection, "SVC_INFORMACION_SERVICIO", "ID_INFORMACION_SERVICIO = "+informacionServicioRequest.getIdInformacionServicio());
 			statement.executeUpdate(reglasNegocioRepository.desactivarInformacionServicio(idOrdenServicio, idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
-			
+			String informacionActual= BitacoraUtil.consultarInformacion(connection, "SVC_INFORMACION_SERVICIO", "ID_INFORMACION_SERVICIO = "+informacionServicioRequest.getIdInformacionServicio());
+			BitacoraUtil.insertarInformacion(connection, "SVC_INFORMACION_SERVICIO", 2, informacion, informacionActual, idUsuarioAlta);
+
 			insertarInformacionServicio(informacionServicioRequest,idOrdenServicio,idUsuarioAlta,connection);
 			
 		} finally {

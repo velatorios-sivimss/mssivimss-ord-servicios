@@ -111,15 +111,25 @@ public class Contratante {
 			
 			statement = connection.createStatement();
 			
-			
+			String domicilioAnterior= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+contratanteRequest.getCp().getIdDomicilio().toString());
 			statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(contratanteRequest.getCp(), idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
+			String domicilioActual= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+contratanteRequest.getCp().getIdDomicilio().toString());
+			BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 2, domicilioAnterior, domicilioActual, idUsuarioAlta);
 
+			
+			String personaAnterior= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+contratanteRequest.getIdPersona().toString());
 			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(contratanteRequest, idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
-			
+			String personaActual= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+contratanteRequest.getIdPersona().toString());
+			BitacoraUtil.insertarInformacion(connection, "SVC_PERSONA", 2, personaAnterior, personaActual, idUsuarioAlta);
+
+			String contratanteAnterior= BitacoraUtil.consultarInformacion(connection, "SVC_CONTRATANTE", "ID_CONTRATANTE = "+String.valueOf(contratanteRequest.getIdContratante()));
 			statement.executeUpdate(reglasNegocioRepository.actualizarContratante(contratanteRequest, idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
+			String contratanteActual= BitacoraUtil.consultarInformacion(connection, "SVC_CONTRATANTE", "ID_CONTRATANTE = "+String.valueOf(contratanteRequest.getIdContratante()));
+			BitacoraUtil.insertarInformacion(connection, "SVC_CONTRATANTE", 2, contratanteAnterior, contratanteActual, idUsuarioAlta);
+
 			
 			return contratanteRequest.getIdContratante();
 		} finally {

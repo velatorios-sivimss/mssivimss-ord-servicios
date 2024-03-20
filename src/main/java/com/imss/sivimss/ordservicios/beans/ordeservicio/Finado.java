@@ -160,18 +160,30 @@ public class Finado {
 				
 			}
 			
-			
+			String personaAnterior= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+
 			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
+			String personaActual= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+			BitacoraUtil.insertarInformacion(connection, "SVC_PERSONA", 1, personaAnterior, personaActual, idUsuarioAlta);
+
 			if (Objects.nonNull(finadoRequest.getCp())) {
+				String domicilio= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
 				statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+				String domicilioActual= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+				BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, domicilio, domicilioActual, idUsuarioAlta);
+
 			}
-    		
+			String finado= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+finadoRequest.getIdFinado());
+
 			statement.executeUpdate(reglasNegocioRepository.insertarFinadoPa(finadoRequest,idOrdenServicio,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
         		
 			rs=statement.getGeneratedKeys();
     		if (rs.next()) {
-    			return rs.getInt(1);
+    			Integer idFinado=rs.getInt(1);
+    			String finadoActual= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+idFinado);
+    			BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 2, finado, finadoActual, idUsuarioAlta);
+    			return idFinado;
     		}
 		} finally {
 			if (statement!=null) {
@@ -201,6 +213,9 @@ public class Finado {
 							rs=statement.getGeneratedKeys();
 							if (rs.next()) {
 								finadoRequest.setIdPersona(rs.getInt(1));
+								String personaActual= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+								BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 1, null, personaActual, idUsuarioAlta);
+
 							} 
 						}
 	    				
@@ -211,20 +226,33 @@ public class Finado {
 					rs=statement.getGeneratedKeys();
 					if (rs.next()) {
 	    		    	finadoRequest.getCp().setIdDomicilio(rs.getInt(1));
+	    		    	String domicilioActual= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+	    		    	BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 1, null, domicilioActual, idUsuarioAlta);
+
+
 					}
 				}else {
-					
+					    String domicilioAnterior= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
 						statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(), idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);	
+						String domicilioActual= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+						BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 2, domicilioAnterior, domicilioActual, idUsuarioAlta);
+
+						String personaAnterior= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
 						statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
+						String personaActual= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+						BitacoraUtil.insertarInformacion(connection, "SVC_PERSONA", 2, personaAnterior, personaActual, idUsuarioAlta);
+
 				  }
 				
 			    }
 	
+			    String finado= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+finadoRequest.getIdFinado());
 				statement.executeUpdate(reglasNegocioRepository.actualizarFinado(finadoRequest, idUsuarioAlta),
 						Statement.RETURN_GENERATED_KEYS);
-			
+				String finadoActual= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+finadoRequest.getIdFinado());
+    			BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 2, finado, finadoActual, idUsuarioAlta);
 			
 		} finally {
 			if (statement!=null) {
@@ -248,18 +276,31 @@ public class Finado {
 				throw new BadRequestException(HttpStatus.BAD_REQUEST,AppConstantes.ERROR_GUARDAR);
 				
 			}
-			
+			String personaAnterior= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+
 			statement.executeUpdate(reglasNegocioRepository.actualizarPersona(finadoRequest, idUsuarioAlta),
 					Statement.RETURN_GENERATED_KEYS);
+			String personaActual= BitacoraUtil.consultarInformacion(connection, "SVC_PERSONA", "ID_PERSONA="+finadoRequest.getIdPersona().toString());
+			BitacoraUtil.insertarInformacion(connection, "SVC_PERSONA", 2, personaAnterior, personaActual, idUsuarioAlta);
+
 			if (Objects.nonNull(finadoRequest.getCp())) {
+				String domicilioAnterior= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+
 				statement.executeUpdate(reglasNegocioRepository.actualizarDomicilio(finadoRequest.getCp(),idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
+				String domicilioActual= BitacoraUtil.consultarInformacion(connection, "SVT_DOMICILIO", "ID_DOMICILIO = "+finadoRequest.getCp().getIdDomicilio().toString());
+				BitacoraUtil.insertarInformacion(connection, "SVT_DOMICILIO", 2, domicilioAnterior, domicilioActual, idUsuarioAlta);
+
+
 			}
-    		
+			String finado= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+finadoRequest.getIdFinado());
 			statement.executeUpdate(reglasNegocioRepository.actualizarFinado(finadoRequest,idUsuarioAlta), Statement.RETURN_GENERATED_KEYS);
         		
 			rs=statement.getGeneratedKeys();
     		if (rs.next()) {
-    			return rs.getInt(1);
+    			Integer idFinado=rs.getInt(1);
+    			String finadoActual= BitacoraUtil.consultarInformacion(connection, "SVC_FINADO", "ID_FINADO = "+idFinado);
+    			BitacoraUtil.insertarInformacion(connection, "SVC_FINADO", 2, finado, finadoActual, idUsuarioAlta);
+    			return idFinado;
     		}
 		} finally {
 			if (statement!=null) {

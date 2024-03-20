@@ -480,11 +480,12 @@ public class CaracteristicasPresupuesto {
 				}
 
 				String ataud =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVT_INVENTARIO_ARTICULO", "ID_INVE_ARTICULO = "+ idInventario);
-				BitacoraUtil.insertarInformacion(statement.getConnection(), "SVT_INVENTARIO_ARTICULO", 1, null, ataud, idUsuarioAlta);
 				statement.executeUpdate(
 						reglasNegocioRepository.actualizarAtaudTipoAsignacion(idInventario, 4, idUsuarioAlta, null),
 						Statement.RETURN_GENERATED_KEYS);
+				String ataudActual =BitacoraUtil.consultarInformacion(statement.getConnection(), "SVT_INVENTARIO_ARTICULO", "ID_INVE_ARTICULO = "+ idInventario);
 
+				BitacoraUtil.insertarInformacion(statement.getConnection(), "SVT_INVENTARIO_ARTICULO", 1, ataud, ataudActual, idUsuarioAlta);
 			}
 		}
 		} finally {
