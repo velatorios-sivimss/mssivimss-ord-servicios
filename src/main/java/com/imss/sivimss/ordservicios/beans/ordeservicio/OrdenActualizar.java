@@ -1063,27 +1063,19 @@ public class OrdenActualizar {
 		Statement statementc=null;
 		try {
 			// actualizarCaracteristicasPaqueteTemporal
-			String carcatPaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 
-					"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 2, null, carcatPaqueteTemp, usuario.getIdUsuario());
-			
-			// actualizarCaracteristicasPaqueteDetalleTemp
-			String carcatDetallePaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 
-					"ID_CARAC_PAQUETE="+" (SELECT DISTINCT ID_CARAC_PAQUETE "
-							+ " FROM SVC_CARAC_PAQUETE_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + ordenesServicioRequest.getIdOrdenServicio() + ")"+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PAQ_TEMP", 2, null, carcatDetallePaqueteTemp, usuario.getIdUsuario());
-			
-			// actualizarCaracteristicasPresupuestoTemporal
-			String carcatPresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 
-					"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 2, null, carcatPresupuestoTemp, usuario.getIdUsuario());
-			
-			// actualizarCaracteristicasPresuestoDetalleTemp
-			String carcatDetallePresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 
-					"ID_CARAC_PRESUPUESTO="+" (SELECT DISTINCT ID_CARAC_PRESUPUESTO "
-							+ " FROM SVC_CARAC_PRESUP_TEMP" + " WHERE ID_ORDEN_SERVICIO =" + ordenesServicioRequest.getIdOrdenServicio() + ")"+" AND IND_ACTIVO = 1");
-			BitacoraUtil.insertarInformacion(connection, "SVC_DETALLE_CARAC_PRESUP_TEMP", 2, null, carcatDetallePresupuestoTemp, usuario.getIdUsuario());
-			
+			if (ordenesServicioRequest.getCaracteristicasPresupuesto().getCaracteristicasPaquete()!=null) {
+				String carcatPaqueteTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 
+						"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
+				BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PAQUETE_TEMP", 2, null, carcatPaqueteTemp, usuario.getIdUsuario());
+				
+			}
+			if (ordenesServicioRequest.getCaracteristicasPresupuesto().getCaracteristicasDelPresupuesto()!=null) {
+				// actualizarCaracteristicasPresupuestoTemporal
+				String carcatPresupuestoTemp= BitacoraUtil.consultarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 
+						"ID_ORDEN_SERVICIO="+ordenesServicioRequest.getIdOrdenServicio().toString()+" AND IND_ACTIVO = 1");
+				BitacoraUtil.insertarInformacion(connection, "SVC_CARAC_PRESUP_TEMP", 2, null, carcatPresupuestoTemp, usuario.getIdUsuario());
+				
+			}
 			// actualizarDonacionTemporal
 			String donacion= BitacoraUtil.consultarInformacion(connection, "SVC_DONACION_ORDEN_SERV_TEMP", 
 					"ID_ORDEN_SERVICIO = "+ ordenesServicioRequest.getIdOrdenServicio() +" AND IND_ACTIVO = 1");
