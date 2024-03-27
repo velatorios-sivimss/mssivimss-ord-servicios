@@ -107,4 +107,40 @@ public class ConvenioPA {
 		log.info(query);
 		return query;
 	}
+	
+	public String obtenerTitularSubstitutoConvenio(Integer id) {
+		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
+		selectQueryUtil.select(
+				"SPC.ID_PERSONA AS idPersona",
+				"NULL AS idContratante",
+				"IFNULL(STB.CVE_MATRICULA,'') AS matricula",
+				"IFNULL(SPC.CVE_CURP,'') AS curp",
+				"IFNULL(SPC.CVE_NSS,'') AS nss",
+				"IFNULL(SPC.NOM_PERSONA,'') AS nomPersona",
+				"IFNULL(SPC.NOM_PRIMER_APELLIDO,'') AS primerApellido",
+				"IFNULL(SPC.NOM_SEGUNDO_APELLIDO,'') AS segundoApellido",
+				"CONCAT('Titular Substituto-' ,IFNULL(SPC.NOM_PERSONA,''),' ',IFNULL(SPC.NOM_PRIMER_APELLIDO,''),' ',IFNULL(SPC.NOM_SEGUNDO_APELLIDO,'')) AS tipo",
+				"IFNULL(SPC.NUM_SEXO,'') AS sexo",
+				"IFNULL(SPC.REF_OTRO_SEXO,'') AS otroSexo",
+				"SPC.FEC_NAC AS fechaNac",
+				"(CASE WHEN SPC.ID_PAIS = NULL OR SPC.ID_PAIS = 119  THEN 1 ELSE 2 END) AS nacionalidad",
+				"SPC.ID_PAIS AS idPais",
+				"SPC.ID_ESTADO AS idEstado",
+				"IFNULL(SVD.ID_DOMICILIO,'') AS idDomicilio",
+				"IFNULL(SVD.REF_CALLE,'') AS calle",
+				"IFNULL(SVD.NUM_EXTERIOR,'') AS numExterior",
+				"IFNULL(SVD.NUM_INTERIOR,'') AS numInterior",
+				"IFNULL(SVD.REF_CP,'') AS cp",
+				"IFNULL(SVD.REF_COLONIA,'') AS colonia",
+				"IFNULL(SVD.REF_MUNICIPIO,'') AS municipio",
+				"IFNULL(SVD.REF_ESTADO,'') AS estado")
+		.from("SVC_CONTRATANTE STB  ")
+		.innerJoin("SVC_PERSONA SPC ", "STB.ID_PERSONA = SPC.ID_PERSONA ")
+		.leftJoin("SVT_DOMICILIO SVD  ", "STB.ID_DOMICILIO = SVD.ID_DOMICILIO ")
+		.where("STB.ID_PERSONA = "+id+" ORDER BY tipo DESC");
+		
+		query=selectQueryUtil.build();
+		log.info(query);
+		return query;
+	}
 }

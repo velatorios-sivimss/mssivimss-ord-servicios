@@ -87,7 +87,7 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
             String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
             ConvenioPARequest convenioPARequest= gson.fromJson(datosJson, ConvenioPARequest.class);
             ConvenioPAResponse convenioPAResponse= new ConvenioPAResponse();
-            StringBuilder whereBeneficiarios=new StringBuilder();
+            StringBuilder whereBeneficiarios;
             resultSet= statement.executeQuery(convenioPA.validarConvenio(convenioPARequest.getFolio()));
             
             if (resultSet.next()) {
@@ -97,6 +97,8 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 				}
             	
             	List<ContratanteResponse>beneficiariosResponse= new ArrayList<>();
+            	List<ContratanteResponse>beneficiariosResponseBeneficiario1= new ArrayList<>();
+            	List<ContratanteResponse>beneficiariosResponseBeneficiario2= new ArrayList<>();
             	
             	convenioPAResponse.setIdConvenioPa(resultSet.getInt(1));
             	convenioPAResponse.setFolio(resultSet.getString(2));
@@ -105,30 +107,71 @@ public class ConvenioPaServiceImplem implements ConvenioPaService {
 				
 				beneficiariosResponse.add(this.setContratanteResponse(datosPersona));
 				convenioPAResponse.setContratante(beneficiariosResponse);
+				Integer idTitularSubstituto=resultSet.getInt(this.TITULAR_SUBSTITUTO);
+				Integer idBeneficiario1=resultSet.getInt(this.BENEFICIARIO1);
+				Integer idBeneficiario2=resultSet.getInt(this.BENEFICIARIO2);
+				Integer idPersona=resultSet.getInt("idPersona");
 				
-				
-				if (Objects.nonNull(resultSet.getInt(this.TITULAR_SUBSTITUTO)) && resultSet.getInt(this.TITULAR_SUBSTITUTO)>0) {
+				if (Objects.nonNull(idTitularSubstituto) && idTitularSubstituto>0) {
+					whereBeneficiarios=new StringBuilder();
 					whereBeneficiarios.append(String.valueOf(resultSet.getInt(this.TITULAR_SUBSTITUTO)));
+					if(whereBeneficiarios.length()>0) {
+						resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+						if (resultSet.next()) {
+							beneficiariosResponse.add(this.setContratanteResponse(datosPersona));
+						}
+					}
+					
+
+				}else{
+					 resultSet=null;
+					 resultSet= statement.executeQuery(convenioPA.obtenerTitularSubstitutoConvenio(idPersona));
+			         if (resultSet.next()) {
+			        	
+						 beneficiariosResponse.add(this.setContratanteResponse(datosPersona));
+					     		
+					}
 				}
-				if (Objects.nonNull(resultSet.getInt(this.BENEFICIARIO1)) && resultSet.getInt(this.BENEFICIARIO1)>0) {
-					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt(this.BENEFICIARIO1))):String.valueOf(resultSet.getInt(this.BENEFICIARIO1)));
-				}
-				if (Objects.nonNull(resultSet.getInt(this.BENEFICIARIO2)) && resultSet.getInt(this.BENEFICIARIO2)>0) {
-					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(resultSet.getInt(this.BENEFICIARIO2))):String.valueOf(resultSet.getInt(this.BENEFICIARIO2)));
+				
+				if (Objects.nonNull(idBeneficiario1) && idBeneficiario1>0) {
+					whereBeneficiarios=new StringBuilder();
+					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(idBeneficiario1)):String.valueOf(idBeneficiario1));
+					if(whereBeneficiarios.length()>0) {
+						resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+						if (resultSet.next()) {
+							
+							beneficiariosResponseBeneficiario1.add(this.setContratanteResponse(datosPersona));
+							beneficiariosResponseBeneficiario1.get(0).setTipo("Beneficiario 1-"
+									.concat(beneficiariosResponseBeneficiario1.get(0).getNomPersona()
+											.concat(" ")
+											.concat(beneficiariosResponseBeneficiario1.get(0).getPrimerApellido())
+											.concat(" ")
+											.concat(beneficiariosResponseBeneficiario1.get(0).getSegundoApellido())));
+							beneficiariosResponse.add(beneficiariosResponseBeneficiario1.get(0));
+
+						}
+					}
 
 				}
-				if(whereBeneficiarios.length()>0) {
-					resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+				if (Objects.nonNull(idBeneficiario2) && idBeneficiario2>0) {
+					whereBeneficiarios=new StringBuilder();
+					whereBeneficiarios.append(whereBeneficiarios.length()>0?",".concat(String.valueOf(idBeneficiario2)):String.valueOf(idBeneficiario2));
+					if(whereBeneficiarios.length()>0) {
+						resultSet= statement.executeQuery(convenioPA.obtenerBeneficiariosConvenio(whereBeneficiarios.toString()));
+						if (resultSet.next()) {
+							
+							beneficiariosResponseBeneficiario2.add(this.setContratanteResponse(datosPersona));
+							beneficiariosResponseBeneficiario2.get(0).setTipo("Beneficiario 2-"
+									.concat(beneficiariosResponseBeneficiario2.get(0).getNomPersona()
+											.concat(" ")
+											.concat(beneficiariosResponseBeneficiario2.get(0).getPrimerApellido())
+											.concat(" ")
+											.concat(beneficiariosResponseBeneficiario2.get(0).getSegundoApellido())));
+							beneficiariosResponse.add(beneficiariosResponseBeneficiario2.get(0));
+
+						}
+					}
 				}
-				
-				
-				while (resultSet.next()) {
-					
-					beneficiariosResponse.add(this.setContratanteResponse(datosPersona));
-				}
-				
-				
-				
 				response= new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(convenioPAResponse));
 			}else {
 				response= new Response<>(false, HttpStatus.OK.value(), this.MENSAJE_45);				
